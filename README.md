@@ -3,21 +3,14 @@
 Settings for replays (ingame):
 - Go to skin file make sure empty the keyoverlay ingame like this:
 
-![image](https://github.com/HosizoraN/ResolvedOverlay-osu/assets/81794354/4e2491bb-7080-464e-9b07-1ae9b3241d6a)
+![image](https://github.com/HosizoraN/SonataOverlay/assets/81794354/75be2f24-e41d-4393-8535-8e2a5fea4c64)
 
-![image](https://github.com/HosizoraN/ResolvedOverlay-osu/assets/81794354/d2c46289-ce9f-4345-aa12-c3b938f2544a)
+![image](https://github.com/HosizoraN/SonataOverlay/assets/81794354/de19caa4-64d0-4404-a8a9-d7cf065272e2)
 
-
-Screenshot:
 Gameplay:
 
-![Screenshot 2024-04-20 20-40-53](https://github.com/HosizoraN/ResolvedOverlay-osu/assets/81794354/147dbee6-88b5-4ffa-9126-0ca664b16d7a)
+![Screenshot 2024-05-21 16-30-00](https://github.com/HosizoraN/SonataOverlay/assets/81794354/c93e97ca-31e1-48c0-b3a2-c4e88ced0938)
 
 ResultScreen: (need more idea for design :sob:)
 
-
-https://github.com/HosizoraN/ResolvedOverlay-osu/assets/81794354/80327e69-8d55-4dd5-b7d1-457f3fd14b66
-
-
-
-Leaderboard: (Work In Progress...)
+![Screenshot 2024-05-21 16-26-45](https://github.com/HosizoraN/SonataOverlay/assets/81794354/a08fc788-83f5-4233-b6a5-c6f45af141d0)
