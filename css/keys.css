@@ -1,0 +1,411 @@
+:root {
+  --font-size: 50px;
+
+  --offset: 0%;
+}
+
+#KeyOverlayCont {
+  position: absolute;
+  right: -50px;
+  top: 37%;
+}
+
+.KeyRelative {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  line-height: 1em;
+}
+
+.test {
+  width: 100vw;
+  color: white;
+  /* background-color: black; */
+  overflow-wrap: break-word;
+}
+
+#keyOverlay {
+  font-family: "Arial", sans-serif;
+  color: white;
+  font-size: var(--font-size);
+  /* background-color: black; */
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  --width: 400px;
+  --height: 55px;
+
+}
+
+#keyOverlay.-top::after,
+#keyOverlay.-left::after {
+  top: 0;
+  left: 0;
+}
+
+#keyOverlay.-right::after {
+  top: 0;
+  right: 0;
+}
+
+#keyOverlay.-bottom::after {
+  left: 0;
+  bottom: 0;
+}
+
+#keyOverlay::after {
+  display: none;
+  content: '';
+  position: fixed;
+
+  width: 1em;
+  height: 1em;
+
+  border-radius: 0.1em;
+  background: white;
+
+  animation: fade 1s 3s forwards;
+
+}
+
+@keyframes fade {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.main {
+  flex-direction: column;
+  position: absolute;
+  display: flex;
+
+  /* &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    background: wheat;
+    z-index: 2;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    background: wheat;
+    z-index: 2;
+  } */
+}
+
+.keys {
+  --color: rgb(255, 255, 255);
+  --bpm-color: rgb(138, 138, 138);
+  --press: rgb(29, 29, 29);
+  --pressed: rgb(255, 255, 255);
+
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  color: var(--color);
+
+  transition: margin 1s ease, height 1s ease, opacity 1s ease;
+}
+
+.keys .bpm {
+  white-space: nowrap;
+  color: var(--bpm-color);
+
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  font-size: 0.6em;
+  display: flex;
+}
+
+.keys .bpmcount {
+  text-align: right;
+}
+
+.keys .bpmtext {
+  font-size: .7em;
+  top: 0.12em;
+  position: relative;
+}
+
+
+.keys .wrapper {
+  position: absolute;
+  z-index: 1;
+}
+
+
+.keys .press {
+  position: absolute;
+  width: 0.2em;
+  height: var(--height);
+  top: 50%;
+  left: 50%;
+  margin: auto 0;
+  background: var(--press);
+  border-radius: 0.07em;
+  transition: background 0.05s ease, transform 0.1s ease;
+  transform: translate(-50%, -50%);
+  /* transition: background 0.05s ease, transform 0.05s ease; */
+
+  z-index: 0;
+}
+
+.keys .press.active {
+  background: var(--pressed);
+  transform: translate(-50%, -50%) scale(1, 0.6);
+}
+
+.keys .keyname {
+  text-align: center;
+  font-size: 0.8em;
+  text-shadow: 0 0 0.1em rgba(0, 0, 0, 0.5), 0 0 0.2em rgba(0, 0, 0, 0.5), 0 0 0.4em rgba(0, 0, 0, 0.5);
+  position: absolute;
+  color: var(--key-color);
+  width: 2em;
+  opacity: var(--keyNameOpacity);
+
+  /* -webkit-text-stroke: 5px black;
+  paint-order: stroke fill; */
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+.keys .count {
+  filter: drop-shadow(0 0 0.2em black) drop-shadow(0 0 0.5em black);
+  /* text-shadow: 0 0 0.2em black, 0 0 0.5em black, 0 0 0.8em black; */
+  white-space: nowrap;
+  text-align: center;
+  font-size: 0.53em;
+
+  position: absolute;
+
+  z-index: 1;
+}
+
+
+.keys canvas {
+  mask-image: linear-gradient(-90deg, black, transparent);
+  -webkit-mask-image: linear-gradient(-90deg, black, transparent);
+  position: absolute;
+  width: var(--width);
+  z-index: 0;
+}
+
+.keys.hidden {
+  height: 0 !important;
+  opacity: 0 !important;
+  margin: 0 0 !important;
+}
+
+#m1Name,
+#m2Name {
+  font-size: 0.6em;
+}
+
+
+
+
+
+#keyOverlay.-top .main {
+  flex-direction: row;
+  top: 0;
+  left: var(--offset);
+  margin: 0 1em;
+  transform-origin: top left;
+}
+
+#keyOverlay.-top.--right .main {
+  top: 0;
+  left: unset;
+  right: var(--offset);
+}
+
+#keyOverlay.-top .main .keys {
+  height: calc(var(--width) + 10em);
+  width: var(--height);
+  margin: 0 0.6em;
+}
+
+#keyOverlay.-top .main .keys .bpm {
+  top: 1em;
+  flex-direction: column;
+}
+
+#keyOverlay.-top .main .keys .wrapper {
+  top: 3.5em;
+}
+
+#keyOverlay.-top .main .keys .press {
+  width: var(--height);
+  height: 1em;
+}
+
+#keyOverlay.-top .main .keys .press.active {
+  transform: translate(-50%, -50%) scale(0.6, 1);
+}
+
+#keyOverlay.-top .main .keys .count {
+  font-size: 0.6em;
+  top: 3em;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#keyOverlay.-top .main .keys canvas {
+  top: 3.8em;
+  transform: rotate(-90deg) translateX(calc(var(--width)* -0.5));
+}
+
+
+
+
+
+#keyOverlay.-left .main {
+  top: var(--offset);
+  left: 0;
+  margin: 1em 0;
+}
+
+#keyOverlay.-left.--bottom .main {
+  top: unset;
+  left: 0;
+  bottom: var(--offset);
+}
+
+#keyOverlay.-left .main .keys {
+  margin: 0.7em 0;
+}
+
+#keyOverlay.-left .main .keys .bpm {
+  justify-content: flex-end;
+  width: 3.6em;
+  left: 0.4em;
+}
+
+#keyOverlay.-left .main .keys .wrapper {
+  left: 4.5em;
+}
+
+#keyOverlay.-left .main .keys .count {
+  top: 50%;
+  left: 2.2em;
+  transform: translateY(-50%);
+}
+
+#keyOverlay.-left .main .keys canvas {
+  left: 5.2em;
+  transform: rotate(180deg);
+}
+
+
+
+
+
+#keyOverlay.-right .main {
+  top: var(--offset);
+  right: 0;
+  margin: 1em 0;
+}
+
+#keyOverlay.-right.--bottom .main {
+  top: unset;
+  right: 0;
+  bottom: var(--offset);
+}
+
+#keyOverlay.-right .main .keys {
+  margin: 0.8em 0;
+}
+
+#keyOverlay.-right .main .keys .bpm {
+  justify-content: flex-start;
+  width: 3.6em;
+  right: 2.6em;
+}
+
+#keyOverlay.-right .main .keys .wrapper {
+  right: 4.5em;
+}
+
+#keyOverlay.-right .main .keys .count {
+  top: 50%;
+  right: 1.5em;
+  transform: translateY(-50%);
+}
+
+#keyOverlay.-right .main .keys canvas {
+  right: 4.5em;
+}
+
+
+
+
+
+#keyOverlay.-bottom .main {
+  flex-direction: row;
+  bottom: 0;
+  left: var(--offset);
+  margin: 0 1em;
+  transform-origin: top left;
+}
+
+#keyOverlay.-bottom.--right .main {
+  bottom: 0;
+  left: unset;
+  right: var(--offset);
+}
+
+#keyOverlay.-bottom .main .keys {
+  width: var(--height);
+  height: calc(var(--width) + 10em);
+  margin: 0 0.6em;
+}
+
+#keyOverlay.-bottom .main .keys .bpm {
+  bottom: 1em;
+  flex-direction: column;
+}
+
+#keyOverlay.-bottom .main .keys .wrapper {
+  bottom: 3.5em;
+}
+
+#keyOverlay.-bottom .main .keys .press {
+  width: var(--height);
+  height: 1em;
+}
+
+#keyOverlay.-bottom .main .keys .press.active {
+  transform: translate(-50%, -50%) scale(0.6, 1);
+}
+
+#keyOverlay.-bottom .main .keys .count {
+  font-size: 0.6em;
+  bottom: 1.8em;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#keyOverlay.-bottom .main .keys canvas {
+  bottom: 4.1em;
+  transform: rotate(90deg) translateX(calc(var(--width)* -0.45));
+}

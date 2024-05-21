@@ -1,0 +1,616 @@
+@font-face {
+	font-family: "Exo2";
+	src: url("../fonts/Exo2-MediumItalic.otf");
+}
+
+@font-face {
+	font-family: "GothicR";
+	src: url("../fonts/GothicR.ttf");
+}
+
+@font-face {
+	font-family: "GothicRD";
+	src: url("../fonts/GothicRD.ttf");
+}
+
+@font-face {
+	font-family: "LinotteL";
+	src: url("../fonts/LinotteL.ttf");
+}
+
+@font-face {
+	font-family: "Torus";
+	src: url("../fonts/Torus-Regular.otf");
+}
+
+#main {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2560px;
+    height: 1440px;
+    /* background-color: rgb(77, 77, 77); */
+    color: white;
+    overflow: hidden;
+    /* background-image: url('../static/Background.jpg');
+    background-size: 100%; */
+    z-index: -1;
+	font-family: "GothicRD", Helvetica, sans-serif;
+}
+
+#gameplay {
+    width: 2560px;
+    height: 1440px;
+    color: white;
+    z-index: 0;
+}
+.odometer.odometer-auto-theme {
+	font-family: "GothicRD", Helvetica, sans-serif;
+	font-weight: 900;
+}
+/* -- BG -- */
+#mapBG {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: black;
+	background-size: cover;
+	background-position: 50% 50%;
+	z-index: -2;
+	transition: ease-in-out 500ms;
+	clip-path: url('#myClip');
+}
+
+#rankingPanelBG {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-size: cover;
+	background-position: 50% 50%;
+	background-color: black;
+	transition: ease 500ms;
+	opacity: 0;
+	z-index: 2;
+}
+/* -- TOP -- */
+#gptop {
+	position: absolute;
+	width: 100%;
+	top: 10px;
+	height: 125px;
+	transition: ease 500ms;
+	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+    font-family: Torus;
+	font-weight: 900;
+}
+
+#hp {
+	position: absolute;
+	width: 2560px;
+	height: 167px;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	transition: linear 100ms;
+}
+
+#hpBG {
+	position: absolute;
+	width: 2560px;
+	height: 167px;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	transition: linear 100ms;
+	z-index: -1;
+	opacity: 50%;
+}
+
+#ava {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: 122px;
+	height: 122px;
+	transition: ease-in-out 500ms;
+	background-size: 100%;
+	background-position: 50% 50%;
+	border-radius: 22px;
+	background-repeat: no-repeat;
+}
+
+.otherContainer {
+	position: absolute;
+	top: 40px;
+	width: 200px;
+	height: 30px;
+	line-height: 30px;
+	padding: 5px;
+	/* background-color: #161616; */
+	border-radius: 10px;
+	font-size: 30px;
+	transition: ease-in-out 500ms;
+	/* box-shadow: 0 5px 5px black; */
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+#username {
+	top: 120px;
+	left: 1000px;
+	text-align: right;
+	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+}
+
+#playerPP {
+	top: 120px;
+	right: 1000px;
+	text-align: left;
+	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+}
+
+.xContainer {
+	position: absolute;
+	top: 65px;
+	width: 120px;
+	height: 30px;
+	padding: 5px 0px 5px 0px;
+	transition: ease-in-out 500ms;
+}
+
+#globalContainer {
+	right: 430px;
+	top: 30px;
+}
+
+#countryContainer {
+	left: 430px;
+	top: 30px;
+}
+
+.rankContainer {
+	position: absolute;
+	top: 0;
+	width: 120px;
+	height: 30px;
+	line-height: 30px;
+	color: white;
+	/* background-color: #161616; */
+	padding: 5px 0px 5px 0px;
+	font-size: 25px;
+	color: white;
+	text-align: center;
+	border-radius: 15px;
+	transition: ease-in-out 500ms;
+	/* box-shadow: 0 5px 5px rgba(0, 0, 0, 0.4); */
+}
+
+#ranks {
+	top: 6px;
+	left: 70px;
+	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+}
+
+#countryRank {
+	top: 6px;
+	right: 70px;
+	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+}
+
+.flag {
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50px;
+	height: 50px;
+	background-size: 100%;
+    background-position: 50% 50%;
+	background-repeat: no-repeat;
+	font-size: 15px;
+	color: white;
+	text-align: center;
+	border-radius: 10px;
+	transition: ease-in-out 500ms;
+}
+
+.statContainer {
+	position: absolute;
+	padding: 5px 0px 5px 0px;
+	text-align: center;
+	border-radius: 10px;
+	top: 120px;
+	width: 220px;
+	/* box-shadow: 0 5px 9px black; */
+	font-family: Torus;
+	font-weight: 900;
+	font-size: 30px;
+	transition: ease-in-out 500ms;
+	/* background-color: #161616; */
+	color: white;
+}
+
+#SonataText {
+	display: none;
+	position: absolute;
+	top: 130px;
+	left: 0;
+	right: 0;
+	text-align: center;
+	margin-left: auto;
+	margin-right: auto;
+	font-size: 24px;
+	overflow: hidden;
+}
+
+#BrandLogo {
+	background-image: url("../static/logo.png");
+	background-size: 100%;
+	border-radius: 50px;
+	position: absolute;
+	top: 100px;
+	width: 50px;
+	height: 50px;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+}
+/* -- ELEMENT OUTSIDE MAIN -- */
+#smallStats {
+    position: absolute;
+    width: 380px;
+    height: 55px;
+    background-color: #161616;
+    border-radius: 12px;
+    left: 20px;
+    bottom: 200px;
+    font-size: 28px;
+	z-index: 2;
+}
+#stars1 {
+	position: absolute;
+	left: 15px;
+	top: 10px;
+}
+#bpmd{
+	position: absolute;
+	text-align: right;
+	right: 15px;
+	top: 10px;
+}
+#bpmflash {
+	position: relative;
+	top: 2px;
+	transition-duration: 150ms;
+}
+#starsCurrent {
+	position: relative;
+	top: 0;
+}
+#sModsCont{
+    position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 380px;
+    bottom: -5px;
+}
+#sMods {
+    padding: 4px 12px 4px 12px;
+	font-size: 19px;
+	border-radius: 7px;
+	background-color: #161616;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+	transition: ease-out 500ms;
+	opacity: 1;
+}
+.accInfo {
+	position: absolute;
+    bottom: -20px;
+	display: flex;
+	width: 380px;
+	height: 10px;
+	justify-content: space-around;
+	border-radius: 10px;
+	font-size: 35px;
+	background: linear-gradient(90deg, #9ef8a9 25%, #ffd8a6 26%, #ffd8a6 50%, #fd8989 51%, #fd8989 75%, #ffffff 76%);
+	transition: ease-in-out 500ms;
+}
+.accInfo::before {
+    content: "";
+    position: absolute;
+	width: 380px;
+	height: 10px;
+	border-radius: 10px;
+	background: linear-gradient(90deg, #9ef8a9 25%, #ffd8a6 26%, #ffd8a6 50%, #fd8989 51%, #fd8989 75%, #ffffff 76%);
+    filter: blur(10px);
+}
+#h100Cont,
+#h50Cont,
+#h0Cont,
+#hsbCont {
+    position: relative;
+    top: 25px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 80px;
+	height: 50px;
+}
+#graphCont {
+	position: absolute;
+	bottom: 70px;
+	z-index: 2;
+}
+#graph100,
+#graph50,
+#graph0 {
+	display: none;
+	position: relative;
+	width: 380px;
+	height: 17px;
+}
+#graph100 {
+	background-color: rgba(0, 30, 0, 0.8);
+}
+#graph50 {
+	background-color: rgba(30, 15, 0, 0.8);
+}
+#graph0 {
+	background-color: rgba(30, 0, 0, 0.8);
+}
+.tickGraph {
+	position: absolute;
+	width: 25px;
+	height: 17px;
+}
+.tick100 {
+	background-color: #57e313;
+}
+.tick50 {
+	background-color: #e3bd13;
+}
+.tick0 {
+	background-color: #e31313;
+}
+#strainGraph {
+	position: relative;
+	height: 160px;
+	z-index: -1;
+}
+#progress {
+	bottom: 0;
+	position: absolute;
+	width: 380px;
+	height: 160px;
+	overflow: hidden;
+	transition: ease 100ms;
+}
+#canvas,
+#canvasSecond {
+	position: absolute;
+	height: 160px;
+	bottom: 0;
+}
+/* -- BOTTOM -- */
+#gpbottom {
+	position: absolute;
+	width: 2560px;
+	height: 300px;
+	bottom: 0px;
+	transition: ease-in-out 500ms;
+    display: flex;
+    justify-content: center;
+}
+#URmidbar{
+	position: absolute;
+	bottom: 10px;
+	background-color: white;
+	width: 7px;
+    box-shadow: 0 0 2px black;
+	height: 35px;
+	border-radius: 5px;
+	transition: ease-out 500ms;
+}
+
+#avgHitError {
+	position: absolute;
+	bottom: 0;
+	width: 15px;
+	height: 15px;
+	background-image: url("../static/arrowtick.png");
+	background-size: 100%;
+	transition: ease-out 100ms;
+	transform-origin: 50% 50%;
+}
+#URCont{
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+}
+#URbar {
+	display: flex;
+	width: 100%;
+	bottom: 0;
+	width: auto;
+	transition: ease-in-out 350ms;
+	z-index: -1;
+	justify-content: center;
+}
+#l50 {
+	position: absolute;
+	bottom: 20px;
+	height: 15px;
+	background-color: #daae46;
+	border-radius: 15px;
+	transition: ease-in-out 300ms;
+	z-index: -1;
+}
+
+#l100 {
+	position: absolute;
+	height: 15px;
+	bottom: 20px;
+	background-color: #57e313;
+	transition: ease-in-out 300ms;
+	z-index: -1;
+}
+
+#l300 {
+	position: absolute;
+	height: 15px;
+	bottom: 20px;
+	background-color: #32bce9;
+	transition: ease-in-out 300ms;
+	z-index: -1;
+}
+.tick {
+	position: absolute;
+	bottom: 8px;
+	height: 40px;
+	width: 7px;
+	background-color: rgba(255 255 255 / .3);
+	border-radius: 5px;
+	transition-duration: 2.5s;
+	z-index: -1;
+}
+
+#URIndex {
+	position: absolute;
+	bottom: 80px;
+	left: 0;
+	right: 0;
+	font-size: 48px;
+	display: block;
+	text-align: center;
+	padding: 5px 0px 5px 0px;
+	color: #fff;
+	transition: ease-in-out 500ms;
+}
+#URText{
+	position: absolute;
+	bottom: 50px;
+	left: 0;
+	right: 0;
+	font-size: 28px;
+	display: block;
+	font-weight: lighter;
+	text-align: center;
+	padding: 5px 0px 5px 0px;
+	transition: ease-in-out 500ms;
+}
+.wrapper_1 {
+    display: flex;
+    position: absolute;
+    font-size: 35px;
+    bottom: 15px;
+	left: 1600px;
+    
+    transition-duration: 500ms;
+  }
+  .pp {
+    display: inline-block;
+      background: #161616;
+  
+	padding-left: 20px;
+  
+    width: 74px;
+    height: 65px;
+    transition: 400ms;
+  
+    border-radius: 12px;
+  }
+  
+  .pp .text_1 {
+	position: relative;
+	top: 8px;
+    display: inline-block;
+    
+    font-size: 39px;
+	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+  }
+.wrapper_2 {
+    display: flex;
+    position: absolute;
+    font-size: 35px;
+    bottom: 78px;
+	left: 760px;
+  
+    transition-duration: 500ms;
+  }
+  .combo_wrapper {
+    position: relative;
+    width: 200px;
+  }
+  
+  .combo {
+    position: absolute;
+    right: 0;
+    background: #161616;
+  
+    /* width: 26px; */
+    height: 65px;
+    transition-duration: 400ms;
+  
+    border-radius: 12px;
+  }
+  
+  .combo_handler {
+    width: 300px; 
+    position: absolute;
+  
+    transition-duration: 300ms;
+  
+    top: 8px;
+	left: 152px;
+  }
+  #combo_text2 {
+	position: absolute;
+	width: 300px;
+    transition-duration: 400ms;
+  }
+  .combo_handler .text_2 {
+    display: inline-block;
+    
+    font-size: 39px;
+	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+  }
+#recorderContainer {
+	position: absolute;
+	right: -600px;
+	bottom: 5px;
+	flex-wrap: wrap;
+	text-align: right;
+	width: 600px;
+	height: 100px;
+	margin: 20px;
+}
+
+#recorder {
+	width: 100%;
+	height: 50px;
+	color: white;
+	font-size: 40px;
+	line-height: 50px;
+	font-family: Torus;
+	font-weight: 900;
+	transition: ease-in-out 500ms;
+}
+
+#recorderName {
+	width: 100%;
+	height: 50px;
+	color: white;
+	font-size: 48px;
+	line-height: 50px;
+	font-family: Torus;
+	font-weight: 900;
+	transition: ease-in-out 500ms;
+}

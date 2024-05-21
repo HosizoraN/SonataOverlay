@@ -1,0 +1,518 @@
+#rankedStatus {
+    position: relative;
+    display: inline-block;
+	width: 60px;
+	height: 50px;
+	/* background-color: #494966; */
+	background-size: cover;
+}
+#modContainer {
+    position: absolute;
+    top: 140px;
+	display: flex;
+	justify-content: center;
+	flex-direction: row-reverse;
+	align-items: center;
+	transition: ease-in-out 500ms;
+}
+.mods {
+	width: 55px;
+	height: 55px;
+	background-size: 100%;
+}
+#rFlag {
+    position: relative;
+    top: 5px;
+    display: inline-block;
+    width: 43px;
+    height: 31px;
+    background-size: 100%;
+    background-position: 50% 50%;
+    border-radius: 5px;
+}
+#RankingPanel {
+	position: absolute;
+	width: 2560px;
+	height: 1440px;
+	font-family: 'Torus';
+	top: 0;
+	left: 0;
+	color: white;
+    transition: ease-in-out 500ms;
+    overflow: hidden;
+    z-index: 3;
+}
+#ResultBottom {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    z-index: 0;
+}
+#MapDetails {
+    position: absolute;
+    justify-content: center;
+    bottom: -5px;
+    width: 1120px;
+    height: 220px;
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    z-index: 2;
+	background-position: 50% 50%;
+	background-size: 100%;
+	border: 5px solid white;
+    transition: ease 800ms;
+    transition-delay: 1s;
+}
+#rBPM {
+    position: absolute;
+    bottom: 200px;
+    border-radius: 10px 10px 0 0;
+    padding-top: 5px;
+    height: 70px;
+    width: 190px;
+    text-align: center;
+    font-size: 34px;
+    z-index: -2;
+    background-color: rgb(37, 37, 37);
+    transition: ease 800ms;
+    transition-delay: 1s;
+}
+#SongMap {
+    position: absolute;
+    right: 30px;
+    top: 20px;
+    bottom: 15px;
+    font-size: 50px;
+    text-align: right;
+    width: 830px;
+}
+#SongTitle,#rDiff,#mapandrank {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    line-height: 55px;
+}
+#SongRanking {
+    position: absolute;
+    left: 25px;
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 180px;
+    justify-content: center;
+}
+#rankingResult {
+    position: relative;
+    top: 12px;
+    left: 10px;
+    width: 140px;
+    height: 140px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+#ScoreData,
+#PPData{
+    position: absolute;
+    bottom: 10px;
+    font-size: 50px;
+    width: 720px;
+    overflow: hidden;
+}
+#PPData {
+    left: 0;
+    text-align: right;
+}
+#ScoreData {
+    right: 0;
+    text-align: left;
+}
+#ResultPPAndifFC,
+#ResultUR {
+    transition: 700ms ease;
+    transition-delay: 1.3s;
+}
+#ResultScoreCombo,
+#ResultAcc{
+    transition: 700ms ease;
+    transition-delay: 1.3s;
+}
+#ResultPPAndifFC,
+#ResultUR {
+    position: relative;
+    right: 20px;
+}
+#ResultAcc,
+#ResultScoreCombo {
+    position: relative;
+    left: 20px; 
+}
+#HitTotal,
+#HitTotalBar {
+    position: absolute;
+    display: flex;
+    top: -35px;
+    justify-content: space-between;
+    width: 90%;
+    z-index: -1;
+    text-align: center;
+}
+.rR {
+    position: relative;
+    font-size: 35px;
+    width: 70px;
+    text-align: center;
+    bottom: 30px;
+    transition: ease 800ms;
+}
+.accbar {
+    width: 68px;
+    height: 16px;
+    position: relative;
+    border-radius: 13px 13px 0 0;
+    bottom: -13px;
+    transition: ease 800ms;
+}
+#r100,
+#b100 {
+    transition-delay: 450ms;
+}
+#r50,
+#b50 {
+    right: 50px;
+    transition-delay: 150ms;
+}
+#r0,
+#b0 {
+    left: 50px;
+    transition-delay: 100ms;
+}
+#rSB,
+#bSB {
+    transition-delay: 400ms;
+}
+#b100 {
+	background-color: #1ceb82;
+	box-shadow: 0 0 10px #1ceb82;
+}
+#b50 {
+	background-color: #f9d382;
+	box-shadow: 0 0 10px #f9d382;
+}
+#b0 {
+	background-color: #de3950;
+	box-shadow: 0 0 10px #de3950;
+}
+#bSB {
+	background-color: #ffffff;
+	box-shadow: 0 0 10px #ffffff;
+}
+#ResultTop {
+    position: absolute;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 500px;
+}
+#RStats {
+    position: relative;
+    top: 20px;
+    width: 80%;
+    display: flex;
+    justify-content: space-around;
+    font-size: 40px;
+}
+.Line {
+    width: 306px;
+    height: 22px;
+    border-radius: 50px;
+    display: flex;
+    transition: 1s ease;
+}
+.Glow {
+    height: 22px;
+    border-radius: 50px;
+    transition: 1s ease;
+}
+#arGlow {
+    background-color: rgb(127, 255, 127);
+    box-shadow: 0 0 10px rgb(127, 255, 127);
+    transition-delay: 500ms;
+}
+#hpGlow {
+    background-color: rgb(127, 157, 255);
+    box-shadow: 0 0 10px rgb(127, 157, 255);
+    transition-delay: 1s;
+}
+#odGlow {
+    background-color: rgb(182, 127, 255);
+    box-shadow: 0 0 10px rgb(182, 127, 255);
+    transition-delay: 700ms;
+}
+#csGlow {
+    background-color: rgb(255, 127, 127);
+    box-shadow: 0 0 10px rgb(255, 127, 127);
+    transition-delay: 900ms;
+}
+#arLine {
+    background-color: rgb(69, 136, 114);
+}
+#hpLine {
+    background-color: rgb(73, 89, 141);
+}
+#odLine {
+    background-color: rgb(90, 64, 124);
+}
+#csLine {
+    background-color: rgb(124, 63, 63);
+}
+.rText1 {
+    color: grey;
+}
+.mText {
+    padding: 15px;
+    width: 280px;
+    display: flex;
+    justify-content: space-between;
+}
+.mStats {
+    position: relative;
+    transition: 800ms ease;
+}
+#mHP {
+    transition-delay: 450ms;
+}
+#mCS {
+    transition-delay: 400ms;
+}
+#mAR {
+    right: 50px;
+    transition-delay: 150ms;
+}
+#mOD {
+    left: 50px;
+    transition-delay: 100ms;
+}
+
+#mSR {
+    position: absolute;
+    transition: 500ms ease;
+    width: 100%;
+    align-items: center;
+    display: flex;
+}
+#srStars {
+    position: absolute;
+	top: 0;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 175px;
+    height: 93px;
+	font-size: 55px;
+	text-align: center;
+    background-color: rgb(255, 222, 131);
+    box-shadow: 0 0 10px rgb(255, 222, 131);
+    border-radius: 0 0 100px 100px;
+}
+#SR {
+	position: absolute;
+    left: 0;
+    right: 0;
+	top: 110px;
+    margin-left: auto;
+    margin-right: auto;
+	text-align: center;
+	color: rgb(255, 222, 131);
+	font-size: 90px;
+	text-shadow: 0 0 10px rgb(163, 142, 84);
+}
+#PlayerData {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+    width: 480px;
+    height: 730px;
+    border-radius: 20px 0 0 20px;
+    transition: ease 1s;
+    transition-delay: 1s;
+}
+#UserAvatar {
+    position: absolute;
+    border-radius: 10px;
+    background-size: 100%;
+    width: 105px;
+    height: 105px;
+    margin: 20px;
+    right: 0;
+    transition: ease 1s;
+    transition-delay: 1.3s;
+}
+#PlayerStats {
+    position: absolute;
+    right: 150px;
+    top: 35px;
+    width: 330px;
+    height: 110px;
+    transition: ease 1s;
+    transition-delay: 1.3s;
+}
+#GlobalRank {
+    color: rgb(156, 156, 156);
+}
+.pst {
+    font-size: 30px;
+    text-align: right;
+}
+#TopHeader {
+    position: absolute;
+    text-align: right;
+    width: 90%;
+    font-size: 25px;
+    border-radius: 10px;
+    top: 140px;
+}
+#UserTopPlay {
+    position: absolute;
+    bottom: 0;
+    height: 550px;
+    width: 100%;
+    font-size: 30px;
+}
+#Top1 {
+    transition-delay: 1.4s;
+}
+#Top2 {
+    transition-delay: 1.5s;    
+}
+#Top3 {
+    transition-delay: 1.6s;    
+}
+#Top4 {
+    transition-delay: 1.7s;    
+}
+#Top5 {
+    transition-delay: 1.8s;   
+}
+.TopPlay {
+    position: relative;
+    margin-bottom: 15px;
+    width: 100%;
+    height: 100px;
+    transition: ease 1s;
+}
+.Thumb {
+    position: absolute;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: 50% 50%;
+    width: 108px;
+    height: 80px;
+    margin: 6px;
+    left: 12px;
+}
+.topDate {
+    position: absolute;
+    top: 5px;
+    left: 135px;
+    width: 400px;
+}
+.topStat {
+    position: absolute;
+    bottom: 15px;
+    left: 135px;
+}
+.topPP {
+    position: absolute;
+    right: 20px;
+    bottom: 15px;
+}
+
+#qcsContainer {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+	width: 100%;
+	height: 100%;
+	/* background-color: #de3950; */
+    transition: ease 1s;
+}
+
+.qcContainer {
+	width: 800px;
+	height: 500px;
+	/* background-color: white; */
+	border-radius: 20px;
+    /* box-shadow: 0 10px 20px -5px #000; */
+	background-size: 100%;
+	background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+.brandsmall {
+    width: 500px;
+	height: 150px;
+    position: absolute;
+    top: 220px;
+}
+
+#brand{
+	background-image: url('../static/quangCao/Brand/qc1.png');
+}
+#qc {
+    display: none;
+    top: 360px;
+    position: absolute;
+    height: 800px;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 10px;
+}
+#qcevent {
+    width: 1200px;
+    height: 500px;
+	border-radius: 20px;
+    /* background-color: #ffffff; */
+    background-size: cover;
+	background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-image: url('../static/quangCao/qc/qcevent.png');
+}
+#qctext {
+    text-align: center;
+    font-size: 34px;
+}
+#qcicon {
+	width: 600px;
+	height: 200px;
+	border-radius: 20px;
+    /* background-color: #ffffff; */
+    background-size: 100%;
+	background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-image: url('../static/quangCao/qc/qcicon.png');
+}
+
+#resultRecorder {
+	position: absolute;
+	left: 10px;
+    top: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	font-size: 20px;
+	font-family: Torus;
+	font-weight: 900;
+	height: 50px;
+	color: white;
+	text-align: left;
+	transition: ease-in-out 500ms;
+}

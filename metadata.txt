@@ -1,0 +1,7 @@
+Usecase: ingame, obs-overlay
+Name: SonataOverlay
+Version: 1.0
+Author: HosizoraN
+CompatibleWith: tosu
+Resolution: 2560x1440
+authorLinks: https://github.com/HosizoraN

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+        <title>Sonata Overlay!</title>
+		<meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="css/gameplay.css" />
+		<link rel="stylesheet" href="css/rankingPanel.css" />
+		<link rel="stylesheet" href="css/odometr.css" />
+		<link rel="stylesheet" href="css/all.min.css" />
+        <link rel="stylesheet" href="css/keys.css" />
+		<script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script src="js/countUp.js"></script>
+		<script src="js/reconnecting-websocket.min.js"></script>
+		<script src="js/odometr.js"></script>
+		<script src="js/Chart.min.js"></script>
+		<script src="js/smooth.js"></script>
+    </head>
+    <body>
+        <div id="main">
+            <div id="rankingPanelBG"></div>
+			<div id="mapBG"></div>
+            <div id="smallStats">
+                <div id="graphCont">
+                    <div id="strainGraph">
+                        <div id="basegraph">
+                            <canvas id="canvas" width="380" height="160"></canvas>
+                        </div>
+                        <div id="progress">
+                            <canvas id="canvasSecond" width="380" height="160"></canvas>
+                        </div>
+                    </div>
+                        <div id="graph100"></div>
+                        <div id="graph50"></div>
+                        <div id="graph0"></div>
+                    </div>
+				<div id="stars1">
+					<i class="fas fa-star"></i>
+					<span id="starsCurrent" class="odometer"></span>
+			    </div>
+				<div id="bpmd">
+					<span id="BPMlive" class="odometer"></span><span id="bpmflash" class="bpm">bpm</span>
+				</div>
+				<div id="sModsCont">
+					<div id="sMods"></div>
+				</div>
+                <div class="accInfo">
+                    <div id="h100Cont">
+                        <div id="h100"></div>
+                    </div>
+                    <div id="h50Cont">
+                        <div id="h50"></div>
+                    </div>
+                    <div id="h0Cont">
+                        <div id="h0"></div>
+                    </div>
+                    <div id="hsbCont">
+                        <div id="hSB"></div>
+                    </div>
+                </div>
+			</div>
+            <div id="gameplay">
+                <div id="gptop">
+                    <div id="hpBG">
+                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="2560px" height="167px" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <!-- Left -->
+                            <g><path id="lefthp1" d="M 576.5,16.5 C 579.97,15.8748 582.804,16.8748 585,19.5C 587,24.1667 589,28.8333 591,33.5C 591.667,35.8333 591.667,38.1667 591,40.5C 586.245,43.1276 581.412,45.6276 576.5,48C 573.594,49.3185 570.594,49.6518 567.5,49C 561.96,42.0981 559.127,34.2648 559,25.5C 564.847,22.3274 570.681,19.3274 576.5,16.5 Z"/></g>
+                            <g><path id="lefthp2" d="M 1147.5,17.5 C 1170.93,16.129 1188.09,25.7957 1199,46.5C 1203.04,57.4645 1203.54,68.6312 1200.5,80C 1200.48,89.9678 1205.15,96.6345 1214.5,100C 1224.83,100.333 1235.17,100.667 1245.5,101C 1258.91,104.307 1264.41,112.807 1262,126.5C 1259.72,133.462 1255.05,137.462 1248,138.5C 1239.4,137.637 1235.9,132.971 1237.5,124.5C 1241.04,127.448 1245.04,128.948 1249.5,129C 1252.98,125.603 1253.31,121.936 1250.5,118C 1247.83,116.667 1245.17,115.333 1242.5,114C 1231.04,113.69 1219.71,112.356 1208.5,110C 1204.81,108.286 1201.14,106.619 1197.5,105C 1193.43,101.457 1191.26,96.9574 1191,91.5C 1190.18,80.9231 1190.35,70.4231 1191.5,60C 1187.13,49.5982 1180.8,40.5982 1172.5,33C 1163.94,27.5143 1154.94,26.5143 1145.5,30C 1136.47,34.3799 1127.47,38.7132 1118.5,43C 1105.05,44.0506 1091.71,43.2173 1078.5,40.5C 1071.09,40.9444 1065.59,44.2777 1062,50.5C 1061.18,54.7384 1061.84,58.7384 1064,62.5C 1066.62,66.7829 1069.62,70.7829 1073,74.5C 1075.11,85.1034 1071.61,93.27 1062.5,99C 1046.63,107.618 1030.3,108.951 1013.5,103C 1010.04,100.537 1006.87,97.7041 1004,94.5C 997.749,85.0011 991.749,75.3344 986,65.5C 969.083,40.6359 945.916,31.8026 916.5,39C 889.937,49.7894 866.937,65.7894 847.5,87C 836.535,95.9523 824.535,103.286 811.5,109C 798.266,114.438 784.932,114.771 771.5,110C 753.018,102.513 738.518,90.3459 728,73.5C 717.954,61.1089 705.454,52.2755 690.5,47C 667.157,44.2003 644.823,47.867 623.5,58C 615.081,61.8072 606.747,65.8072 598.5,70C 574.083,76.7176 554.249,69.8843 539,49.5C 535.811,44.9419 534.478,39.9419 535,34.5C 542.61,43.1159 551.11,50.6159 560.5,57C 572.539,63.4078 584.873,64.0745 597.5,59C 621.05,47.5587 645.716,39.5587 671.5,35C 689.26,33.5861 705.26,38.2528 719.5,49C 730.376,56.8751 739.542,66.3751 747,77.5C 770.637,104.521 797.137,107.687 826.5,87C 836,80.1667 844.167,72 851,62.5C 867.125,46.1846 885.959,34.0179 907.5,26C 944.506,17.0019 975.006,27.1686 999,56.5C 1005.48,65.9531 1011.31,75.7864 1016.5,86C 1030.77,93.8011 1044.6,92.9678 1058,83.5C 1057.47,76.0944 1054.47,69.7611 1049,64.5C 1043.94,46.4614 1050.44,34.9614 1068.5,30C 1077.23,28.0711 1085.89,28.4045 1094.5,31C 1101.5,31.6667 1108.5,31.6667 1115.5,31C 1125.89,25.6324 1136.56,21.1324 1147.5,17.5 Z"/></g>
+                            <g><path id="lefthp3" d="M 778.5,46.5 C 786.507,46.3336 794.507,46.5003 802.5,47C 803,47.5 803.5,48 804,48.5C 804.667,56.1667 804.667,63.8333 804,71.5C 803.5,72 803,72.5 802.5,73C 794.5,73.6667 786.5,73.6667 778.5,73C 778,72.5 777.5,72 777,71.5C 776.333,63.8333 776.333,56.1667 777,48.5C 777.717,47.9558 778.217,47.2891 778.5,46.5 Z"/></g>
+                            <g><path id="lefthp4" d="M 1148.5,48.5 C 1149.47,48.9867 1150.47,49.4867 1151.5,50C 1139.25,59.7847 1137.42,71.2847 1146,84.5C 1153.44,91.7323 1161.61,93.899 1170.5,91C 1174.01,89.245 1177.34,87.5784 1180.5,86C 1172.75,102.694 1160.41,109.361 1143.5,106C 1130.04,101.539 1123.04,92.2057 1122.5,78C 1124.38,62.0021 1133.05,52.1687 1148.5,48.5 Z"/></g>
+                            <g><path id="lefthp5" d="M 925.5,63.5 C 934.191,64.4523 942.357,67.1189 950,71.5C 949.725,79.9937 947.225,87.8271 942.5,95C 933.79,94.5432 925.623,92.0432 918,87.5C 918.376,78.8702 920.876,70.8702 925.5,63.5 Z"/></g>
+                            <!-- Right -->
+                            <g><path id="righthp1" d="M 1977.5,18.5 C 1986.19,19.4523 1994.36,22.1189 2002,26.5C 2002.67,29.1667 2002.67,31.8333 2002,34.5C 1999.88,39.8964 1997.38,45.063 1994.5,50C 1992.17,50.6667 1989.83,50.6667 1987.5,50C 1981.57,47.6906 1975.73,45.1906 1970,42.5C 1970.37,33.891 1972.87,25.891 1977.5,18.5 Z"/></g>
+                            <g><path id="righthp2" d="M 1757.5,46.5 C 1765.51,46.3336 1773.51,46.5003 1781.5,47C 1782,47.5 1782.5,48 1783,48.5C 1783.67,56.1667 1783.67,63.8333 1783,71.5C 1782.5,72 1782,72.5 1781.5,73C 1773.5,73.6667 1765.5,73.6667 1757.5,73C 1757,72.5 1756.5,72 1756,71.5C 1755.33,63.8333 1755.33,56.1667 1756,48.5C 1756.72,47.9558 1757.22,47.2891 1757.5,46.5 Z"/></g>
+                            <g><path id="righthp3" d="M 1408.5,47.5 C 1425.41,50.7804 1434.41,60.7804 1435.5,77.5C 1432.95,96.2316 1422.45,105.898 1404,106.5C 1391.42,104.414 1382.92,97.4142 1378.5,85.5C 1378.67,84.8333 1378.83,84.1667 1379,83.5C 1382.46,87.8153 1386.96,90.482 1392.5,91.5C 1409.94,90.5507 1418.1,81.2173 1417,63.5C 1415.58,57.168 1412.08,52.3347 1406.5,49C 1407.42,48.7216 1408.08,48.2216 1408.5,47.5 Z"/></g>
+                            <g><path id="righthp4" d="M 1394.5,16.5 C 1402.98,15.9886 1411.32,16.8219 1419.5,19C 1427.54,22.6888 1435.54,26.3555 1443.5,30C 1455.97,31.0396 1468.3,30.2062 1480.5,27.5C 1488.82,27.9961 1496.48,30.4961 1503.5,35C 1511.51,43.0529 1513.67,52.5529 1510,63.5C 1504.53,68.7611 1501.53,75.0944 1501,82.5C 1514.4,91.9678 1528.23,92.8011 1542.5,85C 1550.08,68.4146 1560.41,53.748 1573.5,41C 1600.8,20.0999 1630.47,16.0999 1662.5,29C 1686.33,40.59 1706.33,56.9233 1722.5,78C 1731.7,86.1026 1742.03,92.4359 1753.5,97C 1771.29,102.22 1787.29,98.8868 1801.5,87C 1809.16,79.8216 1815.99,71.9883 1822,63.5C 1835.49,48.6688 1851.99,38.8354 1871.5,34C 1885.13,33.1376 1898.47,34.8043 1911.5,39C 1931.39,45.7403 1951.05,53.0736 1970.5,61C 1984.42,62.5825 1996.75,58.9159 2007.5,50C 2013.14,44.6054 2018.64,39.1054 2024,33.5C 2024.33,40.1953 2022.33,46.1953 2018,51.5C 2002.48,69.6767 1983.31,75.5101 1960.5,69C 1944.29,60.0602 1927.29,53.0602 1909.5,48C 1895.96,44.4274 1882.29,43.7607 1868.5,46C 1848.78,53.3829 1833.61,66.2163 1823,84.5C 1808.53,100.316 1790.7,109.65 1769.5,112.5C 1754.98,111.493 1741.64,106.993 1729.5,99C 1723.22,95.054 1717.22,90.7206 1711.5,86C 1692.06,64.7894 1669.06,48.7894 1642.5,38C 1613.11,30.7853 1589.95,39.6187 1573,64.5C 1567.25,74.3344 1561.25,84.0011 1555,93.5C 1547.59,101.863 1538.26,106.197 1527,106.5C 1516.33,105.622 1506.16,102.789 1496.5,98C 1486.99,92.4798 1483.49,84.3132 1486,73.5C 1490.49,68.351 1494.15,62.6843 1497,56.5C 1498.01,52.2562 1497.18,48.4229 1494.5,45C 1485.13,38.7611 1475.13,37.7611 1464.5,42C 1456.5,42.6667 1448.5,42.6667 1440.5,42C 1432.93,38.8813 1425.6,35.2147 1418.5,31C 1399.26,22.8459 1384.43,28.0126 1374,46.5C 1371.83,50.8333 1369.67,55.1667 1367.5,59.5C 1368.64,69.4527 1368.81,79.4527 1368,89.5C 1367.95,95.3289 1365.78,100.162 1361.5,104C 1356.65,106.253 1351.65,108.253 1346.5,110C 1336.57,111.659 1326.57,112.659 1316.5,113C 1313.83,114.333 1311.17,115.667 1308.5,117C 1305.69,120.936 1306.02,124.603 1309.5,128C 1313.96,127.948 1317.96,126.448 1321.5,123.5C 1322.05,135.758 1316.39,139.924 1304.5,136C 1294.25,125.621 1293.91,114.955 1303.5,104C 1306.62,102.107 1309.95,100.774 1313.5,100C 1323.83,99.6667 1334.17,99.3333 1344.5,99C 1353.85,95.6345 1358.52,88.9678 1358.5,79C 1352.79,47.9227 1364.79,27.0894 1394.5,16.5 Z"/></g>
+                            <g><path id="righthp5" d="M 1629.5,64.5 C 1632.78,64.2161 1635.94,64.5495 1639,65.5C 1642.14,73.2165 1643.48,81.2165 1643,89.5C 1634.79,92.6791 1626.29,94.1791 1617.5,94C 1613.94,86.2199 1612.44,78.0533 1613,69.5C 1618.54,67.6348 1624.04,65.9682 1629.5,64.5 Z"/></g>
+                        </svg>
+                    </div>
+                    <div id="hp">
+                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="2560px" height="167px" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd" xmlns:xlink="http://www.w3.org/1999/xlink">
+                            <!-- Left -->
+                            <g><path id="lefthp6" d="M 576.5,16.5 C 579.97,15.8748 582.804,16.8748 585,19.5C 587,24.1667 589,28.8333 591,33.5C 591.667,35.8333 591.667,38.1667 591,40.5C 586.245,43.1276 581.412,45.6276 576.5,48C 573.594,49.3185 570.594,49.6518 567.5,49C 561.96,42.0981 559.127,34.2648 559,25.5C 564.847,22.3274 570.681,19.3274 576.5,16.5 Z"/></g>
+                            <g><path id="lefthp7" d="M 1147.5,17.5 C 1170.93,16.129 1188.09,25.7957 1199,46.5C 1203.04,57.4645 1203.54,68.6312 1200.5,80C 1200.48,89.9678 1205.15,96.6345 1214.5,100C 1224.83,100.333 1235.17,100.667 1245.5,101C 1258.91,104.307 1264.41,112.807 1262,126.5C 1259.72,133.462 1255.05,137.462 1248,138.5C 1239.4,137.637 1235.9,132.971 1237.5,124.5C 1241.04,127.448 1245.04,128.948 1249.5,129C 1252.98,125.603 1253.31,121.936 1250.5,118C 1247.83,116.667 1245.17,115.333 1242.5,114C 1231.04,113.69 1219.71,112.356 1208.5,110C 1204.81,108.286 1201.14,106.619 1197.5,105C 1193.43,101.457 1191.26,96.9574 1191,91.5C 1190.18,80.9231 1190.35,70.4231 1191.5,60C 1187.13,49.5982 1180.8,40.5982 1172.5,33C 1163.94,27.5143 1154.94,26.5143 1145.5,30C 1136.47,34.3799 1127.47,38.7132 1118.5,43C 1105.05,44.0506 1091.71,43.2173 1078.5,40.5C 1071.09,40.9444 1065.59,44.2777 1062,50.5C 1061.18,54.7384 1061.84,58.7384 1064,62.5C 1066.62,66.7829 1069.62,70.7829 1073,74.5C 1075.11,85.1034 1071.61,93.27 1062.5,99C 1046.63,107.618 1030.3,108.951 1013.5,103C 1010.04,100.537 1006.87,97.7041 1004,94.5C 997.749,85.0011 991.749,75.3344 986,65.5C 969.083,40.6359 945.916,31.8026 916.5,39C 889.937,49.7894 866.937,65.7894 847.5,87C 836.535,95.9523 824.535,103.286 811.5,109C 798.266,114.438 784.932,114.771 771.5,110C 753.018,102.513 738.518,90.3459 728,73.5C 717.954,61.1089 705.454,52.2755 690.5,47C 667.157,44.2003 644.823,47.867 623.5,58C 615.081,61.8072 606.747,65.8072 598.5,70C 574.083,76.7176 554.249,69.8843 539,49.5C 535.811,44.9419 534.478,39.9419 535,34.5C 542.61,43.1159 551.11,50.6159 560.5,57C 572.539,63.4078 584.873,64.0745 597.5,59C 621.05,47.5587 645.716,39.5587 671.5,35C 689.26,33.5861 705.26,38.2528 719.5,49C 730.376,56.8751 739.542,66.3751 747,77.5C 770.637,104.521 797.137,107.687 826.5,87C 836,80.1667 844.167,72 851,62.5C 867.125,46.1846 885.959,34.0179 907.5,26C 944.506,17.0019 975.006,27.1686 999,56.5C 1005.48,65.9531 1011.31,75.7864 1016.5,86C 1030.77,93.8011 1044.6,92.9678 1058,83.5C 1057.47,76.0944 1054.47,69.7611 1049,64.5C 1043.94,46.4614 1050.44,34.9614 1068.5,30C 1077.23,28.0711 1085.89,28.4045 1094.5,31C 1101.5,31.6667 1108.5,31.6667 1115.5,31C 1125.89,25.6324 1136.56,21.1324 1147.5,17.5 Z"/></g>
+                            <g><path id="lefthp8" d="M 778.5,46.5 C 786.507,46.3336 794.507,46.5003 802.5,47C 803,47.5 803.5,48 804,48.5C 804.667,56.1667 804.667,63.8333 804,71.5C 803.5,72 803,72.5 802.5,73C 794.5,73.6667 786.5,73.6667 778.5,73C 778,72.5 777.5,72 777,71.5C 776.333,63.8333 776.333,56.1667 777,48.5C 777.717,47.9558 778.217,47.2891 778.5,46.5 Z"/></g>
+                            <g><path id="lefthp9" d="M 1148.5,48.5 C 1149.47,48.9867 1150.47,49.4867 1151.5,50C 1139.25,59.7847 1137.42,71.2847 1146,84.5C 1153.44,91.7323 1161.61,93.899 1170.5,91C 1174.01,89.245 1177.34,87.5784 1180.5,86C 1172.75,102.694 1160.41,109.361 1143.5,106C 1130.04,101.539 1123.04,92.2057 1122.5,78C 1124.38,62.0021 1133.05,52.1687 1148.5,48.5 Z"/></g>
+                            <g><path id="lefthp10" d="M 925.5,63.5 C 934.191,64.4523 942.357,67.1189 950,71.5C 949.725,79.9937 947.225,87.8271 942.5,95C 933.79,94.5432 925.623,92.0432 918,87.5C 918.376,78.8702 920.876,70.8702 925.5,63.5 Z"/></g>
+                            <!-- Right -->
+                            <g><path id="righthp6" d="M 1977.5,18.5 C 1986.19,19.4523 1994.36,22.1189 2002,26.5C 2002.67,29.1667 2002.67,31.8333 2002,34.5C 1999.88,39.8964 1997.38,45.063 1994.5,50C 1992.17,50.6667 1989.83,50.6667 1987.5,50C 1981.57,47.6906 1975.73,45.1906 1970,42.5C 1970.37,33.891 1972.87,25.891 1977.5,18.5 Z"/></g>
+                            <g><path id="righthp7" d="M 1757.5,46.5 C 1765.51,46.3336 1773.51,46.5003 1781.5,47C 1782,47.5 1782.5,48 1783,48.5C 1783.67,56.1667 1783.67,63.8333 1783,71.5C 1782.5,72 1782,72.5 1781.5,73C 1773.5,73.6667 1765.5,73.6667 1757.5,73C 1757,72.5 1756.5,72 1756,71.5C 1755.33,63.8333 1755.33,56.1667 1756,48.5C 1756.72,47.9558 1757.22,47.2891 1757.5,46.5 Z"/></g>
+                            <g><path id="righthp8" d="M 1408.5,47.5 C 1425.41,50.7804 1434.41,60.7804 1435.5,77.5C 1432.95,96.2316 1422.45,105.898 1404,106.5C 1391.42,104.414 1382.92,97.4142 1378.5,85.5C 1378.67,84.8333 1378.83,84.1667 1379,83.5C 1382.46,87.8153 1386.96,90.482 1392.5,91.5C 1409.94,90.5507 1418.1,81.2173 1417,63.5C 1415.58,57.168 1412.08,52.3347 1406.5,49C 1407.42,48.7216 1408.08,48.2216 1408.5,47.5 Z"/></g>
+                            <g><path id="righthp9" d="M 1394.5,16.5 C 1402.98,15.9886 1411.32,16.8219 1419.5,19C 1427.54,22.6888 1435.54,26.3555 1443.5,30C 1455.97,31.0396 1468.3,30.2062 1480.5,27.5C 1488.82,27.9961 1496.48,30.4961 1503.5,35C 1511.51,43.0529 1513.67,52.5529 1510,63.5C 1504.53,68.7611 1501.53,75.0944 1501,82.5C 1514.4,91.9678 1528.23,92.8011 1542.5,85C 1550.08,68.4146 1560.41,53.748 1573.5,41C 1600.8,20.0999 1630.47,16.0999 1662.5,29C 1686.33,40.59 1706.33,56.9233 1722.5,78C 1731.7,86.1026 1742.03,92.4359 1753.5,97C 1771.29,102.22 1787.29,98.8868 1801.5,87C 1809.16,79.8216 1815.99,71.9883 1822,63.5C 1835.49,48.6688 1851.99,38.8354 1871.5,34C 1885.13,33.1376 1898.47,34.8043 1911.5,39C 1931.39,45.7403 1951.05,53.0736 1970.5,61C 1984.42,62.5825 1996.75,58.9159 2007.5,50C 2013.14,44.6054 2018.64,39.1054 2024,33.5C 2024.33,40.1953 2022.33,46.1953 2018,51.5C 2002.48,69.6767 1983.31,75.5101 1960.5,69C 1944.29,60.0602 1927.29,53.0602 1909.5,48C 1895.96,44.4274 1882.29,43.7607 1868.5,46C 1848.78,53.3829 1833.61,66.2163 1823,84.5C 1808.53,100.316 1790.7,109.65 1769.5,112.5C 1754.98,111.493 1741.64,106.993 1729.5,99C 1723.22,95.054 1717.22,90.7206 1711.5,86C 1692.06,64.7894 1669.06,48.7894 1642.5,38C 1613.11,30.7853 1589.95,39.6187 1573,64.5C 1567.25,74.3344 1561.25,84.0011 1555,93.5C 1547.59,101.863 1538.26,106.197 1527,106.5C 1516.33,105.622 1506.16,102.789 1496.5,98C 1486.99,92.4798 1483.49,84.3132 1486,73.5C 1490.49,68.351 1494.15,62.6843 1497,56.5C 1498.01,52.2562 1497.18,48.4229 1494.5,45C 1485.13,38.7611 1475.13,37.7611 1464.5,42C 1456.5,42.6667 1448.5,42.6667 1440.5,42C 1432.93,38.8813 1425.6,35.2147 1418.5,31C 1399.26,22.8459 1384.43,28.0126 1374,46.5C 1371.83,50.8333 1369.67,55.1667 1367.5,59.5C 1368.64,69.4527 1368.81,79.4527 1368,89.5C 1367.95,95.3289 1365.78,100.162 1361.5,104C 1356.65,106.253 1351.65,108.253 1346.5,110C 1336.57,111.659 1326.57,112.659 1316.5,113C 1313.83,114.333 1311.17,115.667 1308.5,117C 1305.69,120.936 1306.02,124.603 1309.5,128C 1313.96,127.948 1317.96,126.448 1321.5,123.5C 1322.05,135.758 1316.39,139.924 1304.5,136C 1294.25,125.621 1293.91,114.955 1303.5,104C 1306.62,102.107 1309.95,100.774 1313.5,100C 1323.83,99.6667 1334.17,99.3333 1344.5,99C 1353.85,95.6345 1358.52,88.9678 1358.5,79C 1352.79,47.9227 1364.79,27.0894 1394.5,16.5 Z"/></g>
+                            <g><path id="righthp10" d="M 1629.5,64.5 C 1632.78,64.2161 1635.94,64.5495 1639,65.5C 1642.14,73.2165 1643.48,81.2165 1643,89.5C 1634.79,92.6791 1626.29,94.1791 1617.5,94C 1613.94,86.2199 1612.44,78.0533 1613,69.5C 1618.54,67.6348 1624.04,65.9682 1629.5,64.5 Z"/></g>
+                        </svg>
+                    </div>
+                    <div id="score" class="statContainer" style="left: 680px"></div>
+                    <div id="acc" class="statContainer" style="right: 680px"></div>
+                    <div id="ava" id="img"></div>
+                    <div id="globalContainer" class="xContainer">
+                        <div id="ranks" class="rankContainer"></div>
+                        <div id="global" class="flag"></div>
+                    </div>
+                    <div id="countryContainer" class="xContainer">
+                        <div id="countryRank" class="rankContainer"></div>
+                        <div id="country" class="flag"></div>
+                    </div>
+                    <div id="username" class="otherContainer"></div>
+                    <div id="playerPP" class="otherContainer"></div>
+                    <div id="SonataText">Sonata Overlay!</div>
+                    <div id="BrandLogo"></div>
+                </div>
+                <div id="gpbottom">
+                    <div class="wrapper_1" id="pp_wrapper">
+                        <div class="pp" id="pp_box">
+                            <span class="text_1" id="pp_text" style="width: 500px;">
+                                <span class="odometer" id="pp_txt" style="transition-duration: 500ms; white-space: nowrap; overflow: hidden; text-overflow: clip;"></span> / 
+                                <span id="ppfc_txt"></span>pp
+                            </span>
+                        </div>
+                    </div>
+                    <div class="wrapper_2" id="combo_wrapper">
+                        <div class="combo_wrapper">
+                            <div class="combo" id="combo_box"></div>
+                            <div class="combo_handler" id="combo_text">
+                              <span class="text_2" id="combo_text2">
+                                <span class="odometer" id="combo_count"></span>
+                                <span id="combo_x" style="position: relative; right: 7px;">x</span>
+                              </span>
+                              <span class="text_2">
+                                <span id="combo_max" style="transition-duration: 300ms;"></span>
+                              </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="recorderContainer">
+                        <div id="recorder">Recorder</div>
+                        <div id="recorderName"></div>
+                    </div>
+                    <div id="URIndex" class="odometer unstableRate"><b></b></div>
+					<div id="URText">Unstable Rate</div>
+					<div id="URCont">
+						<div id="URbar">
+							<div id="avgHitError"></div>
+							<div id="URmidbar"></div>
+							<div id="l50"></div>
+							<div id="l100"></div>
+							<div id="l300"></div>
+						</div>
+					</div>
+                </div>
+            </div>
+            <div id="KeyOverlayCont">
+                <!-- KeyOverlay by ck. Modified by HosizoraN -->
+                <div id="keyOverlay" class="--top -right KeyRelative">
+                    <div class="main">
+                      <div class="keys k1 hidden">
+                        <div class="bpm">
+                          <div id="k1Bpm" class="bpmcount">0</div>
+                          <div class="bpmtext">bpm</div>
+                        </div>
+                        <div class="wrapper">
+                          <div id="k1Press" class="press"></div>
+                  
+                          <div class="count">
+                            <div id="k1Count" class="odometer"></div>
+                          </div>
+                        </div>
+                        <canvas id="k1"></canvas>
+                      </div>
+                      <div class="keys k2 hidden">
+                        <div class="bpm">
+                          <div id="k2Bpm" class="bpmcount">0</div>
+                          <div class="bpmtext">bpm</div>
+                        </div>
+                        <div class="wrapper">
+                          <div id="k2Press" class="press"></div>
+                  
+                          <div class="count">
+                            <div id="k2Count" class="odometer"></div>
+                          </div>
+                        </div>
+                        <canvas id="k2"></canvas>
+                      </div>
+                      <div class="keys m1 hidden">
+                        <div class="bpm">
+                          <div id="m1Bpm" class="bpmcount">0</div>
+                          <div class="bpmtext">bpm</div>
+                        </div>
+                        <div class="wrapper">
+                          <div id="m1Press" class="press"></div>
+                  
+                          <div class="count">
+                            <div id="m1Count" class="odometer"></div>
+                          </div>
+                        </div>
+                        <canvas id="m1"></canvas>
+                      </div>
+                      <div class="keys m2 hidden">
+                        <div class="bpm">
+                          <div id="m2Bpm" class="bpmcount">0</div>
+                          <div class="bpmtext">bpm</div>
+                        </div>
+                        <div class="wrapper">
+                          <div id="m2Press" class="press"></div>
+                  
+                          <div class="count">
+                            <div id="m2Count" class="odometer"></div>
+                          </div>
+                        </div>
+                        <canvas id="m2"></canvas>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div id="RankingPanel">
+                <div id="qcsContainer">
+                    <div id="brand" class="qcContainer"></div>
+                    <div id="qc">
+                        <div id="qcevent"></div>
+                        <div id="qctext">Presented by</div>
+                        <div id="qcicon"></div>
+                    </div>
+                </div>
+                <div id="resultRecorder"></div>
+                <div id="ResultTop">
+                    <div id="mSR">
+                        <div id="srStars">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div id="SR"></div>
+                    </div>
+                    <div id="RStats">
+                        <div id="mCS" class="mStats">
+                            <div id="csLine" class="Line">
+                                <div id="csGlow" class="Glow"></div>
+                            </div>
+                            <div class="mText">
+                                <div id="csText" class="rText1">CS:</div>
+                                <div id="rCS" class="rText2"></div>
+                            </div>
+                        </div>
+                        <div id="mAR" class="mStats">
+                            <div id="arLine" class="Line">
+                                <div id="arGlow" class="Glow"></div>
+                            </div>
+                            <div class="mText">
+                                <div id="arText" class="rText1">AR:</div>
+                                <div id="rAR" class="rText2"></div>
+                            </div>
+                        </div>
+                        <div id="mOD" class="mStats">
+                            <div id="odLine" class="Line">
+                                <div id="odGlow" class="Glow"></div>
+                            </div>
+                            <div class="mText">
+                                <div id="odText" class="rText1">OD:</div>
+                                <div id="rOD" class="rText2"></div>
+                            </div>
+                        </div>
+                        <div id="mHP" class="mStats">
+                            <div id="hpLine" class="Line">
+                                <div id="hpGlow" class="Glow"></div>
+                            </div>
+                            <div class="mText">
+                                <div id="hpText" class="rText1">HP:</div>
+                                <div id="rHP" class="rText2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="ResultBottom">
+                    <div id="rBPM"></div>
+                    <div id="MapDetails">
+                        <div id="SongMap">
+                            <div id="SongTitle"></div>
+                            <div id="rDiff"></div>
+                            <div id="mapandrank">
+                                <span id="rMapper"></span> <span id="rankedStatus"></span>
+                            </div>
+                        </div>
+                        <div id="SongRanking">
+                            <div id="rankingResult"></div>
+                            <div id="modContainer"></div>
+                        </div>
+                        <div id="HitTotal">
+                            <div id="r100" class="rR"></div>
+                            <div id="r50" class="rR"></div>
+                            <div id="r0" class="rR"></div>
+                            <div id="rSB" class="rR"></div>
+                        </div>
+                        <div id="HitTotalBar">
+                            <div id="b100" class="accbar"></div>
+                            <div id="b50" class="accbar"></div>
+                            <div id="b0" class="accbar"></div>
+                            <div id="bSB" class="accbar"></div>
+                        </div>
+                    </div>
+                    <div id="ScoreData">
+                        <div id="ResultAcc"></div>
+                        <div id="ResultScoreCombo"></div>
+                    </div>
+                    <div id="PPData">
+                        <div id="ResultUR"></div>
+                        <div id="ResultPPAndifFC"></div>
+                    </div>
+                </div>
+                    <div id="PlayerData">
+                        <div id="UserAvatar"></div>
+                        <div id="PlayerStats">
+                            <div class="pst">
+                                <span id="rUsername"></span>&#160;<span id="GlobalRank"></span>
+                            </div>
+                            <div class="pst">
+                                <span id="CountryRank"></span>&#160;<span id="rFlag"></span>
+                            </div>
+                        </div>
+                        <div id="TopHeader">Top Plays</div>
+                        <div id="UserTopPlay">
+                            <div id="Top1" class="TopPlay">
+                                <div id="bg1" class="Thumb"></div>
+                                <div id="TopDate1" class="topDate"></div>
+                                <div id="topStat1" class="topStat">
+                                    <span id="TopRanking1" class="topRanking"></span>
+                                    <span id="TopMods1" class="topMods"></span>
+                                </div>
+                                <div id="topPP1" class="topPP"></div>
+                            </div>
+                            <div id="Top2" class="TopPlay">
+                                <div id="bg2" class="Thumb"></div>
+                                <div id="TopDate2" class="topDate"></div>
+                                <div id="topStat2" class="topStat">
+                                    <span id="TopRanking2" class="topRanking"></span>
+                                    <span id="TopMods2" class="topMods"></span>
+                                </div>
+                                    <div id="topPP2" class="topPP"></div>
+                            </div>
+                            <div id="Top3" class="TopPlay">
+                                <div id="bg3" class="Thumb"></div>
+                                <div id="TopDate3" class="topDate"></div>
+                                <div id="topStat3" class="topStat">
+                                    <span id="TopRanking3" class="topRanking"></span>
+                                    <span id="TopMods3" class="topMods"></span>
+                                </div>
+                                    <div id="topPP3" class="topPP"></div>
+                            </div>
+                            <div id="Top4" class="TopPlay">
+                                <div id="bg4" class="Thumb"></div>
+                                <div id="TopDate4" class="topDate"></div>
+                                <div id="topStat4" class="topStat">
+                                    <span id="TopRanking4" class="topRanking"></span>
+                                    <span id="TopMods4" class="topMods"></span>
+                                </div>
+                                    <div id="topPP4" class="topPP"></div>
+                            </div>
+                            <div id="Top5" class="TopPlay">
+                                <div id="bg5" class="Thumb"></div>
+                                <div id="TopDate5" class="topDate"></div>
+                                <div id="topStat5" class="topStat">
+                                    <span id="TopRanking5" class="topRanking"></span>
+                                    <span id="TopMods5" class="topMods"></span>
+                                </div>
+                                    <div id="topPP5" class="topPP"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <svg width="0" height="0">
+			<defs>
+			  <clipPath id="myClip">
+				<polygon points="2200,1380 2560,1380 2560,1440 2200,1440"/>
+				<polygon points="2460,600 2560,600 2560,1000 2460,1000"/>
+			  </clipPath>
+			</defs>
+		  </svg>
+		    <script defer>
+			    {
+			    	let el = document.getElementById('starsCurrent');
+			    	od = new Odometer({
+			    		el: el,
+			    		format: '(dd).dd',
+			    	});
+			    }
+            </script>
+		<script type="module" src="index.js"></script>
+    </body>
+</html>
