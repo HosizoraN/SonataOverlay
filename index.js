@@ -184,6 +184,7 @@ socket.commands((data) => {
         };
         if (cache['play.score'] != play.score) {
             cache['play.score'] = play.score;
+	    tempAvg = 0;
             score.innerHTML = cache['play.score'];
             score.update(cache['play.score']);
         };
