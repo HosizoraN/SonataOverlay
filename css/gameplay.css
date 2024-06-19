@@ -126,30 +126,20 @@
 
 .otherContainer {
 	position: absolute;
-	top: 40px;
-	width: 200px;
-	height: 30px;
-	line-height: 30px;
-	padding: 5px;
-	/* background-color: #161616; */
-	border-radius: 10px;
+	width: 400px;
+	top: 120px;
 	font-size: 30px;
 	transition: ease-in-out 500ms;
-	/* box-shadow: 0 5px 5px black; */
-	text-overflow: ellipsis;
-	overflow: hidden;
 }
 
 #username {
-	top: 120px;
-	left: 1000px;
+	left: 800px;
 	text-align: right;
 	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
 }
 
 #playerPP {
-	top: 120px;
-	right: 1000px;
+	right: 800px;
 	text-align: left;
 	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
 }
@@ -287,7 +277,7 @@
 }
 #bpmflash {
 	position: relative;
-	top: 2px;
+	top: 1px;
 	transition-duration: 150ms;
 }
 #starsCurrent {
@@ -317,32 +307,41 @@
 	display: flex;
 	width: 380px;
 	height: 10px;
-	justify-content: space-around;
+	justify-content: space-between;
 	border-radius: 10px;
 	font-size: 35px;
-	background: linear-gradient(90deg, #9ef8a9 25%, #ffd8a6 26%, #ffd8a6 50%, #fd8989 51%, #fd8989 75%, #ffffff 76%);
 	transition: ease-in-out 500ms;
 }
-.accInfo::before {
-    content: "";
-    position: absolute;
-	width: 380px;
-	height: 10px;
-	border-radius: 10px;
-	background: linear-gradient(90deg, #9ef8a9 25%, #ffd8a6 26%, #ffd8a6 50%, #fd8989 51%, #fd8989 75%, #ffffff 76%);
-    filter: blur(10px);
-}
-#h100Cont,
-#h50Cont,
-#h0Cont,
-#hsbCont {
+.accCont {
     position: relative;
-    top: 25px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 80px;
-	height: 50px;
+	width: 100px;
+	height: 7px;
+	transition: ease 200ms;
+}
+#h100Cont {
+	background-color: #27b641;
+	box-shadow: 0 0 20px rgba(39, 182, 65, 0.8);
+	border-radius: 10px 0 0 10px;
+}
+#h50Cont {
+	background-color: #b87f34;
+	box-shadow: 0 0 20px rgba(184, 127, 52, 0.8);
+}
+#h0Cont {
+	background-color: #b83133;
+	box-shadow: 0 0 20px rgba(184, 49, 51, 0.8);
+}
+#hsbCont {
+	background-color: #b8b8b8;
+	box-shadow: 0 0 20px rgba(184, 184, 184, 0.8);
+	border-radius: 0 10px 10px 0;
+}
+.accText {
+	position: relative;
+	text-align: center;
+	top: 30px;
+	width: 100%;
+	transition: ease 200ms;
 }
 #graphCont {
 	position: absolute;
@@ -473,12 +472,16 @@
 }
 .tick {
 	position: absolute;
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
 	bottom: 8px;
 	height: 40px;
 	width: 7px;
 	background-color: rgba(255 255 255 / .3);
 	border-radius: 5px;
-	transition-duration: 2.5s;
+	opacity: 0;
 	z-index: -1;
 }
 

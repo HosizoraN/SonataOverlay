@@ -40,12 +40,17 @@ let tempAvg;
 let tempSmooth;
 let currentErrorValue;
 let tempHitErrorArrayLength;
-let error_h300 = 86;
-let error_h100 = 146;
+let error_h300 = 83;
+let error_h100 = 145;
+
+let tick = [];
+for (var t = 0; t < 200; t++) {
+    tick[t] = document.querySelectorAll("[id^=tick]")[t];
+}
 
 function calculate_od(temp) {
-    error_h300 = 86 - (6 * temp);
-    error_h100 = 146 - (8 * temp);
+    error_h300 = 83 - (6 * temp);
+    error_h100 = 145 - (8 * temp);
 };
 
 function numberWithCommas(x) {
@@ -80,6 +85,7 @@ socket.commands((data) => {
       if (cache['ColorSet'] == `Manual`) {
         const ColorData1 = `${message['HueID']}, ${message['SaturationID']}%, 50%`;
         const ColorData2 = `${message['HueID2']}, ${message['SaturationID2']}%, 50%`;
+        const ColorDark = `${message['HueID2']}, ${message['SaturationID2']}%, 30%`;
 
         document.getElementById("lefthp1").style.fill = `hsl(${ColorData1})`;
         document.getElementById("lefthp2").style.fill = `hsl(${ColorData1})`;
@@ -104,7 +110,7 @@ socket.commands((data) => {
         document.getElementById("righthp10").style.fill = `hsl(${ColorData2})`;
 
         smallStats.style.backgroundColor = `hsl(${ColorData1})`;
-        sMods.style.backgroundColor = `hsl(${ColorData1})`;
+        sMods.style.backgroundColor = `hsl(${ColorDark})`;
 
         combo_box.style.backgroundColor = `hsl(${ColorData1})`;
         combo_box.style.filter = `drop-shadow(0 0 10px hsla(${ColorData1}))`;
@@ -282,26 +288,56 @@ socket.commands((data) => {
         if (cache['h100'] != play.hits['100']) {
             cache['h100'] = play.hits['100'];
             h100.update(cache['h100']);
-            h100.innerHTML = cache['h100'];
+            h100Text.innerHTML = cache['h100'] + 'x';
+            h100Cont.style.backgroundColor = `rgb(0, 255, 47)`;
+            h100Text.style.color = `rgb(0, 255, 47)`;
+            h100Text.style.transform = `scale(90%)`;
+            setTimeout(function () {
+                h100Cont.style.backgroundColor = `#27b641`;
+                h100Text.style.color = `white`;
+                h100Text.style.transform = `scale(100%)`;
+            }, 300);
         };
   
         if (cache['h50'] != play.hits['50']) {
             cache['h50'] = play.hits['50'];
             h50.update(cache['h50']);
-            h50.innerHTML = cache['h50'];
+            h50Text.innerHTML = cache['h50'] + 'x';
+            h50Cont.style.backgroundColor = `rgb(255, 145, 0)`;
+            h50Text.style.color = `rgb(255, 145, 0)`;
+            h50Text.style.transform = `scale(90%)`;
+            setTimeout(function () {
+                h50Cont.style.backgroundColor = `#b87f34`;
+                h50Text.style.color = `white`;
+                h50Text.style.transform = `scale(100%)`;
+            }, 300);
         };
     
         if (cache['h0'] != play.hits['0']) {
             cache.h0 = play.hits['0'];
             h0.update(cache['h0']);
-            h0.innerHTML = cache['h0'];
+            h0Text.innerHTML = cache['h0'] + 'x';
+            h0Cont.style.backgroundColor = `rgb(255, 0, 4)`;
+            h0Text.style.color = `rgb(255, 0, 4)`;
+            h0Text.style.transform = `scale(90%)`;
+            setTimeout(function () {
+                h0Cont.style.backgroundColor = `#b83133`;
+                h0Text.style.color = `white`;
+                h0Text.style.transform = `scale(100%)`;
+            }, 300);
         };
   
         if (cache['hSB'] !== play.hits.sliderBreaks) {
             cache['hSB'] = play.hits.sliderBreaks;
             hSB.update(cache['hSB']);
-            hSB.innerHTML = cache['hSB'];
+            hSBText.innerHTML = cache['hSB'] + 'x';
             rSB.innerHTML = cache['hSB'];
+            hsbCont.style.backgroundColor = `white`;
+            hSBText.style.transform = `scale(90%)`;
+            setTimeout(function () {
+                hsbCont.style.backgroundColor = `#b8b8b8`;
+                hSBText.style.transform = `scale(100%)`;
+            }, 300);
         };
         if (cache['play.mods.name'] != play.mods.name || cache['play.mods.number'] != play.mods.number) {
             cache['play.mods.name'] = play.mods.name;
@@ -655,13 +691,13 @@ socket.commands((data) => {
         if (cache['beatmap_rankedStatus'] == 4 || cache['beatmap_rankedStatus'] == 7 || cache['beatmap_rankedStatus'] == 6) {
             sMods.style.opacity = 1;
             if (cache['play.mods.name'].search("DT") !== -1 && cache['play.mods.name'].search("HR") !== -1) {
-                sMods.innerHTML = "(HD)DT(HR)";
+                sMods.innerHTML = "(HD)HRDT/HRNC";
             }
             else if (cache['play.mods.name'].search("NC") !== -1 && cache['play.mods.name'].search("HR") !== -1) {
-                sMods.innerHTML = "(HD)NC(HR)";
+                sMods.innerHTML = "(HD)HRDT/HRNC";
             }
             else if (cache['play.mods.name'].search("DT") !== -1 && cache['play.mods.name'].search("EZ") !== -1) {
-                sMods.innerHTML = "EZDT/NC(HD)(FL)";
+                sMods.innerHTML = "EZDT/EZNC(HD)(FL)";
             }
             else if (cache['play.mods.name'].search("NC") !== -1 && cache['play.mods.name'].search("EZ") !== -1) {
                 sMods.innerHTML = "EZDT/NC(HD)(FL)";
@@ -900,32 +936,33 @@ socket.commands((data) => {
             currentErrorValue = data.hitErrors[tempHitErrorArrayLength - 1];
             avgHitError.style.transform = `translateX(${(tempAvg / 2) * 3}px)`;
 
-            let tick = document.createElement("div");
-            tick.setAttribute("class", "tick");
-            tick.style.transform = `translateX(${tickPos}px)`;
-            document.getElementById("URbar").appendChild(tick);
+            for (var c = 0; c < 200; c++) {
+                if ((tempHitErrorArrayLength % 200) == ((c + 1) % 200)) {
+                    tick[c].style.transform = `translateX(${tickPos}px)`;
+                    tick[c].style.transition = `opacity ease 300ms`;
 
-            if (currentErrorValue >= -(error_h300) && currentErrorValue <= error_h300) {
-                tick.style.backgroundColor = 'rgba(134, 211, 255, 0.5)';
-            }
-            else if (currentErrorValue >= -(error_h100) && currentErrorValue <= error_h100) {
-                tick.style.backgroundColor = 'rgba(136, 255, 134, 0.5)';
-            }
-            else {
-                tick.style.backgroundColor = 'rgba(255, 213, 134, 0.5)';
-            }
-            function fade() {
-                tick.style.transition = `opacity ease 3s`;
-                tick.style.opacity = 0;
-            }
+                    if (currentErrorValue >= -(error_h300) && currentErrorValue <= error_h300) {
+                        tick[c].style.backgroundColor = 'rgba(134, 211, 255, 1)';
+                    }
+                    else if (currentErrorValue >= -(error_h100) && currentErrorValue <= error_h100) {
+                        tick[c].style.backgroundColor = 'rgba(136, 255, 134, 1)';
+                    }
+                    else {
+                        tick[c].style.backgroundColor = 'rgba(255, 213, 134, 1)';
+                    }
 
-            function remove() {
-                document.getElementById("URbar").removeChild(tick);
+                    var s = document.querySelectorAll("[id^=tick]")[c].style;
+                    s.opacity = 1;
+                    setTimeout(fade, 500);
+                    function fade() {
+                        s.opacity = 0;
+                        s.transition = `opacity ease 4s`;
+                    };
+                }
             }
-            setTimeout(fade, 500);
-            setTimeout(remove, 3500);
         }
-    }
+    };
+
     } catch (err) {
       console.log(err);
     };
@@ -1088,6 +1125,7 @@ async function setupUser(name) {
     if (avatarColor) {
         const ColorData1 = `${avatarColor.hsl1[0] * 360}, ${avatarColor.hsl1[1] * 100}%, 50%`;
         const ColorData2 = `${avatarColor.hsl2[0] * 360}, ${avatarColor.hsl2[1] * 100}%, 70%`;
+        const ColorDark = `${avatarColor.hsl1[0] * 360}, ${avatarColor.hsl1[1] * 100}%, 30%`;
 
         document.getElementById("lefthp1").style.fill = `hsl(${ColorData1})`;
         document.getElementById("lefthp2").style.fill = `hsl(${ColorData1})`;
@@ -1112,7 +1150,7 @@ async function setupUser(name) {
         document.getElementById("righthp10").style.fill = `hsl(${ColorData2})`;
 
         smallStats.style.backgroundColor = `hsl(${ColorData1})`;
-        sMods.style.backgroundColor = `hsl(${ColorData1})`;
+        sMods.style.backgroundColor = `hsl(${ColorDark})`;
 
         combo_box.style.backgroundColor = `hsl(${ColorData1})`;
         combo_box.style.filter = `drop-shadow(0 0 10px hsla(${ColorData1}))`;
