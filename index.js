@@ -27,7 +27,7 @@ const h50 = new CountUp('h50', 0, 0, 0, .5, { useEasing: true, useGrouping: true
 const h0 = new CountUp('h0', 0, 0, 0, .5, { useEasing: true, useGrouping: true, separator: " ", decimal: ".", suffix: "x" })
 const hSB = new CountUp('hSB', 0, 0, 0, .5, { useEasing: true, useGrouping: true, separator: " ", decimal: ".", suffix: "x" })
 
-
+let progressbar;
 let rankingPanelSet;
 let isHidden;
 let fullTime;
@@ -190,7 +190,6 @@ socket.commands((data) => {
         };
         if (cache['play.score'] != play.score) {
             cache['play.score'] = play.score;
-	    tempAvg = 0;
             score.innerHTML = cache['play.score'];
             score.update(cache['play.score']);
         };
@@ -289,42 +288,72 @@ socket.commands((data) => {
             cache['h100'] = play.hits['100'];
             h100.update(cache['h100']);
             h100Text.innerHTML = cache['h100'] + 'x';
+            let tickh100 = document.createElement("div");
+            tickh100.setAttribute("class", "tickGraph tick100");
+            tickh100.style.transform = `translateX(${progressbar}px)`;
+            if (cache['h100'] > 0) {
+                graph100.style.height = "17px";
+                document.getElementById("graph100").appendChild(tickh100);
+            }
+            else {
+                graph100.style.height = "0px";
+            }
             h100Cont.style.backgroundColor = `rgb(0, 255, 47)`;
             h100Text.style.color = `rgb(0, 255, 47)`;
-            h100Text.style.transform = `scale(90%)`;
+            h100Text.style.transform = `scale(85%)`;
             setTimeout(function () {
                 h100Cont.style.backgroundColor = `#27b641`;
                 h100Text.style.color = `white`;
                 h100Text.style.transform = `scale(100%)`;
-            }, 300);
+            }, 200);
         };
   
         if (cache['h50'] != play.hits['50']) {
             cache['h50'] = play.hits['50'];
             h50.update(cache['h50']);
             h50Text.innerHTML = cache['h50'] + 'x';
+            let tickh50 = document.createElement("div");
+            tickh50.setAttribute("class", "tickGraph tick50");
+            tickh50.style.transform = `translateX(${progressbar}px)`;
+            if (cache['h50'] > 0) {
+                graph50.style.height = "17px";
+                document.getElementById("graph50").appendChild(tickh50);
+            }
+            else {
+                graph50.style.height = "0px";
+            }
             h50Cont.style.backgroundColor = `rgb(255, 145, 0)`;
             h50Text.style.color = `rgb(255, 145, 0)`;
-            h50Text.style.transform = `scale(90%)`;
+            h50Text.style.transform = `scale(85%)`;
             setTimeout(function () {
                 h50Cont.style.backgroundColor = `#b87f34`;
                 h50Text.style.color = `white`;
                 h50Text.style.transform = `scale(100%)`;
-            }, 300);
+            }, 200);
         };
     
         if (cache['h0'] != play.hits['0']) {
-            cache.h0 = play.hits['0'];
+            cache['h0'] = play.hits['0'];
             h0.update(cache['h0']);
             h0Text.innerHTML = cache['h0'] + 'x';
+            let tickh0 = document.createElement("div");
+            tickh0.setAttribute("class", "tickGraph tick0");
+            tickh0.style.transform = `translateX(${progressbar}px)`;
+            if (cache['h0'] > 0) {
+                graph0.style.height = "17px";
+                document.getElementById("graph0").appendChild(tickh0);
+            }
+            else {
+                graph0.style.height = "0px";
+            }
             h0Cont.style.backgroundColor = `rgb(255, 0, 4)`;
             h0Text.style.color = `rgb(255, 0, 4)`;
-            h0Text.style.transform = `scale(90%)`;
+            h0Text.style.transform = `scale(85%)`;
             setTimeout(function () {
                 h0Cont.style.backgroundColor = `#b83133`;
                 h0Text.style.color = `white`;
                 h0Text.style.transform = `scale(100%)`;
-            }, 300);
+            }, 200);
         };
   
         if (cache['hSB'] !== play.hits.sliderBreaks) {
@@ -333,11 +362,11 @@ socket.commands((data) => {
             hSBText.innerHTML = cache['hSB'] + 'x';
             rSB.innerHTML = cache['hSB'];
             hsbCont.style.backgroundColor = `white`;
-            hSBText.style.transform = `scale(90%)`;
+            hSBText.style.transform = `scale(85%)`;
             setTimeout(function () {
                 hsbCont.style.backgroundColor = `#b8b8b8`;
                 hSBText.style.transform = `scale(100%)`;
-            }, 300);
+            }, 200);
         };
         if (cache['play.mods.name'] != play.mods.name || cache['play.mods.number'] != play.mods.number) {
             cache['play.mods.name'] = play.mods.name;
@@ -501,7 +530,12 @@ socket.commands((data) => {
         keys.m2.updateCanvas();
 
         if (state.number !== 2) {
-            if (state.number !== 7) { deRankingPanel(); }
+            if (state.number !== 7) { 
+                deRankingPanel();
+                document.querySelectorAll('.tick100').forEach(e => e.remove());
+                document.querySelectorAll('.tick50').forEach(e => e.remove());
+                document.querySelectorAll('.tick0').forEach(e => e.remove());
+            };
   
             gptop.style.opacity = 0;
     
@@ -548,6 +582,13 @@ socket.commands((data) => {
             }
         }
 
+        if (cache['h100'] > 0 || cache['h50'] > 0 || cache['h0'] > 0) {
+            strainGraph.style.transform = `translateY(-10px)`;
+        }
+        else {
+            strainGraph.style.transform = `translateY(0)`;
+        };
+
         if (fullTime !== cache['beatmap.time.mp3Length']) {
             fullTime = cache['beatmap.time.mp3Length'];
             onepart = 490 / fullTime;
@@ -558,7 +599,8 @@ socket.commands((data) => {
         }
         if (seek !== cache['beatmap.time.live'] && fullTime !== undefined && fullTime !== 0) {
             seek = cache['beatmap.time.live'];
-            progress.style.width = onepart * seek / 1.3 +'px';
+            progressbar = onepart * seek / 1.3;
+            progress.style.width = progressbar + 'px';
         }
 
         if (cache['beatmap.time.live'] >= cache['beatmap.time.firstObject'] + 5000 && cache['beatmap.time.live'] <= cache['beatmap.time.firstObject'] + 11900 && state.number == 2) {
@@ -715,7 +757,7 @@ socket.commands((data) => {
                 sMods.innerHTML = "NM/HD/TD";
             }
             else {
-                sMods.innerHTML = " ";
+                sMods.style.opacity = 0;
             }
         }
         else {
@@ -953,7 +995,7 @@ socket.commands((data) => {
 
                     var s = document.querySelectorAll("[id^=tick]")[c].style;
                     s.opacity = 1;
-                    setTimeout(fade, 500);
+                    setTimeout(fade, 1500);
                     function fade() {
                         s.opacity = 0;
                         s.transition = `opacity ease 4s`;
