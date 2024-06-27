@@ -623,10 +623,10 @@ socket.commands((data) => {
                     lbopCont.style.transform = "translateY(2600px)";
                     document.getElementById("currentplayerCont").style.transform = `translateY(${(playerPosition - 10) * 65}px)`;
                     document.getElementById("lbcpLine").style.transform = `translateY(${(playerPosition - 10) * 65}px)`;
-                    document.getElementById("lbcpLine").style.height = `${(playerPosition) * 62}px`;
-                    setTimeout(function() {
-                        document.getElementById("lbcpLine").style.height = `35px`;
-                    }, 300)
+                    // document.getElementById("lbcpLine").style.height = `${(playerPosition) * 62}px`;
+                    // setTimeout(function() {
+                    //     document.getElementById("lbcpLine").style.height = `35px`;
+                    // }, 300)
                 };
             if (tempSlotLength > 0)
                 for (var i = 1; i <= tempSlotLength; i++) {
