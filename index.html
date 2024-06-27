@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="css/odometr.css" />
 		<link rel="stylesheet" href="css/all.min.css" />
         <link rel="stylesheet" href="css/keys.css" />
+        <link rel="stylesheet" href="css/leaderboard.css" />
 		<script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 		<script src="js/countUp.js"></script>
@@ -22,6 +23,31 @@
         <div id="main">
             <div id="rankingPanelBG"></div>
 			<div id="mapBG"></div>
+            <div id="leaderboard">
+                <div id="lbcpLine"></div>
+                <div id="otherplayerCont">
+                    <div id="lbopCont"></div>
+                </div>
+                <div id="currentplayerCont" class="lbBox">
+                    <div class="lb_Number">
+                        <div id="lbcpRanking"></div>
+                        <div id="lbcpPosition"></div>
+                    </div>
+                    <div id="lbcpAvatar" class="lb_Avatar"></div>
+                    <div class="lb_Stats">
+                        <div class="lb_StatsLeft">
+                            <div id="lbcpName" class="lb_Name"></div>
+                            <div id="lbcpScore"></div>
+                        </div>
+                        <div id="lbcpCombo" class="lb_Combo"></div>
+                        <div class="lb_StatsRight">
+                            <div id="lbcpPP" class="lb_PP"></div>
+                            <div id="lbcpAcc"></div>
+                        </div>
+                    </div>
+                    <div id="lbcpMods" class="lb_Mods"></div>
+                </div>
+            </div>
             <div id="smallStats">
                 <div id="graphCont">
                     <div id="strainGraph">
@@ -32,9 +58,18 @@
                             <canvas id="canvasSecond" width="380" height="160"></canvas>
                         </div>
                     </div>
-                        <div id="graph100"></div>
-                        <div id="graph50"></div>
-                        <div id="graph0"></div>
+                        <div id="graph100">
+                            <div id="progress100" class="tick100p tickGraph"></div>
+                        </div>
+                        <div id="graph50">
+                            <div id="progress50" class="tick50p tickGraph"></div>
+                        </div>
+                        <div id="graph0">
+                            <div id="progress0" class="tick0p tickGraph"></div>
+                        </div>
+                        <div id="graphSB">
+                            <div id="progressSB" class="tickSBp tickGraph"></div>
+                        </div>
                     </div>
 				<div id="stars1">
 					<i class="fas fa-star"></i>
@@ -43,24 +78,21 @@
 				<div id="bpmd">
 					<span id="BPMlive" class="odometer"></span><span id="bpmflash" class="bpm">BPM</span>
 				</div>
-				<div id="sModsCont">
-					<div id="sMods"></div>
-				</div>
-                <div class="accInfo">
-                    <div id="h100Cont" class="accCont">
-                        <div id="h100Text" class="accText"></div>
-                    </div>
-                    <div id="h50Cont" class="accCont">
-                        <div id="h50Text" class="accText"></div>
-                    </div>
-                    <div id="h0Cont" class="accCont">
-                        <div id="h0Text" class="accText"></div>
-                    </div>
-                    <div id="hsbCont" class="accCont">
-                        <div id="hSBText" class="accText"></div>
-                    </div>
-                </div>
 			</div>
+            <div class="accInfo">
+                <div id="h100Cont" class="accCont">
+                    <div id="h100Text" class="accText"></div>
+                </div>
+                <div id="h50Cont" class="accCont">
+                    <div id="h50Text" class="accText"></div>
+                </div>
+                <div id="h0Cont" class="accCont">
+                    <div id="h0Text" class="accText"></div>
+                </div>
+                <div id="hsbCont" class="accCont">
+                    <div id="hSBText" class="accText"></div>
+                </div>
+            </div>
             <div id="gameplay">
                 <div id="gptop">
                     <div id="hpBG">

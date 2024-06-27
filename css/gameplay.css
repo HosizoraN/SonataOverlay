@@ -1,14 +1,4 @@
 @font-face {
-	font-family: "Exo2";
-	src: url("../fonts/Exo2-MediumItalic.otf");
-}
-
-@font-face {
-	font-family: "GothicR";
-	src: url("../fonts/GothicR.ttf");
-}
-
-@font-face {
 	font-family: "GothicRD";
 	src: url("../fonts/GothicRD.ttf");
 }
@@ -21,6 +11,10 @@
 @font-face {
 	font-family: "Torus";
 	src: url("../fonts/Torus-Regular.otf");
+}
+@font-face {
+	font-family: "Montserrat";
+	src: url("../fonts/Montserrat.ttf");
 }
 
 #main {
@@ -79,9 +73,7 @@
 	top: 10px;
 	height: 125px;
 	transition: ease 500ms;
-	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
-    font-family: Torus;
-	font-weight: 900;
+    font-family: Montserrat;
 }
 
 #hp {
@@ -135,61 +127,48 @@
 #username {
 	left: 800px;
 	text-align: right;
-	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
 }
 
 #playerPP {
 	right: 800px;
 	text-align: left;
-	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
 }
 
 .xContainer {
 	position: absolute;
-	top: 65px;
+	top: 35px;
 	width: 120px;
 	height: 30px;
-	padding: 5px 0px 5px 0px;
 	transition: ease-in-out 500ms;
 }
 
 #globalContainer {
 	right: 430px;
-	top: 30px;
 }
 
 #countryContainer {
 	left: 430px;
-	top: 30px;
 }
 
 .rankContainer {
 	position: absolute;
-	top: 0;
+	top: 3px;
 	width: 120px;
 	height: 30px;
-	line-height: 30px;
 	color: white;
-	/* background-color: #161616; */
-	padding: 5px 0px 5px 0px;
 	font-size: 25px;
-	color: white;
-	text-align: center;
-	border-radius: 15px;
 	transition: ease-in-out 500ms;
-	/* box-shadow: 0 5px 5px rgba(0, 0, 0, 0.4); */
+	align-items: center;
 }
 
 #ranks {
-	top: 6px;
-	left: 70px;
-	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+	left: 100px;
+	text-align: left;
 }
 
 #countryRank {
-	top: 6px;
-	right: 70px;
-	text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+	right: 100px;
+	text-align: right;
 }
 
 .flag {
@@ -198,28 +177,31 @@
 	right: 0;
 	margin-left: auto;
 	margin-right: auto;
-	width: 50px;
-	height: 50px;
 	background-size: 100%;
     background-position: 50% 50%;
 	background-repeat: no-repeat;
-	font-size: 15px;
 	color: white;
-	text-align: center;
-	border-radius: 10px;
+	border-radius: 5px;
 	transition: ease-in-out 500ms;
+}
+#country {
+	width: 55px;
+	height: 35px;
+}
+#global {
+	top: -6px;
+	width: 50px;
+	height: 50px;
 }
 
 .statContainer {
 	position: absolute;
-	padding: 5px 0px 5px 0px;
 	text-align: center;
 	border-radius: 10px;
 	top: 120px;
 	width: 220px;
 	/* box-shadow: 0 5px 9px black; */
-	font-family: Torus;
-	font-weight: 900;
+	font-family: Montserrat;
 	font-size: 30px;
 	transition: ease-in-out 500ms;
 	/* background-color: #161616; */
@@ -242,7 +224,8 @@
 #BrandLogo {
 	background-image: url("../static/logo.png");
 	background-size: 100%;
-	border-radius: 50px;
+	border-radius: 10px;
+	background-color: #14213a;
 	position: absolute;
 	top: 100px;
 	width: 50px;
@@ -259,20 +242,21 @@
     height: 55px;
     background-color: #161616;
     border-radius: 12px;
-    left: 20px;
-    bottom: 200px;
+    left: 15px;
+    top: 577px;
     font-size: 28px;
 	z-index: 2;
+	transition: ease 500ms;
 }
 #stars1 {
 	position: absolute;
-	left: 15px;
+	left: 17px;
 	top: 10px;
 }
 #bpmd{
 	position: absolute;
 	text-align: right;
-	right: 15px;
+	right: 18px;
 	top: 10px;
 }
 #bpmflash {
@@ -284,33 +268,19 @@
 	position: relative;
 	top: 0;
 }
-#sModsCont{
-    position: absolute;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 380px;
-    bottom: -5px;
-}
-#sMods {
-    padding: 4px 12px 4px 12px;
-	font-size: 19px;
-	border-radius: 7px;
-	background-color: #161616;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-	transition: ease-out 500ms;
-	opacity: 1;
-}
 .accInfo {
 	position: absolute;
-    bottom: -20px;
+    bottom: 135px;
+	left: 15px;
 	display: flex;
 	width: 380px;
 	height: 10px;
 	justify-content: space-between;
 	border-radius: 10px;
-	font-size: 35px;
+	font-size: 30px;
 	transition: ease-in-out 500ms;
+	z-index: 2;
+	font-weight: 600;
 }
 .accCont {
     position: relative;
@@ -320,20 +290,20 @@
 }
 #h100Cont {
 	background-color: #27b641;
-	box-shadow: 0 0 20px rgba(39, 182, 65, 0.8);
+	box-shadow: 0 0 30px rgba(39, 182, 65);
 	border-radius: 10px 0 0 10px;
 }
 #h50Cont {
 	background-color: #b87f34;
-	box-shadow: 0 0 20px rgba(184, 127, 52, 0.8);
+	box-shadow: 0 0 30px rgba(184, 127, 52);
 }
 #h0Cont {
 	background-color: #b83133;
-	box-shadow: 0 0 20px rgba(184, 49, 51, 0.8);
+	box-shadow: 0 0 30px rgba(184, 49, 51);
 }
 #hsbCont {
 	background-color: #b8b8b8;
-	box-shadow: 0 0 20px rgba(184, 184, 184, 0.8);
+	box-shadow: 0 0 30px rgba(184, 184, 184);
 	border-radius: 0 10px 10px 0;
 }
 .accText {
@@ -342,6 +312,7 @@
 	top: 30px;
 	width: 100%;
 	transition: ease 200ms;
+	font-family: Montserrat;
 }
 #graphCont {
 	position: absolute;
@@ -350,11 +321,13 @@
 }
 #graph100,
 #graph50,
-#graph0 {
-	display: none;
+#graph0,
+#graphSB {
 	position: relative;
 	width: 380px;
 	height: 17px;
+	transition: ease 300ms;
+	overflow: hidden;
 }
 #graph100 {
 	background-color: rgba(0, 30, 0, 0.8);
@@ -365,9 +338,12 @@
 #graph0 {
 	background-color: rgba(30, 0, 0, 0.8);
 }
+#graphSB {
+	background-color: rgba(39, 39, 39, 0.8);
+}
 .tickGraph {
 	position: absolute;
-	width: 25px;
+	width: 1px;
 	height: 17px;
 }
 .tick100 {
@@ -378,6 +354,21 @@
 }
 .tick0 {
 	background-color: #e31313;
+}
+.tickSB {
+	background-color: #fff;
+}
+.tick100p {
+	background-color: #57e313;
+}
+.tick50p {
+	background-color: #e3bd13;
+}
+.tick0p {
+	background-color: #e31313;
+}
+.tickSBp {
+	background-color: #fff;
 }
 #strainGraph {
 	position: relative;
@@ -390,7 +381,6 @@
 	width: 380px;
 	height: 160px;
 	overflow: hidden;
-	transition: ease 100ms;
 }
 #canvas,
 #canvasSecond {
@@ -413,7 +403,7 @@
 	bottom: 10px;
 	background-color: white;
 	width: 7px;
-    box-shadow: 0 0 2px black;
+    box-shadow: 0 0 5px black;
 	height: 35px;
 	border-radius: 5px;
 	transition: ease-out 500ms;

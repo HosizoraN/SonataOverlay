@@ -1,24 +1,29 @@
 #rankedStatus {
     position: relative;
     display: inline-block;
-	width: 60px;
-	height: 50px;
+	width: 35px;
+	height: 35px;
 	/* background-color: #494966; */
-	background-size: cover;
+	background-size: 100%;
 }
 #modContainer {
     position: absolute;
     top: 140px;
+    margin-right: 15px;
 	display: flex;
-	justify-content: center;
-	flex-direction: row-reverse;
+    justify-content: flex-end;
 	align-items: center;
-	transition: ease-in-out 500ms;
 }
 .mods {
-	width: 55px;
-	height: 55px;
+	width: 56px;
+	height: 40px;
 	background-size: 100%;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    border-radius: 6px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 1);
+    object-fit: cover;
+    margin-right: -15px;
 }
 #rFlag {
     position: relative;
@@ -98,21 +103,21 @@
 }
 #SongRanking {
     position: absolute;
-    left: 25px;
+    left: 50px;
     display: flex;
     margin-top: 10px;
     margin-bottom: 10px;
-    width: 180px;
     justify-content: center;
 }
 #rankingResult {
     position: relative;
-    top: 12px;
-    left: 10px;
+    bottom: 20px;
     width: 140px;
     height: 140px;
-    background-size: 100%;
-    background-repeat: no-repeat;
+    text-align: center;
+    font-family: Montserrat;
+    font-size: 150px;
+    font-weight: 500;
 }
 #ScoreData,
 #PPData{
@@ -409,6 +414,11 @@
     height: 100px;
     transition: ease 1s;
 }
+.topRanking {
+    font-family: Montserrat;
+    font-weight: 600;
+    font-size: 35px;
+}
 .Thumb {
     position: absolute;
     border-radius: 10px;
@@ -458,6 +468,15 @@
 	background-position: 50% 50%;
     background-repeat: no-repeat;
 }
+.topMods {
+    position: absolute;
+    height: 27px;
+    top: 7px;
+    width: 150px;
+    left: 40px;
+    display: flex;
+    justify-content: flex-start;
+}
 .brandsmall {
     width: 500px;
 	height: 150px;
@@ -483,7 +502,7 @@
     height: 500px;
 	border-radius: 20px;
     /* background-color: #ffffff; */
-    background-size: cover;
+    background-size: contain;
 	background-position: 50% 50%;
     background-repeat: no-repeat;
     background-image: url('../static/quangCao/qc/qcevent.png');
@@ -506,14 +525,91 @@
 #resultRecorder {
 	position: absolute;
 	left: 10px;
-    top: 10px;
+    bottom: 10px;
 	margin-left: auto;
 	margin-right: auto;
 	font-size: 20px;
 	font-family: Torus;
 	font-weight: 900;
-	height: 50px;
 	color: white;
 	text-align: left;
 	transition: ease-in-out 500ms;
+}
+
+/* Mods Color */
+.HR {
+    background-color: #f67b7a;
+    box-shadow: 0 4px 0#924848;
+}
+.NC {
+    background-color: #8262c5;
+    box-shadow: 0 4px 0#4f3c79;
+}
+.HD {
+    background-color: #f6de77;
+    box-shadow: 0 4px 0#776c3a;
+}
+.DT {
+    background-color: #8e84fb;
+    box-shadow: 0 4px 0#403c72;
+}
+.SD {
+    background-color: #887c47;
+    box-shadow: 0 4px 0#6b6237;
+}
+.PF {
+    background-color: #ffe08d;
+    box-shadow: 0 4px 0#837348;
+}
+.HT {
+    background-color: #424242;
+    box-shadow: 0 4px 0#333333;
+}
+.NF {
+    background-color: #84c1fb;
+    box-shadow: 0 4px 0#557da1;
+}
+.SO {
+    background-color: #850000;
+    box-shadow: 0 4px 0#520000;
+}
+.FL {
+    background-color: #8a4545;
+    box-shadow: 0 4px 0#572c2c;
+}
+.NM {
+    background-color: #888888;
+    box-shadow: 0 4px 0#555555;
+}
+.TD {
+    background-color: #4bffd8;
+    box-shadow: 0 4px 0#4bffd8;
+}
+.EZ {
+    background-color: #1ceb82;
+    box-shadow: 0 4px 0#139e58;
+}
+.TP,.AT,.RX,.AP {
+    background-color: #13163b;
+    box-shadow: 0 4px 0#070816;
+}
+
+/* Ranking Color */
+.D {
+    color: #ff6161;
+}
+.C {
+    color: #ea8af7;
+}
+.B {
+    color: #55abfc;
+}
+.A {
+    color: #64ffb2;
+}
+.S, .X {
+    color: #faef8b;
+}
+.SH, .XH {
+    color: white;
 }

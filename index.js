@@ -29,7 +29,6 @@ const hSB = new CountUp('hSB', 0, 0, 0, .5, { useEasing: true, useGrouping: true
 
 let progressbar;
 let rankingPanelSet;
-let isHidden;
 let fullTime;
 let seek;
 let onepart;
@@ -42,6 +41,11 @@ let currentErrorValue;
 let tempHitErrorArrayLength;
 let error_h300 = 83;
 let error_h100 = 145;
+
+let leaderboardFetch;
+let tempSlotLength;
+let tempMapScores = [];
+let playerPosition;
 
 let tick = [];
 for (var t = 0; t < 200; t++) {
@@ -74,6 +78,14 @@ socket.commands((data) => {
         console.log(command, message); // print out settings for debug
       };
 
+      if (cache['LBEnabled'] != message['LBEnabled']) {
+        cache['LBEnabled'] = message['LBEnabled'];
+      };
+
+      if (cache['LBOptions'] != message['LBOptions']) {
+        cache['LBOptions'] = message['LBOptions'];
+      };
+
       if (message['Recorder'] != null) {
         document.getElementById("recorderName").innerHTML = `${message['Recorder']}`;
         document.getElementById("resultRecorder").innerHTML = `Recorder: ` + `${message['Recorder']}`;
@@ -85,7 +97,6 @@ socket.commands((data) => {
       if (cache['ColorSet'] == `Manual`) {
         const ColorData1 = `${message['HueID']}, ${message['SaturationID']}%, 50%`;
         const ColorData2 = `${message['HueID2']}, ${message['SaturationID2']}%, 50%`;
-        const ColorDark = `${message['HueID2']}, ${message['SaturationID2']}%, 30%`;
 
         document.getElementById("lefthp1").style.fill = `hsl(${ColorData1})`;
         document.getElementById("lefthp2").style.fill = `hsl(${ColorData1})`;
@@ -110,7 +121,6 @@ socket.commands((data) => {
         document.getElementById("righthp10").style.fill = `hsl(${ColorData2})`;
 
         smallStats.style.backgroundColor = `hsl(${ColorData1})`;
-        sMods.style.backgroundColor = `hsl(${ColorDark})`;
 
         combo_box.style.backgroundColor = `hsl(${ColorData1})`;
         combo_box.style.filter = `drop-shadow(0 0 10px hsla(${ColorData1}))`;
@@ -133,16 +143,19 @@ socket.commands((data) => {
 
         rBPM.style.backgroundColor = `hsl(${ColorData1})`;
         rBPM.style.boxShadow = `0 0 5px 2px hsl(${ColorData1})`;
-      }
 
-    //   if (message['PromotionEnabled'] == true) {
-    //     qc.style.display = `flex`;
-    //     brand.classList.add(`brandsmall`);
-    //   }
-    //   else {
-    //     qc.style.display = `none`;
-    //     brand.classList.remove(`brandsmall`);
-    //   }
+        lbcpLine.style.backgroundColor = `hsl(${ColorData1})`;
+        lbcpLine.style.boxShadow = `0 0 10px 2px hsla(${ColorData1}, 0.5)`;
+      };
+
+      if (message['PromotionEnabled'] == true) {
+        qc.style.display = `flex`;
+        brand.classList.add(`brandsmall`);
+      }
+      else {
+        qc.style.display = `none`;
+        brand.classList.remove(`brandsmall`);
+      }
 
     } catch (error) {
       console.log(error);
@@ -181,15 +194,24 @@ socket.commands((data) => {
         if (cache['play.name'] != play.playerName) {
             cache['play.name'] = play.playerName;
             username.innerHTML = cache['play.name'];
+            lbcpName.innerHTML = cache['play.name'];
             setupUser(play.playerName);
         };
+        if (cache['play.rank.current'] != play.rank.current) {
+            cache['play.rank.current'] = play.rank.current;
+            lbcpRanking.innerHTML = cache['play.rank.current'].replace("H", "");
+            lbcpRanking.setAttribute('class', `${play.rank.current}`);
+        }
         if (cache['play.accuracy'] != play.accuracy.toFixed(2)) {
             cache['play.accuracy'] = play.accuracy.toFixed(2);
+            lbcpAcc.innerHTML = cache['play.accuracy'] + `%`;
             acc.innerHTML = cache['play.accuracy'];
             acc.update(cache['play.accuracy']);
         };
         if (cache['play.score'] != play.score) {
             cache['play.score'] = play.score;
+	        tempAvg = 0;
+            lbcpScore.innerHTML = numberWithCommas(cache['play.score']);
             score.innerHTML = cache['play.score'];
             score.update(cache['play.score']);
         };
@@ -199,10 +221,12 @@ socket.commands((data) => {
         };
         if (cache['play.combo.max'] != play.combo.max) {
             cache['play.combo.max'] = play.combo.max;
+            lbcpCombo.innerHTML = cache['play.combo.max'] + `x`;
             combo_max.innerHTML = ` / ` + cache['play.combo.max'] + `x`;
         };
         if (cache['play.pp.current'] != play.pp.current.toFixed(0)) {
             cache['play.pp.current'] = play.pp.current.toFixed(0);
+            lbcpPP.innerHTML = cache['play.pp.current'] + `pp`;
             pp_txt.innerHTML = cache['play.pp.current'];
         };
         if (cache['play.pp.fc'] != play.pp.fc.toFixed(0)) {
@@ -284,6 +308,9 @@ socket.commands((data) => {
         if (cache['beatmap.time.mp3Length'] != beatmap.time.mp3Length) {
             cache['beatmap.time.mp3Length'] = beatmap.time.mp3Length;
         };
+        if (cache['beatmap.id'] != beatmap.id) {
+            cache['beatmap.id'] = beatmap.id;
+        };
         if (cache['h100'] != play.hits['100']) {
             cache['h100'] = play.hits['100'];
             h100.update(cache['h100']);
@@ -361,6 +388,16 @@ socket.commands((data) => {
             hSB.update(cache['hSB']);
             hSBText.innerHTML = cache['hSB'] + 'x';
             rSB.innerHTML = cache['hSB'];
+            let tickSB = document.createElement("div");
+            tickSB.setAttribute("class", "tickGraph tickSB");
+            tickSB.style.transform = `translateX(${progressbar}px)`;
+            if (cache['hSB'] > 0) {
+                graphSB.style.height = "17px";
+                document.getElementById("graphSB").appendChild(tickSB);
+            }
+            else {
+                graphSB.style.height = "0px";
+            }
             hsbCont.style.backgroundColor = `white`;
             hSBText.style.transform = `scale(85%)`;
             setTimeout(function () {
@@ -371,35 +408,7 @@ socket.commands((data) => {
         if (cache['play.mods.name'] != play.mods.name || cache['play.mods.number'] != play.mods.number) {
             cache['play.mods.name'] = play.mods.name;
             cache['play.mods.number'] != play.mods.number;
-
-            document.getElementById("modContainer").innerHTML = "";
-
-            let modsCount = cache['play.mods.name'].length;
-
-            for (var i = 0; i < modsCount; i++) {
-                if (cache['play.mods.name'].substr(i, 2) !== " ") {
-                    let mods = document.createElement("div");
-                    mods.id = play.mods.name.substr(i, 2);
-                    mods.setAttribute("class", "mods");
-                    mods.style.backgroundImage = `url('./static/mods/${cache['play.mods.name'].substr(i, 2)}.png')`;
-                    mods.style.transform = `none`;
-                    document.getElementById("modContainer").appendChild(mods);
-                }
-                i++;
-            }
-
-            if (cache['play.mods.name'].search("HD") !== -1 || cache['play.mods.name'].search("FL") !== -1)
-                isHidden = true;
-            else
-                isHidden = false;
-
-            if (play.mods.number == 0) {
-                rankingResult.style.transform = `translateY(35px)`;
-            }
-            else {
-                rankingResult.style.transform = `translateY(0)`;
-            }
-        }
+        };
         if (cache['resultsScreen.hits[300]'] != resultsScreen.hits[300]) {
             cache['resultsScreen.hits[300]'] = resultsScreen.hits[300];
             r100.innerHTML = cache['resultsScreen.hits[300]'];
@@ -424,19 +433,21 @@ socket.commands((data) => {
             cache['resultsScreen.mods.name'] = resultsScreen.mods.name;
             cache['resultsScreen.mods.number'] = resultsScreen.mods.number;
         };
-        if (cache['resultsScreen.score'] != resultsScreen.score) {
-            cache['resultsScreen.score'] = resultsScreen.score;
-            ResultScoreCombo.innerHTML = numberWithCommas(cache['resultsScreen.score']) + ` (${resultsScreen.maxCombo}x)`;
-
-            let rAccuracy = ((cache['resultsScreen.hits[300]'] + cache['resultsScreen.hits[100]'] / 3 + cache['resultsScreen.hits[50]'] / 6) / (cache['resultsScreen.hits[300]'] + cache['resultsScreen.hits[100]'] + cache['resultsScreen.hits[50]'] + cache['resultsScreen.hits[0]'])) * 100;
-
-            ResultAcc.innerHTML = rAccuracy.toFixed(2) + '%';
+        if (cache['resultScreen.accuracy'] != resultsScreen.accuracy) {
+            cache['resultScreen.accuracy'] = resultsScreen.accuracy;
+            ResultAcc.innerHTML = cache['resultScreen.accuracy'] + '%';
         };
         if (cache['resultsScreen.maxCombo'] != resultsScreen.maxCombo) {
             cache['resultsScreen.maxCombo'] = resultsScreen.maxCombo;
         };
+        if (cache['resultsScreen.score'] != resultsScreen.score) {
+            cache['resultsScreen.score'] = resultsScreen.score;
+            ResultScoreCombo.innerHTML = numberWithCommas(cache['resultsScreen.score']) + ` (${cache['resultsScreen.maxCombo']}x)`;
+        };
         if (cache['resultsScreen.rank'] != resultsScreen.rank) {
             cache['resultsScreen.rank'] = resultsScreen.rank;
+            rankingResult.innerHTML = cache['resultsScreen.rank'].replace("H", "");
+            rankingResult.setAttribute('class', `${resultsScreen.rank}`);
         };
         if (cache['folders.beatmap'] != folders.beatmap) {
             cache['folders.beatmap'] = folders.beatmap;
@@ -447,7 +458,6 @@ socket.commands((data) => {
         if (cache['files.background'] != files.background) {
             cache['files.background'] = files.background;
         };
-
 
         const cache_beatmap = ' ';
 
@@ -529,13 +539,8 @@ socket.commands((data) => {
         keys.m1.updateCanvas();
         keys.m2.updateCanvas();
 
-        if (state.number !== 2) {
-            if (state.number !== 7) { 
-                deRankingPanel();
-                document.querySelectorAll('.tick100').forEach(e => e.remove());
-                document.querySelectorAll('.tick50').forEach(e => e.remove());
-                document.querySelectorAll('.tick0').forEach(e => e.remove());
-            };
+        if (cache['data.menu.state'] !== 2) {
+            if (cache['data.menu.state'] !== 7) { deRankingPanel() };
   
             gptop.style.opacity = 0;
     
@@ -543,17 +548,26 @@ socket.commands((data) => {
             avgHitError.style.transform = "translateX(0)";
     
             gpbottom.style.opacity = 0;
-            URIndex.style.transform = "none";
     
-            URIndex.innerHTML = " ";
+            URIndex.innerHTML = "";
         } else {
             deRankingPanel();
+
+            if (cache['beatmap_rankedStatus'] == 4 && cache['LBEnabled'] == true || cache['beatmap_rankedStatus'] == 7 && cache['LBEnabled'] == true || cache['beatmap_rankedStatus'] == 6 && cache['LBEnabled'] == true || cache['beatmap_rankedStatus'] == 5 && cache['LBEnabled'] == true ) {
+                smallStats.style.transform = `translateY(0)`;
+                lbcpPosition.innerHTML = `${playerPosition}`;
+            }
+            else {
+                smallStats.style.transform = `translateY(590px)`;
+                lbcpPosition.innerHTML = `0`;
+            };
+            
             gptop.style.opacity = 1;
             gpbottom.style.opacity = 1;
             URCont.style.opacity = 1;
         }
 
-        if (state.number == 7) {
+        if (cache['data.menu.state'] == 7) {
             if (cache[`key-k1-r`]) document.querySelector(`.keys.k1`).classList.remove('hidden');
             if (cache[`key-k2-r`]) document.querySelector(`.keys.k2`).classList.remove('hidden');
             if (cache[`key-m1-r`]) document.querySelector(`.keys.m1`).classList.remove('hidden');
@@ -561,7 +575,20 @@ socket.commands((data) => {
           };
       
       
-          if (state.number != 2 && state.number != 7) {
+          if (cache['data.menu.state'] != 2 && cache['data.menu.state'] != 7) {
+            document.querySelectorAll('.tick100').forEach(e => e.remove());
+            document.querySelectorAll('.tick50').forEach(e => e.remove());
+            document.querySelectorAll('.tick0').forEach(e => e.remove());
+            document.querySelectorAll('.tickSB').forEach(e => e.remove());
+
+            smallStats.style.transform = `translateY(590px)`;
+
+            leaderboardFetch = false;
+            lbopCont.innerHTML = "";
+            lbcpPosition.innerHTML = "";
+            document.getElementById("currentplayerCont").style.transform = `none`;
+            document.getElementById("lbcpLine").style.transform = `none`;
+
             delete cache[`key-k1-active`];
             delete cache[`key-k2-active`];
             delete cache[`key-m1-active`];
@@ -573,14 +600,81 @@ socket.commands((data) => {
             document.querySelector(`.keys.m2`).classList.add('hidden');
           };
         
-        if (state.number == 2) {
+        if (cache['data.menu.state'] == 2) {
     
-            if (settings.interfaceVisible == true && state.number == 2) {
+            if (cache['showInterface'] == true && cache['data.menu.state'] == 2) {
                 gptop.style.opacity = 0;
             } else {
                 gptop.style.opacity = 1;
+            };
+
+            if (cache['LBEnabled'] == true) {
+
+            setupMapScores(cache['beatmap.id']);
+
+            if (document.getElementById("currentplayerCont"))
+                lbcpPosition.setAttribute('class', `N${playerPosition}`);
+
+                if (playerPosition > 9) {
+                    lbopCont.style.transform = `translateY(${-(playerPosition - 50) * 65}px)`;
+                    document.getElementById("currentplayerCont").style.transform = `none`;
+                    document.getElementById("lbcpLine").style.transform = `none`;
+                } else {
+                    lbopCont.style.transform = "translateY(2600px)";
+                    document.getElementById("currentplayerCont").style.transform = `translateY(${(playerPosition - 10) * 65}px)`;
+                    document.getElementById("lbcpLine").style.transform = `translateY(${(playerPosition - 10) * 65}px)`;
+                    document.getElementById("lbcpLine").style.height = `${(playerPosition) * 62}px`;
+                    setTimeout(function() {
+                        document.getElementById("lbcpLine").style.height = `35px`;
+                    }, 300)
+                };
+            if (tempSlotLength > 0)
+                for (var i = 1; i <= tempSlotLength; i++) {
+                    if (i >= playerPosition && playerPosition !== 0 && document.getElementById(`playerslot${i}`)) {
+                        document.getElementById(`playerslot${i}`).style.transform = `translateY(65px)`;
+                    };
+                };
             }
+            else {
+                lbopCont.innerHTML = " ";
+                leaderboardFetch = false;
+            };
+        };
+
+        document.getElementById("modContainer").innerHTML = " ";
+        document.getElementById("lbcpMods").innerHTML = " ";
+
+        let modsCount = cache['play.mods.name'].length;
+        let modsCount2 = cache['resultsScreen.mods.name'].length;
+
+        for (var i = 0; i < modsCount2; i++) {
+            if (cache['resultsScreen.mods.name'].substr(i, 2) !== " ") {
+                let mods = document.createElement("div");
+                mods.id = cache['resultsScreen.mods.name'].substr(i, 2);
+                mods.setAttribute("class", `mods ${cache['resultsScreen.mods.name'].substr(i, 2)}`);
+                mods.style.backgroundImage = `url('./static/mods/${cache['resultsScreen.mods.name'].substr(i, 2)}.png')`;
+                document.getElementById("modContainer").appendChild(mods);
+                i++
+            };
+        };
+
+        for (var i = 0; i < modsCount; i++) {
+            if (cache['play.mods.name'].substr(i, 2) !== " ") {
+                let modslb = document.createElement("div");
+                modslb.id = cache['play.mods.name'].substr(i, 2);
+                modslb.setAttribute("class", `modslb ${cache['play.mods.name'].substr(i, 2)}`);
+                modslb.style.backgroundImage = `url('./static/mods/${cache['play.mods.name'].substr(i, 2)}.png')`;
+                document.getElementById("lbcpMods").appendChild(modslb);
+                i++;
+            };
+        };
+
+        if (cache['resultsScreen.mods.name'] == " ") {
+            rankingResult.style.transform = `translateY(35px)`;
         }
+        else {
+            rankingResult.style.transform = `translateY(0)`;
+        };
 
         if (cache['h100'] > 0 || cache['h50'] > 0 || cache['h0'] > 0) {
             strainGraph.style.transform = `translateY(-10px)`;
@@ -592,24 +686,28 @@ socket.commands((data) => {
         if (fullTime !== cache['beatmap.time.mp3Length']) {
             fullTime = cache['beatmap.time.mp3Length'];
             onepart = 490 / fullTime;
-        }
+        };
         if (fullTime !== cache['beatmap.time.mp3Length']){
             fullTime = cache['beatmap.time.mp3Length'];
             onepart = 1400/fullTime;
-        }
+        };
         if (seek !== cache['beatmap.time.live'] && fullTime !== undefined && fullTime !== 0) {
             seek = cache['beatmap.time.live'];
-            progressbar = onepart * seek / 1.3;
+            progressbar = onepart * seek / 1.29;
             progress.style.width = progressbar + 'px';
-        }
+            progress100.style.transform = `translateX(${progressbar}px)`
+            progress50.style.transform = `translateX(${progressbar}px)`
+            progress0.style.transform = `translateX(${progressbar}px)`
+            progressSB.style.transform = `translateX(${progressbar}px)`
+        };
 
-        if (cache['beatmap.time.live'] >= cache['beatmap.time.firstObject'] + 5000 && cache['beatmap.time.live'] <= cache['beatmap.time.firstObject'] + 11900 && state.number == 2) {
+        if (cache['beatmap.time.live'] >= cache['beatmap.time.firstObject'] + 5000 && cache['beatmap.time.live'] <= cache['beatmap.time.firstObject'] + 11900 && cache['data.menu.state'] == 2) {
             recorder.style.transform = "translateX(-600px)";
             if (cache['beatmap.time.live'] >= cache['beatmap.time.firstObject'] + 5500) recorderName.style.transform = "translateX(-600px)";
         } else {
             recorder.style.transform = "none";
             recorderName.style.transform = "none";
-        }
+        };
 
         let isBreak = cache['play.combo.current'] < cache['play.combo.max'];
 
@@ -623,77 +721,77 @@ socket.commands((data) => {
           combo_text.style.transform = `translateX(0)`;
           combo_max.style.opacity = 0;
           combo_x.style.display = 'inline';
-        }
+        };
   
         if (cache['play.combo.current'] < 10) { 
           combo_box.style.width = `${84 + (isBreak ? getMaxPxValue(cache['play.combo.max']) : 0)}px`;
-        }
+        };
         if (cache['play.combo.current'] >= 10 && cache['play.combo.current'] < 100) { 
           combo_box.style.width = `${104 + (isBreak ? getMaxPxValue(cache['play.combo.max']) : 0)}px`;
-        }
+        };
         if (cache['play.combo.current'] >= 100 && cache['play.combo.current'] < 1000) {
           combo_box.style.width = `${124 + (isBreak ? getMaxPxValue(cache['play.combo.max']) : 0)}px`;
-        }
+        };
         if (cache['play.combo.current'] >= 1000 && cache['play.combo.current'] < 10000) {
           combo_box.style.width = `${154 + (isBreak ? getMaxPxValue(cache['play.combo.max']) : 0)}px`;
-        }
+        };
         if (cache['play.combo.current'] >= 10000 && cache['play.combo.current'] < 1000) {
           combo_box.style.width = `${174 + (isBreak ? getMaxPxValue(cache['play.combo.max']) : 0)}px`;
-        }
+        };
   
         function getMaxPxValue(x) {
           if (x < 10) return 75;
           if (x >= 10 && x < 100) return 90;
           if (x >= 100 && x < 1000) return 105;
           if (x >= 1000 && x < 10000) return 125;
-        }
+        };
   
         function getTranslateValue(x) {
           if (x < 10) return 17;
           if (x >= 10 && x < 100) return 37;
           if (x >= 100 && x < 1000) return 57;
           if (x >= 1000 && x < 10000) return 87;
-        }
+        };
 
         let pp_tx = cache['play.pp.current'] + " / " + cache['play.pp.fc'] + "pp";
 
         if (pp_tx.length == 7) { 
           pp_box.style.width = '150px';
-        }
+        };
         if (pp_tx.length == 8) { 
           pp_box.style.width = '160px';
-        }
+        };
         if (pp_tx.length == 9) {
           pp_box.style.width = '190px';
-        }
+        };
         if (pp_tx.length == 10) {
           pp_box.style.width = '210px';
-        }
+        };
         if (pp_tx.length == 11) {
           pp_box.style.width = '230px';
-        }
+        };
         if (pp_tx.length == 12) {
           pp_box.style.width = '250px';
-        }
+        };
         if (pp_tx.length == 13) {
-          pp_box.style.width = '270px';
-        }
+          pp_box.style.width = '280px';
+        };
 
         if (cache['play.pp.current'] < 10) {
             pp_txt.style.width = "22px";
-        }
+        };
         if (cache['play.pp.current'] >= 10 && cache['play.pp.current'] < 100) {
             pp_txt.style.width = "40px";
-        }
+        };
         if (cache['play.pp.current'] >= 100 && cache['play.pp.current'] < 1000) {
             pp_txt.style.width = "61px";
-        }
+        };
         if (cache['play.pp.current'] >= 1000 && cache['play.pp.current'] < 10000) {
             pp_txt.style.width = "92px";
-        }
+        };
         if (cache['play.pp.current'] >= 10000 && cache['play.pp.current'] < 1000) {
             pp_txt.style.width = "110px";
-        }
+        };
 
         if (cache['beatmap.time.live'] > beatmap.time.live) {
           delete cache['key-k1-press'];
@@ -728,58 +826,22 @@ socket.commands((data) => {
             hp.style.clipPath = `polygon(${(1 - play.healthBar.smooth / 100) * 50}% 0%, ${(play.healthBar.smooth / 100) * 50 + 50}% 0%, ${(play.healthBar.smooth / 100) * 50 + 50}% 100%, ${(1 - play.healthBar.smooth / 100) * 50}% 100%)`;
         } else {
             hp.style.clipPath = `polygon(0 0, 93.7% 0, 93.7% 100%, 0 100%)`;
-        }
+        };
 
-        if (cache['beatmap_rankedStatus'] == 4 || cache['beatmap_rankedStatus'] == 7 || cache['beatmap_rankedStatus'] == 6) {
-            sMods.style.opacity = 1;
-            if (cache['play.mods.name'].search("DT") !== -1 && cache['play.mods.name'].search("HR") !== -1) {
-                sMods.innerHTML = "(HD)HRDT/HRNC";
-            }
-            else if (cache['play.mods.name'].search("NC") !== -1 && cache['play.mods.name'].search("HR") !== -1) {
-                sMods.innerHTML = "(HD)HRDT/HRNC";
-            }
-            else if (cache['play.mods.name'].search("DT") !== -1 && cache['play.mods.name'].search("EZ") !== -1) {
-                sMods.innerHTML = "EZDT/EZNC(HD)(FL)";
-            }
-            else if (cache['play.mods.name'].search("NC") !== -1 && cache['play.mods.name'].search("EZ") !== -1) {
-                sMods.innerHTML = "EZDT/NC(HD)(FL)";
-            }
-            else if (cache['play.mods.name'].search("DT") !== -1 || cache['play.mods.name'].search("NC") !== -1) {
-                sMods.innerHTML = "(HD)DT/NC";
-            }
-            else if (cache['play.mods.name'].search("HR") !== -1) {
-                sMods.innerHTML = "(HD)HR";
-            }
-            else if (cache['play.mods.name'].search("EZ") !== -1) {
-                sMods.innerHTML = "EZ(HD)(FL)";
-            }
-            else if (cache['play.mods.name'].search("HD") !== -1) {
-                sMods.innerHTML = "NM/HD/TD";
-            }
-            else {
-                sMods.style.opacity = 0;
-            }
-        }
-        else {
-            sMods.style.opacity = 0;
-        }
+        if (tempMapScores.length > 0) if (cache['play.score'] >= tempMapScores[playerPosition - 2]) playerPosition--;
 
-        if (cache['beatmap.time.live'] >= cache['beatmap.time.lastObject'] + 1000 && state.number === 2) { rankingPanelBG.style.opacity = 1; }
+        if (cache['beatmap.time.live'] >= cache['beatmap.time.lastObject'] + 1000 && cache['data.menu.state'] == 2) { rankingPanelBG.style.opacity = 1; }
     
-        if (rankingPanelBG.style.opacity !== 1 && state.number === 2 && cache['beatmap.time.live'] >= cache['beatmap.time.lastObject'] + 1000 || state.number === 7) {
+        if (rankingPanelBG.style.opacity !== 1 && cache['data.menu.state'] == 2 && cache['beatmap.time.live'] >= cache['beatmap.time.lastObject'] + 1000 || cache['data.menu.state'] == 7) {
             if (!rankingPanelSet) setupRankingPanel();
-            if (cache['resultsScreen.rank'] !== " ")
-                if (!isHidden) rankingResult.style.backgroundImage = `url('./static/rankings/${cache['resultsScreen.rank']}.png')`;
-                else if (cache['resultsScreen.rank'] === "S" || cache['resultsScreen.rank'] === "X") rankingResult.style.backgroundImage = `url('./static/rankings/${resultsScreen.rank}H.png')`;
-                else rankingResult.style.backgroundImage = `url('./static/rankings/${cache['resultsScreen.rank']}.png')`;
-        } else if (!(cache['beatmap.time.live'] >= cache['beatmap.time.lastObject'] - 500 && state.number === 2)) rankingPanelBG.style.opacity = 0 && deRankingPanel();
+        } else if (!(cache['beatmap.time.live'] >= cache['beatmap.time.lastObject'] - 500 && cache['data.menu.state'] == 2)) rankingPanelBG.style.opacity = 0 && deRankingPanel();
 
         if (cache['resultsScreen.hits[0]'] > 0 || cache['play.hits.sliderBreaks'] > 0) {
             ResultPPAndifFC.innerHTML = `FC: ${cache['play.pp.fc']} | ${cache['play.pp.current']}pp`;
         }
         else {
             ResultPPAndifFC.innerHTML = `${cache['play.pp.current']}pp`;
-        }
+        };
 
         async function setupRankingPanel() {
             rankingPanelSet = true;
@@ -855,7 +917,7 @@ socket.commands((data) => {
             rBPM.style.transform = `translateY(0)`;
         
             resultRecorder.style.transform = 'none';
-        }
+        };
         async function deRankingPanel() {
             rankingPanelSet = false;
         
@@ -925,7 +987,7 @@ socket.commands((data) => {
             qcsContainer.style.transform = `translateY(150px)`;
         
             rBPM.style.transform = `translateY(220px)`;
-        }
+        };
         
     } catch (error) {
         console.log(error);
@@ -964,7 +1026,7 @@ socket.commands((data) => {
         }
         else {
           document.querySelector(`.keys.${key}`).classList.add('hidden');
-        }
+        };
       };
 
       if (data.hitErrors !== null) {
@@ -973,7 +1035,7 @@ socket.commands((data) => {
             tempHitErrorArrayLength = tempSmooth.length;
             for (var a = 0; a < tempHitErrorArrayLength; a++) {
                 tempAvg = tempAvg * 0.9 + tempSmooth[a] * 0.1;
-            }
+            };
             tickPos = data.hitErrors[tempHitErrorArrayLength - 1] / 2 * 3;
             currentErrorValue = data.hitErrors[tempHitErrorArrayLength - 1];
             avgHitError.style.transform = `translateX(${(tempAvg / 2) * 3}px)`;
@@ -991,7 +1053,7 @@ socket.commands((data) => {
                     }
                     else {
                         tick[c].style.backgroundColor = 'rgba(255, 213, 134, 1)';
-                    }
+                    };
 
                     var s = document.querySelectorAll("[id^=tick]")[c].style;
                     s.opacity = 1;
@@ -1000,9 +1062,9 @@ socket.commands((data) => {
                         s.opacity = 0;
                         s.transition = `opacity ease 4s`;
                     };
-                }
-            }
-        }
+                };
+            };
+        };
     };
 
     } catch (err) {
@@ -1128,7 +1190,8 @@ async function setupUser(name) {
             document.getElementById(`bg${i + 1}`).style.backgroundImage = ``;
             document.getElementById(`TopDate${i + 1}`).innerHTML = ``;
             document.getElementById(`TopRanking${i + 1}`).innerHTML = ``;
-            document.getElementById(`topPP${i + 1}`).innerHTML = ``
+            document.getElementById(`topPP${i + 1}`).innerHTML = ``;
+            document.getElementById(`TopMods${i + 1}`).innerHTML = ``;
         };
     }
     else {
@@ -1137,21 +1200,102 @@ async function setupUser(name) {
             let mapData = await getMapDataSet(playerBest[i]["beatmap_id"]);
             document.getElementById(`bg${i + 1}`).style.backgroundImage = `url('https://assets.ppy.sh/beatmaps/${mapData.beatmapset_id}/covers/cover.jpg')`;
             document.getElementById(`TopDate${i + 1}`).innerHTML = playerBest[i]["ended_at"].replace("T", " ").replace("Z", " ");
-            document.getElementById(`TopRanking${i + 1}`).innerHTML = playerBest[i]["rank"];
+            document.getElementById(`TopRanking${i + 1}`).innerHTML = playerBest[i]["rank"].replace("H", "");
+            document.getElementById(`TopRanking${i + 1}`).setAttribute("class", `topRanking ${playerBest[i]["rank"]}`);
             document.getElementById(`topPP${i + 1}`).innerHTML = `${Math.round(playerBest[i]["pp"])}pp`;
+
+            let ModsResult = (parseInt(playerBest[i]['mods_id']) >>> 0).toString(2).padStart(15, "0");
+            let tempModsLiteral = "";
+        
+            if (ModsResult !== "000000000000000")
+                for (var j = 14; j >= 0; j--) {
+                    if (ModsResult[j] === "1") {
+                        switch (j) {
+                            case 0:
+                                tempModsLiteral += "PF";
+                                break;
+                            case 1:
+                                tempModsLiteral += "AP";
+                                break;
+                            case 2:
+                                tempModsLiteral += "SO";
+                                break;
+                            case 3:
+                                tempModsLiteral += "AT";
+                                break;
+                            case 4:
+                                tempModsLiteral += "FL";
+                                break;
+                            case 5:
+                                tempModsLiteral += "NC";
+                                break;
+                            case 6:
+                                tempModsLiteral += "HT";
+                                break;
+                            case 7:
+                                tempModsLiteral += "RX";
+                                break;
+                            case 8:
+                                tempModsLiteral += "DT";
+                                break;
+                            case 9:
+                                tempModsLiteral += "SD";
+                                break;
+                            case 10:
+                                tempModsLiteral += "HR";
+                                break;
+                            case 11:
+                                tempModsLiteral += "HD";
+                                break;
+                            case 12:
+                                tempModsLiteral += "TD";
+                                break;
+                            case 13:
+                                tempModsLiteral += "EZ";
+                                break;
+                            case 14:
+                                tempModsLiteral += "NF";
+                                break;
+                        }
+                    }
+                }
+            else tempModsLiteral = "NM";
+
+            document.getElementById(`TopMods${i + 1}`).innerHTML = " ";
+        
+            let ModsRCount = tempModsLiteral.length;
+        
+            for (var k = 0; k < ModsRCount; k++) {
+                let modsR = document.createElement("div");
+                modsR.id = tempModsLiteral.substr(k, 2) + i;
+                modsR.setAttribute("class", `modslb ${tempModsLiteral.substr(k, 2)}`);
+                modsR.style.backgroundImage = `url('./static/mods/${tempModsLiteral.substr(k, 2)}.png')`;
+                document.getElementById(`TopMods${i + 1}`).appendChild(modsR);
+                k++;
+            };
         };
     };
 
     if (userData.id !== "HosizoraN") {
         ava.style.backgroundImage = `url('https://a.ppy.sh/${userData.id}')`;
         UserAvatar.style.backgroundImage = `url('https://a.ppy.sh/${userData.id}')`;
+        lbcpAvatar.style.backgroundImage = `url('https://a.ppy.sh/${userData.id}')`;
     } else {
         ava.style.backgroundImage = "url('./static/gamer.png')";
         UserAvatar.style.backgroundImage = "url('./static/gamer.png')";
+        lbcpAvatar.style.backgroundImage = "url('./static/gamer.png')";
     };
 
-    country.style.backgroundImage = `url('./static/flags/${userData.country_code}.png')`;
-    rFlag.style.backgroundImage = `url('./static/flags/${userData.country_code}.png')`;
+    const tempCountry = `${userData.country_code
+        .split("")
+        .map((char) => 127397 + char.charCodeAt())[0]
+        .toString(16)}-${userData.country_code
+        .split("")
+        .map((char) => 127397 + char.charCodeAt())[1]
+        .toString(16)}`;
+
+    country.style.backgroundImage = `url('https://osu.ppy.sh/assets/images/flags/${tempCountry}.svg')`;
+    rFlag.style.backgroundImage = `url('https://osu.ppy.sh/assets/images/flags/${tempCountry}.svg')`;
 
     ranks.innerHTML = "#" + userData.statistics.global_rank;
     GlobalRank.innerHTML = `#` + userData.statistics.global_rank;
@@ -1167,7 +1311,6 @@ async function setupUser(name) {
     if (avatarColor) {
         const ColorData1 = `${avatarColor.hsl1[0] * 360}, ${avatarColor.hsl1[1] * 100}%, 50%`;
         const ColorData2 = `${avatarColor.hsl2[0] * 360}, ${avatarColor.hsl2[1] * 100}%, 70%`;
-        const ColorDark = `${avatarColor.hsl1[0] * 360}, ${avatarColor.hsl1[1] * 100}%, 30%`;
 
         document.getElementById("lefthp1").style.fill = `hsl(${ColorData1})`;
         document.getElementById("lefthp2").style.fill = `hsl(${ColorData1})`;
@@ -1192,7 +1335,6 @@ async function setupUser(name) {
         document.getElementById("righthp10").style.fill = `hsl(${ColorData2})`;
 
         smallStats.style.backgroundColor = `hsl(${ColorData1})`;
-        sMods.style.backgroundColor = `hsl(${ColorDark})`;
 
         combo_box.style.backgroundColor = `hsl(${ColorData1})`;
         combo_box.style.filter = `drop-shadow(0 0 10px hsla(${ColorData1}))`;
@@ -1210,14 +1352,91 @@ async function setupUser(name) {
         keys.m1.color = `hsla(${ColorData2}, 0.8)`;
         keys.m2.color = `hsla(${ColorData2}, 0.8)`;
 
-        config.data.datasets[0].backgroundColor = `hsl(${ColorData1}, 0.2)`;
+        config.data.datasets[0].backgroundColor = `hsla(${ColorData1}, 0.2)`;
         configSecond.data.datasets[0].backgroundColor = `hsl(${ColorData1})`;
 
         rBPM.style.backgroundColor = `hsl(${ColorData1})`;
         rBPM.style.boxShadow = `0 0 5px 2px hsl(${ColorData1})`;
-        }
+
+        lbcpLine.style.backgroundColor = `hsl(${ColorData1})`;
+        lbcpLine.style.boxShadow = `0 0 10px 2px hsla(${ColorData1}, 0.5)`;
+        };
     };
-}
+};
+
+async function setupMapScores(beatmapID) {
+    if (leaderboardFetch == false) {
+        leaderboardFetch = true;
+
+        let data = await getMapScores(beatmapID);
+
+        if (data) {
+            tempSlotLength = data.length;
+            playerPosition = data.length + 1;
+        } else {
+            tempSlotLength = 0;
+            playerPosition = 51;
+        };
+
+        for (var i = tempSlotLength; i > 0; i--) {
+            tempMapScores[i - 1] = data[i - 1].score;
+
+            let playerContainer = document.createElement("div");
+            playerContainer.id = `playerslot${i}`;
+            playerContainer.setAttribute("class", "lbBox");
+            playerContainer.style.top = `${(i - 1) * 60}px`;
+
+            let playerNumber = `
+                        <div id="lb_Number_slot${i}" class="lb_Number">
+                            <div id="lb_Ranking_slot${i}" class="${data[i - 1].rank}">${data[i - 1].rank.replace("H", "")}</div>
+                            <div id="lb_Positions_slot${i}" class="N${i}">${i}</div>
+                        </div>
+            `;
+
+            let playerAvatar = `
+                        <div id="lb_Avatar_slot${i}" class="lb_Avatar" style="background-image: url('https://a.ppy.sh/${data[i - 1].id}')"></div> 
+            `;
+
+            let playerStats = `
+                        <div id="lb_Stats_slot${i}" class="lb_Stats">
+                            <div id="lb_StatsLeft_slot${i}" class="lb_StatsLeft">
+                                <div id="lb_Name_slot${i}" class="lb_Name">${data[i - 1].name}</div>
+                                <div id="lb_Score_slot${i}">${numberWithCommas(data[i - 1].score)}</div>
+                            </div>
+                            <div id="lb_Combo_slot${i}" class="lb_Combo">${data[i - 1].combo}x</div>
+                            <div id="lb_StatsRight_slot${i}" class="lb_StatsRight">
+                                <div id="lb_PP_slot${i}" class="lb_PP">${Math.round(data[i - 1].pp)}pp</div>
+                                <div id="lb_Acc_slot${i}">${data[i - 1].acc}%</div>
+                            </div>
+                        </div>
+            `;
+
+            let playerMods = `
+                        <div id="lb_Mods_slot${i}" class="lb_Mods"></div>
+            `;
+
+            playerContainer.innerHTML = `
+                ${playerNumber}
+                ${playerAvatar}
+                ${playerStats}
+                ${playerMods}
+            `;
+
+            document.getElementById("lbopCont").appendChild(playerContainer);
+
+            let minimodsCount = data[i - 1].mods.length;
+
+            for (var k = 0; k < minimodsCount; k++) {
+                let mods = document.createElement("div");
+                mods.id = data[i - 1].mods.substr(k, 2) + i;
+                mods.setAttribute("class", `modslb ${data[i - 1].mods.substr(k, 2)}`);
+                mods.style.backgroundImage = `url('./static/mods/${data[i - 1].mods.substr(k, 2)}.png')`;
+                document.getElementById(`lb_Mods_slot${i}`).appendChild(mods);
+                k++;
+            };
+        };
+    };
+};
 
 async function getUserDataSet(id) {
     try {
@@ -1260,6 +1479,19 @@ async function getMapDataSet(beatmapID) {
             })
         )["data"];
         return data;
+    } catch (error) {
+        console.error(error);
+    };
+};
+
+async function getMapScores(beatmapID) {
+    try {
+        const data = (
+            await axios.get(`/${beatmapID}/global`, {
+                baseURL: "https://phubahosi.vercel.app/api/beatmap",
+            })
+        )["data"];
+        return data.length !== 0 ? data : null;
     } catch (error) {
         console.error(error);
     };
