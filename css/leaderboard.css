@@ -16,7 +16,7 @@
     display: flex;
     flex-direction: column-reverse;
     gap: 5px;
-    transition: ease 300ms;
+    transition: ease 500ms;
 }
 .lbBox {
     width: 380px;
@@ -26,7 +26,7 @@
     display: flex;
     align-items: center;
     overflow: visible;
-    transition: ease 300ms;
+    transition: ease 500ms;
 }
 .lb_Number {
     margin-top: 15px;
@@ -34,7 +34,9 @@
     height: 60px;
     font-size: 20px;
     text-align: center;
-    font-weight: 500;
+}
+#lbcpPosition {
+    font-size: 15px;
 }
 .lb_Avatar {
     width: 50px;
@@ -73,6 +75,7 @@
 }
 .lb_Name {
     color: white;
+    font-size: 20px;
 }
 #lbcpLine {
     position: absolute;
@@ -82,7 +85,7 @@
     height: 35px;
 	border-radius: 0 5px 5px 0;
     background-color: #363636;
-    transition: ease 300ms;
+    transition: ease 500ms;
     flex-basis: auto;
     display: flex;
     flex-direction: column;
@@ -105,6 +108,13 @@
     background-position: 50% 50%;
     background-repeat: no-repeat;
     margin-right: -15px;
+}
+
+.N3,
+.N2,
+.N1 {
+    font-size: 20px;
+    font-weight: 800;
 }
 
 .N3 {

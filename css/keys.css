@@ -1,7 +1,8 @@
 :root {
-  --font-size: 50px;
+  --font-size: 44px;
 
   --offset: 0%;
+  --fadeIn: linear-gradient(to left, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%);
 }
 
 #KeyOverlayCont {
@@ -33,7 +34,7 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  --width: 400px;
+  --width: 480px;
   --height: 55px;
 
 }
@@ -79,6 +80,10 @@
   }
 }
 
+@keyframes moveOut {
+  100% { transform: translateX(-100%); }
+}
+
 .main {
   flex-direction: column;
   position: absolute;
@@ -119,7 +124,7 @@
   display: flex;
   color: var(--color);
 
-  transition: margin 1s ease, height 1s ease, opacity 1s ease;
+  transition: margin 0.4s ease, height 0.4s ease, opacity 0.4s ease;
 }
 
 .keys .bpm {
@@ -147,6 +152,23 @@
 .keys .wrapper {
   position: absolute;
   z-index: 1;
+}
+
+.tiles {
+  position: absolute;
+  right: 197px;
+  width: var(--width);
+  height: var(--height);
+  -webkit-mask: var(--fadeIn);
+  mask: var(--fadeIn);
+}
+
+.canvas {
+  border-radius: 7px;
+  position: absolute;
+  right: 0;
+  width: var(--width);
+  height: var(--height);
 }
 
 
@@ -194,7 +216,7 @@
   /* text-shadow: 0 0 0.2em black, 0 0 0.5em black, 0 0 0.8em black; */
   white-space: nowrap;
   text-align: center;
-  font-size: 0.53em;
+  font-size: 0.55em;
 
   position: absolute;
 

@@ -286,7 +286,7 @@
     position: relative;
 	width: 100px;
 	height: 7px;
-	transition: ease 200ms;
+	transition: ease 300ms;
 }
 #h100Cont {
 	background-color: #27b641;
@@ -429,37 +429,33 @@
 	width: 100%;
 	bottom: 0;
 	width: auto;
-	transition: ease-in-out 350ms;
+	transition: ease-in-out 300ms;
 	z-index: -1;
 	justify-content: center;
 }
-#l50 {
+#l50,
+#l100,
+#l300 {
 	position: absolute;
 	bottom: 20px;
 	height: 15px;
-	background-color: #daae46;
-	border-radius: 15px;
 	transition: ease-in-out 300ms;
 	z-index: -1;
+}
+
+#l50 {
+	background-color: #daae46;
+	border-radius: 15px;
 }
 
 #l100 {
-	position: absolute;
-	height: 15px;
-	bottom: 20px;
 	background-color: #57e313;
-	transition: ease-in-out 300ms;
-	z-index: -1;
 }
 
 #l300 {
-	position: absolute;
-	height: 15px;
-	bottom: 20px;
 	background-color: #32bce9;
-	transition: ease-in-out 300ms;
-	z-index: -1;
 }
+
 .tick {
 	position: absolute;
 	left: 0;
@@ -594,7 +590,7 @@
 	line-height: 50px;
 	font-family: Torus;
 	font-weight: 900;
-	transition: ease-in-out 500ms;
+	transition: ease 600ms;
 }
 
 #recorderName {
@@ -605,5 +601,5 @@
 	line-height: 50px;
 	font-family: Torus;
 	font-weight: 900;
-	transition: ease-in-out 500ms;
+	transition: ease 600ms;
 }

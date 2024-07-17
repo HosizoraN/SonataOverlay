@@ -46,6 +46,8 @@ let leaderboardFetch;
 let tempSlotLength;
 let tempMapScores = [];
 let playerPosition;
+let LocalNameData;
+let LocalResultNameData;
 
 let tick = [];
 for (var t = 0; t < 200; t++) {
@@ -76,6 +78,110 @@ socket.commands((data) => {
       // get updates for "getSettings" command
       if (command == 'getSettings') {
         console.log(command, message); // print out settings for debug
+      };
+
+      if (cache['LocalNameData'] != message['LocalNameData']) {
+        cache['LocalNameData'] = message['LocalNameData'];
+      };
+
+      if (cache['userID'] != message['userID']) {
+        cache['userID'] = message['userID'];
+      };
+
+      if (cache['GBrank'] != message['GBrank']) {
+        cache['GBrank'] = message['GBrank'];
+      };
+
+      if (cache['ppGB'] != message['ppGB']) {
+        cache['ppGB'] = message['ppGB'];
+      };
+
+      if (cache['CTrank'] != message['CTrank']) {
+        cache['CTrank'] != message['CTrank'];
+      };
+
+      if (cache['CTcode'] != message['CTcode']) {
+        cache['CTcode'] = message['CTcode']
+      };
+
+      if (cache['mapid0'] != message['mapid0']) {
+        cache['mapid0'] = message['mapid0'];
+      };
+      if (cache['mapid_1'] != message['mapid1']) {
+        cache['mapid1'] = message['mapid1'];
+      };
+      if (cache['mapid2'] != message['mapid2']) {
+        cache['mapid2'] = message['mapid2'];
+      };
+      if (cache['mapid3'] != message['mapid_']) {
+        cache['mapid3'] = message['mapid3'];
+      };
+      if (cache['mapid4'] != message['mapid4']) {
+        cache['mapid4'] = message['mapid4'];
+      };
+
+      if (cache['ppResult0'] != message['ppResult0']) {
+        cache['ppResult0'] = message['ppResult0'];
+      };
+      if (cache['ppResult1'] != message['ppResult1']) {
+        cache['ppResult1'] = message['ppResult1'];
+      };
+      if (cache['ppResult2'] != message['ppResult2']) {
+        cache['ppResult2'] = message['ppResult2'];
+      };
+      if (cache['ppResult3'] != message['ppResult3']) {
+        cache['ppResult3'] = message['ppResult3'];
+      };
+      if (cache['ppResult4'] != message['ppResult4']) {
+        cache['ppResult4'] = message['ppResult4'];
+      };
+
+      if (cache['modsid0'] != message['modsid0']) {
+        cache['modsid0'] = message['modsid0'];
+      };
+      if (cache['modsid1'] != message['modsid1']) {
+        cache['modsid1'] = message['modsid1'];
+      };
+      if (cache['modsid2'] != message['mods_id2']) {
+        cache['modsid2'] = message['mods_id2'];
+      };
+      if (cache['modsid3'] != message['modsid3']) {
+        cache['modsid3'] = message['modsid3'];
+      };
+      if (cache['modsid4'] != message['modsid4']) {
+        cache['modsid4'] = message['modsid4'];
+      };
+
+      if (cache['rankResult0'] != message['rankResult0']) {
+        cache['rankResult0'] = message['rankResult0'];
+      };
+      if (cache['rankResult1'] != message['rankResult1']) {
+        cache['rankResult1'] = message['rankResult1'];
+      };
+      if (cache['rankResult2'] != message['rankResult2']) {
+        cache['rankResult2'] = message['rankResult2'];
+      };
+      if (cache['rankResult3'] != message['rankResult3']) {
+        cache['rankResult3'] = message['rankResult3'];
+      };
+      if (cache['rankResult4'] != message['rankResult4']) {
+        cache['rankResult4'] = message['rankResult4'];
+      };
+
+      if (cache['date0'] != message['date0']) {
+        cache['date0'] = message['date0'];
+      };
+      if (cache['date_'] != message['date1']) {
+        cache['date1'] = message['date1'];
+      };
+      if (cache['date2'] != message['date2']) {
+        cache['date2'] = message['date2'];
+      };
+      if (cache['date3'] != message['date3']) {
+        cache['date3'] = message['date3'];
+      };
+      if (cache['date4'] != message['date4']) {
+        cache['date4'] = message['date4'];
       };
 
       if (cache['LBEnabled'] != message['LBEnabled']) {
@@ -193,15 +299,21 @@ socket.commands((data) => {
         };
         if (cache['play.name'] != play.playerName) {
             cache['play.name'] = play.playerName;
-            username.innerHTML = cache['play.name'];
-            lbcpName.innerHTML = cache['play.name'];
-            setupUser(play.playerName);
+            if (cache['play.name'] == "") {
+                LocalNameData = cache['LocalNameData'] || 'Kiana';
+            }
+            else {
+                LocalNameData = cache['play.name'];
+            }
+            username.innerHTML = LocalNameData;
+            lbcpName.innerHTML = LocalNameData;
+            setupUser(LocalNameData);
         };
         if (cache['play.rank.current'] != play.rank.current) {
             cache['play.rank.current'] = play.rank.current;
             lbcpRanking.innerHTML = cache['play.rank.current'].replace("H", "");
             lbcpRanking.setAttribute('class', `${play.rank.current}`);
-        }
+        };
         if (cache['play.accuracy'] != play.accuracy.toFixed(2)) {
             cache['play.accuracy'] = play.accuracy.toFixed(2);
             lbcpAcc.innerHTML = cache['play.accuracy'] + `%`;
@@ -332,7 +444,7 @@ socket.commands((data) => {
                 h100Cont.style.backgroundColor = `#27b641`;
                 h100Text.style.color = `white`;
                 h100Text.style.transform = `scale(100%)`;
-            }, 200);
+            }, 300);
         };
   
         if (cache['h50'] != play.hits['50']) {
@@ -356,7 +468,7 @@ socket.commands((data) => {
                 h50Cont.style.backgroundColor = `#b87f34`;
                 h50Text.style.color = `white`;
                 h50Text.style.transform = `scale(100%)`;
-            }, 200);
+            }, 300);
         };
     
         if (cache['h0'] != play.hits['0']) {
@@ -380,7 +492,7 @@ socket.commands((data) => {
                 h0Cont.style.backgroundColor = `#b83133`;
                 h0Text.style.color = `white`;
                 h0Text.style.transform = `scale(100%)`;
-            }, 200);
+            }, 300);
         };
   
         if (cache['hSB'] !== play.hits.sliderBreaks) {
@@ -403,7 +515,7 @@ socket.commands((data) => {
             setTimeout(function () {
                 hsbCont.style.backgroundColor = `#b8b8b8`;
                 hSBText.style.transform = `scale(100%)`;
-            }, 200);
+            }, 300);
         };
         if (cache['play.mods.name'] != play.mods.name || cache['play.mods.number'] != play.mods.number) {
             cache['play.mods.name'] = play.mods.name;
@@ -427,7 +539,13 @@ socket.commands((data) => {
         };
         if (cache['resultsScreen.name'] != resultsScreen.name) {
             cache['resultsScreen.name'] = resultsScreen.name;
-            rUsername.innerHTML = cache['resultsScreen.name'];
+            if (cache['resultsScreen.name'] == "") {
+                LocalResultNameData = cache['LocalNameData'] || 'Kiana';
+            }
+            else {
+                LocalResultNameData = cache['resultsScreen.name'];
+            }
+            rUsername.innerHTML = LocalResultNameData;
         };
         if (cache['resultsScreen.mods.name'] != resultsScreen.mods.name || cache['resultsScreen.mods.number'] != resultsScreen.mods.number) {
             cache['resultsScreen.mods.name'] = resultsScreen.mods.name;
@@ -448,6 +566,12 @@ socket.commands((data) => {
             cache['resultsScreen.rank'] = resultsScreen.rank;
             rankingResult.innerHTML = cache['resultsScreen.rank'].replace("H", "");
             rankingResult.setAttribute('class', `${resultsScreen.rank}`);
+        };
+        if (cache['resultsScreen.pp.fc'] != resultsScreen.pp.fc) {
+            cache['resultsScreen.pp.fc'] = resultsScreen.pp.fc.toFixed(0);
+        };
+        if (cache['resultsScreen.pp.current'] != resultsScreen.pp.current) {
+            cache['resultsScreen.pp.current'] = resultsScreen.pp.current.toFixed(0);
         };
         if (cache['folders.beatmap'] != folders.beatmap) {
             cache['folders.beatmap'] = folders.beatmap;
@@ -520,24 +644,9 @@ socket.commands((data) => {
 
         combo_wrapper.style.transform = `translateX(${cache['beatmap.stats.od.converted'] * 13}px)`;
         pp_wrapper.style.transform = `translateX(-${cache['beatmap.stats.od.converted'] * 13}px)`;
-        l50.style.width = `${600 - (25.5 * cache['beatmap.stats.od.converted'])}px`;
-        l100.style.width = `${420 - (21.5 * cache['beatmap.stats.od.converted'])}px`;
-        l300.style.width = `${240 - (17 * cache['beatmap.stats.od.converted'])}px`;
-
-        document.getElementById('k1').setAttribute('width', `400px`);
-        document.getElementById('k2').setAttribute('width', `400px`);
-        document.getElementById('m1').setAttribute('width', `400px`);
-        document.getElementById('m2').setAttribute('width', `400px`);
-
-        document.getElementById('k1').setAttribute('height', `54px`);
-        document.getElementById('k2').setAttribute('height', `54px`);
-        document.getElementById('m1').setAttribute('height', `54px`);
-        document.getElementById('m2').setAttribute('height', `54px`);
-
-        keys.k1.updateCanvas();
-        keys.k2.updateCanvas();
-        keys.m1.updateCanvas();
-        keys.m2.updateCanvas();
+        l50.style.width = `${600 - (26.2 * cache['beatmap.stats.od.converted'])}px`;
+        l100.style.width = `${420 - (21 * cache['beatmap.stats.od.converted'])}px`;
+        l300.style.width = `${240 - (16.2 * cache['beatmap.stats.od.converted'])}px`;
 
         if (cache['data.menu.state'] !== 2) {
             if (cache['data.menu.state'] !== 7) { deRankingPanel() };
@@ -623,16 +732,20 @@ socket.commands((data) => {
                     lbopCont.style.transform = "translateY(2600px)";
                     document.getElementById("currentplayerCont").style.transform = `translateY(${(playerPosition - 10) * 65}px)`;
                     document.getElementById("lbcpLine").style.transform = `translateY(${(playerPosition - 10) * 65}px)`;
-                    // document.getElementById("lbcpLine").style.height = `${(playerPosition) * 62}px`;
-                    // setTimeout(function() {
-                    //     document.getElementById("lbcpLine").style.height = `35px`;
-                    // }, 300)
                 };
             if (tempSlotLength > 0)
+                for (var i = 10; i <= tempSlotLength; i++) {
+                    if (i >= playerPosition && playerPosition !== 0 && document.getElementById(`playerslot${i}`)) {
+                        document.getElementById(`playerslot${i}`).style.transform = `translateY(65px)`;
+                        document.getElementById(`playerslot${i}`).style.opacity = `0`;
+                    }
+                };
                 for (var i = 1; i <= tempSlotLength; i++) {
                     if (i >= playerPosition && playerPosition !== 0 && document.getElementById(`playerslot${i}`)) {
                         document.getElementById(`playerslot${i}`).style.transform = `translateY(65px)`;
-                    };
+                        document.getElementById(`lb_Positions_slot${i}`).innerHTML = `${i + 1}`;
+                        document.getElementById(`lb_Positions_slot${i}`).setAttribute('class', `N${i + 1}`);
+                    }
                 };
             }
             else {
@@ -669,7 +782,7 @@ socket.commands((data) => {
             };
         };
 
-        if (cache['resultsScreen.mods.name'] == " ") {
+        if (cache['resultsScreen.mods.number'] == '0') {
             rankingResult.style.transform = `translateY(35px)`;
         }
         else {
@@ -695,10 +808,10 @@ socket.commands((data) => {
             seek = cache['beatmap.time.live'];
             progressbar = onepart * seek / 1.29;
             progress.style.width = progressbar + 'px';
-            progress100.style.transform = `translateX(${progressbar}px)`
-            progress50.style.transform = `translateX(${progressbar}px)`
-            progress0.style.transform = `translateX(${progressbar}px)`
-            progressSB.style.transform = `translateX(${progressbar}px)`
+            progress100.style.transform = `translateX(${progressbar}px)`;
+            progress50.style.transform = `translateX(${progressbar}px)`;
+            progress0.style.transform = `translateX(${progressbar}px)`;
+            progressSB.style.transform = `translateX(${progressbar}px)`;
         };
 
         if (cache['beatmap.time.live'] >= cache['beatmap.time.firstObject'] + 5000 && cache['beatmap.time.live'] <= cache['beatmap.time.firstObject'] + 11900 && cache['data.menu.state'] == 2) {
@@ -837,10 +950,10 @@ socket.commands((data) => {
         } else if (!(cache['beatmap.time.live'] >= cache['beatmap.time.lastObject'] - 500 && cache['data.menu.state'] == 2)) rankingPanelBG.style.opacity = 0 && deRankingPanel();
 
         if (cache['resultsScreen.hits[0]'] > 0 || cache['play.hits.sliderBreaks'] > 0) {
-            ResultPPAndifFC.innerHTML = `FC: ${cache['play.pp.fc']} | ${cache['play.pp.current']}pp`;
+            ResultPPAndifFC.innerHTML = `FC: ${cache['resultsScreen.pp.fc']} | ${cache['resultsScreen.pp.current']}pp`;
         }
         else {
-            ResultPPAndifFC.innerHTML = `${cache['play.pp.current']}pp`;
+            ResultPPAndifFC.innerHTML = `${cache['resultsScreen.pp.current']}pp`;
         };
 
         async function setupRankingPanel() {
@@ -1009,14 +1122,15 @@ socket.commands((data) => {
   
           const status = value.isPressed ? 'add' : 'remove';
           document.getElementById(`${key}Press`).classList[status]('active');
+          if (value.isPressed == true) {
+            keys[key].registerKeypress();
+          };
         };
   
   
         if (cache[`key-${key}-count`] != value.count) {
           document.getElementById(`${key}Count`).innerHTML = value.count;
-          keys[key].registerKeypress();
-  
-          if (value.count >= 20) cache[`key-${key}-r`] = true;
+
           cache[`key-${key}-count`] = value.count;
         };
   
@@ -1028,6 +1142,11 @@ socket.commands((data) => {
           document.querySelector(`.keys.${key}`).classList.add('hidden');
         };
       };
+
+      keys.k1.update(data.keys.k1);
+      keys.k2.update(data.keys.k2);
+      keys.m1.update(data.keys.m1);
+      keys.m2.update(data.keys.m2);
 
       if (data.hitErrors !== null) {
         tempSmooth = smooth(data.hitErrors, 4);
@@ -1153,45 +1272,84 @@ async function setupUser(name) {
     let userData = await getUserDataSet(name);
     let playerBest;
 
-    if (userData.error === null) {
+    if (userData.error === null || LocalNameData == 'Kiana') {
         userData = {
-            "id": "HosizoraN",
-            "username": `${name}`,
+            "id": `${cache['userID'] || 'Kiana'}`,
             "statistics": {
-                "global_rank": "0",
-                "pp": "0",
-                "country_rank": "0",
+                "global_rank": `${cache['GBrank'] || "0"}`,
+                "pp": `${cache['ppGB'] || "0"}`,
+                "country_rank": `${cache['CTrank'] || "0"}`,
             },
-            "country_code": "__",
+            "country_code": `${cache['CTcode'] || "__"}`,
         }
         playerBest = {
             "0": {
-                "beatmap_id": "-1",
-                "pp": "-"
+                "beatmap_id": `${cache['mapid0'] || ""}`,
+                "pp": `${cache['ppResult0'] || ""}`,
+                "mods_id": `${cache['modsid0'] || ""}`,
+                "rank": `${cache['rankResult0'] || ""}`,
+                "ended_at": `${cache['date0'] || ""}`,
             },
             "1": {
-                "beatmap_id": "-1",
-                "pp": "-"
+                "beatmap_id": `${cache['mapid1'] || ""}`,
+                "pp": `${cache['ppResult1'] || ""}`,
+                "mods_id": `${cache['modsid1'] || ""}`,
+                "rank": `${cache['rankResult1'] || ""}`,
+                "ended_at": `${cache['date1'] || ""}`,
             },
             "2": {
-                "beatmap_id": "-1",
-                "pp": "-"
+                "beatmap_id": `${cache['mapid_'] || ""}`,
+                "pp": `${cache['ppResult2'] || ""}`,
+                "mods_id": `${cache['modsid2'] || ""}`,
+                "rank": `${cache['rankResult2'] || ""}`,
+                "ended_at": `${cache['date2'] || ""}`,
             },
             "3": {
-                "beatmap_id": "-1",
-                "pp": "-"
+                "beatmap_id": `${cache['mapid3'] || ""}`,
+                "pp": `${cache['ppResult3'] || ""}`,
+                "mods_id": `${cache['modsid3'] || ""}`,
+                "rank": `${cache['rankResult3'] || ""}`,
+                "ended_at": `${cache['date3'] || ""}`,
             },
             "4": {
-                "beatmap_id": "-1",
-                "pp": "-"
+                "beatmap_id": `${cache['mapid4'] || ""}`,
+                "pp": `${cache['ppResult4'] || ""}`,
+                "mods_id": `${cache['mods_id4'] || ""}`,
+                "rank": `${cache['rankResult4'] || ""}`,
+                "ended_at": `${cache['date4'] || ""}`,
             }
         };
         for (var i = 0; i < 5; i++) {
-            document.getElementById(`bg${i + 1}`).style.backgroundImage = ``;
-            document.getElementById(`TopDate${i + 1}`).innerHTML = ``;
-            document.getElementById(`TopRanking${i + 1}`).innerHTML = ``;
-            document.getElementById(`topPP${i + 1}`).innerHTML = ``;
-            document.getElementById(`TopMods${i + 1}`).innerHTML = ``;
+            if (playerBest[i]["pp"] == "" ||
+                playerBest[i]["beatmap_id"] == "" ||
+                playerBest[i]["ended_at"] == "" ||
+                playerBest[i]["rank"] == "" ||
+                playerBest[i]["mods_id"] == "") {
+                document.getElementById(`bg${i + 1}`).style.backgroundImage = ``;
+                document.getElementById(`TopDate${i + 1}`).innerHTML = ``;
+                document.getElementById(`TopRanking${i + 1}`).innerHTML = ``;
+                document.getElementById(`topPP${i + 1}`).innerHTML = ``;
+                document.getElementById(`TopMods${i + 1}`).innerHTML = ``;
+            }
+            else {
+            let mapData = await getMapDataSet(playerBest[i]["beatmap_id"]);
+            document.getElementById(`bg${i + 1}`).style.backgroundImage = `url('https://assets.ppy.sh/beatmaps/${mapData.beatmapset_id}/covers/cover.jpg')`;
+            document.getElementById(`TopDate${i + 1}`).innerHTML = playerBest[i]["ended_at"].replace("T", " ").replace("Z", " ");
+            document.getElementById(`TopRanking${i + 1}`).innerHTML = playerBest[i]["rank"].replace("H", "");
+            document.getElementById(`TopRanking${i + 1}`).setAttribute("class", `topRanking ${playerBest[i]["rank"]}`);
+            document.getElementById(`topPP${i + 1}`).innerHTML = `${Math.round(playerBest[i]["pp"])}pp`;
+
+            let ModsRCount = playerBest[i]['mods_id'].length;
+        
+            for (var k = 0; k < ModsRCount; k++) {
+                let modsR = document.createElement("div");
+                modsR.id = playerBest[i]['mods_id'].substr(k, 2) + i;
+                modsR.setAttribute("class", `modslb ${playerBest[i]['mods_id'].substr(k, 2)}`);
+                modsR.style.backgroundImage = `url('./static/mods/${playerBest[i]['mods_id'].substr(k, 2)}.png')`;
+                document.getElementById(`TopMods${i + 1}`).appendChild(modsR);
+                k++;
+            };
+        };
         };
     }
     else {
@@ -1276,7 +1434,7 @@ async function setupUser(name) {
         };
     };
 
-    if (userData.id !== "HosizoraN") {
+    if (userData.id !== LocalNameData) {
         ava.style.backgroundImage = `url('https://a.ppy.sh/${userData.id}')`;
         UserAvatar.style.backgroundImage = `url('https://a.ppy.sh/${userData.id}')`;
         lbcpAvatar.style.backgroundImage = `url('https://a.ppy.sh/${userData.id}')`;

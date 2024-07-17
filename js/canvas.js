@@ -1,15 +1,24 @@
 // eslint-disable-next-line
+const tileWrapperNode = document.createElement('div'),
+    tileNode = document.createElement('div')
+tileWrapperNode.classList.add('canvas')
+tileNode.classList.add('canvas')
+tileWrapperNode.appendChild(tileNode)
+
 class CanvasKeys {
-  constructor({ canvasID, color, interval, speed, cornerRadius }) {
+  constructor({ canvasID, color, interval, speed }) {
+    this.tiles = document.getElementById(`${canvasID}_canvas`)
+    this.tile = null
+
     this.id = canvasID;
     this.color = color || 'rgba(29, 29, 29, 0.8)';
 
     this.countUP = new CountUp(`${this.id}Bpm`, 0, 0, 0, 0.01, { useEasing: true, useGrouping: true, separator: "", decimal: "" });
 
     this.index = 0;
-    this.cornerRadius = cornerRadius || 7;
+    // this.cornerRadius = cornerRadius || 7;
 
-    this.speed = speed || 200;
+    this.speed = speed || 0.4;
     this.interval = interval || 10;
 
     this.current_bpm = 0;
@@ -20,89 +29,56 @@ class CanvasKeys {
 
     this.blocks = new Map();
     this.bpmArray = [];
-
-    this.updateCanvas();
     this.animate();
   };
 
+    update(key) {
+        if (key.isPressed == true) {
+            if (!this.tile){
+                this.tile = tileWrapperNode.cloneNode(true)
+                this.tiles.appendChild(this.tile)
+                this.updateTile()
+            }
+            if (this.keyText && key.count !== 0) this.keyText.innerText = key.count
+        } else {
+            if (this.tile) {
+                this.tile.end = true
+            }
+        }
+    }
 
-  updateCanvas() {
-    const { width, height } = document.getElementById(this.id).getBoundingClientRect();
-    this.canvas = document.getElementById(this.id);
-    this.canvas.setAttribute('width', width);
-    this.canvas.setAttribute('height', height);
-
-
-    this.ctx = this.canvas.getContext('2d');
-  };
-
-
+    updateTile() {
+        const start = performance.now()
+        const step = () => {
+            const now = performance.now();
+            const count = Math.min(this.speed * (now - start), this.tiles.lastChild.offsetWidth);
+            this.tile.firstChild.style.width = count + "px"
+            this.tile.firstChild.style.backgroundColor = this.color
+            if (!this.tile.end) requestAnimationFrame(step)
+            else {
+                this.tile.style.animation = `moveOut ${this.tile.offsetWidth/this.speed}ms linear forwards`
+                setTimeout(() => {
+                    this.tiles.firstElementChild.remove()
+                }, this.tile.offsetWidth/this.speed)
+                this.tile = null
+            }
+        }
+        step()
+    }
+  
   animate() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.fillStyle = this.color;
-
-
-    const array = new Set(this.blocks.entries());
-    array.forEach((value) => {
-      const [index, block] = value;
-      block.x -= 1000 / this.speed;
-
-      if (block.active) {
-        block.width = this.canvas.width - block.x;
-      };
-
-
-      if (block.x + block.width < 0 && block.active != true) {
-        this.blocks.delete(index);
-        return;
-      };
-
-      if (typeof this.ctx.roundRect == 'function') {
-        this.ctx.beginPath();
-        this.ctx.roundRect(block.x, 0, block.width, this.canvas.height, this.cornerRadius);
-        this.ctx.fill();
-
-      }
-
-      else {
-
-        this.roundRect(block.x, 0, block.width, this.canvas.height, this.cornerRadius, block.active);
-      };
-    });
-
-
     if (new Date().getTime() - this.previousClickTime > 1000 && this.bpmArray.length > 0) {
       this.setBPM(0);
       this.bpmArray.length = 0;
     };
-
-
     requestAnimationFrame(this.animate.bind(this));
   };
-
-
-  roundRect(x, y, width, height, radius) {
-    this.ctx.beginPath();
-    this.ctx.moveTo(x + radius, y);
-    this.ctx.lineTo(x + width - radius, y);
-    this.ctx.arcTo(x + width, y, x + width, y + radius, radius);
-    this.ctx.lineTo(x + width, y + height - radius);
-    this.ctx.arcTo(x + width, y + height, x + width - radius, y + height, radius);
-    this.ctx.lineTo(x + radius, y + height);
-    this.ctx.arcTo(x, y + height, x, y + height - radius, radius);
-    this.ctx.lineTo(x, y + radius);
-    this.ctx.arcTo(x, y, x + radius, y, radius);
-    this.ctx.closePath();
-    this.ctx.fill();
-  };
-
 
   blockStatus(status) {
     if (status == true) {
       this.blocks.set(this.index, {
         active: true,
         width: 0,
-        x: this.canvas.width,
       });
 
       return;

@@ -1,6 +1,6 @@
 class WebSocketManager {
   constructor(host) {
-    this.version = '0.1.0';
+    this.version = '0.1.2';
 
     if (host) {
       this.host = host;
@@ -14,7 +14,7 @@ class WebSocketManager {
     this.sockets = {};
   }
 
-  createConnection(url, callback) {
+  createConnection(url, callback, filters) {
     let INTERVAL = '';
 
     const that = this;
@@ -24,6 +24,9 @@ class WebSocketManager {
       console.log(`[OPEN] ${url}: Connected`);
 
       if (INTERVAL) clearInterval(INTERVAL);
+      if (Array.isArray(filters)) {
+        this.sockets[url].send(`applyFilters:${JSON.stringify(filters)}`);
+      }
     };
 
     this.sockets[url].onclose = (event) => {
@@ -31,7 +34,7 @@ class WebSocketManager {
 
       delete this.sockets[url];
       INTERVAL = setTimeout(() => {
-        that.createConnection(url, callback);
+        that.createConnection(url, callback, filters);
       }, 1000);
     };
 
@@ -66,27 +69,30 @@ class WebSocketManager {
   /**
    * Connects to gosu compatible socket api.
    * @param {(data: WEBSOCKET_V1) => void} callback - The function to handle received messages.
+   * @param {Filters[]} filters
    */
-  api_v1(callback) {
-    this.createConnection(`/ws`, callback);
+  api_v1(callback, filters) {
+    this.createConnection(`/ws`, callback, filters);
   };
 
 
   /**
    * Connects to tosu advanced socket api.
    * @param {(data: WEBSOCKET_V2) => void} callback - The function to handle received messages.
+   * @param {Filters[]} filters
    */
-  api_v2(callback) {
-    this.createConnection(`/websocket/v2`, callback);
+  api_v2(callback, filters) {
+    this.createConnection(`/websocket/v2`, callback, filters);
   };
 
 
   /**
    * Connects to keyOverlay socket api.
    * @param {(data: WEBSOCKET_V2_KEYS) => void} callback - The function to handle received messages.
+   * @param {Filters[]} filters
    */
-  api_v2_precise(callback) {
-    this.createConnection(`/websocket/v2/precise`, callback);
+  api_v2_precise(callback, filters) {
+    this.createConnection(`/websocket/v2/precise`, callback, filters);
   };
 
 
@@ -104,10 +110,11 @@ class WebSocketManager {
       };
 
 
-      const request = await fetch(`${this.host}/api/calculate/pp`, {
-        method: "GET",
-        body: JSON.stringify(params)
-      });
+      const url = new URL(`http://${this.host}/api/calculate/pp`);
+      Object.keys(params)
+        .forEach(key => url.searchParams.append(key, params[key]));
+
+      const request = await fetch(url, { method: "GET", });
 
 
       const json = await request.json();
@@ -216,6 +223,11 @@ export default WebSocketManager;
 
 
 
+/** 
+ * @typedef {string | { field: string; keys: Filters[] }} Filters
+ */
+
+
 /** @typedef {object} CALCULATE_PP
  * @property {string} path - Path to .osu file. Example: C:/osu/Songs/beatmap/file.osu
  * @property {number} mode - Osu = 0, Taiko = 1, Catch = 2, Mania = 3
@@ -235,42 +247,36 @@ export default WebSocketManager;
 
 
 /** @typedef {object} CALCULATE_PP_RESPONSE
- * @property {object} attributes
- * @property {number} attributes.mode
- * @property {number} attributes.version
- * @property {number} attributes.nCircles
- * @property {number} attributes.nSliders
- * @property {number} attributes.nSpinners
- * @property {number} attributes.ar
- * @property {number} attributes.cs
- * @property {number} attributes.hp
- * @property {number} attributes.od
- * @property {number} attributes.arHitWindow
- * @property {number} attributes.odHitWindow
- * @property {number} attributes.clockRate
- * @property {number} attributes.bpm
- * @property {object} performance
- * @property {number} performance.mode
- * @property {number} performance.pp
- * @property {number} performance.ppAcc
- * @property {number} performance.ppAim
- * @property {number} performance.ppFlashlight
- * @property {number} performance.ppSpeed
- * @property {number} performance.effectiveMissCount
- * @property {object} performance.difficulty
- * @property {number} performance.difficulty.mode
- * @property {number} performance.difficulty.aim
- * @property {number} performance.difficulty.speed
- * @property {number} performance.difficulty.flashlight
- * @property {number} performance.difficulty.sliderFactor
- * @property {number} performance.difficulty.speedNoteCount
- * @property {number} performance.difficulty.ar
- * @property {number} performance.difficulty.od
- * @property {number} performance.difficulty.nCircles
- * @property {number} performance.difficulty.nSliders
- * @property {number} performance.difficulty.nSpinners
- * @property {number} performance.difficulty.stars
- * @property {number} performance.difficulty.maxCombo
+ * @property {object} difficulty
+ * @property {number} difficulty.mode
+ * @property {number} difficulty.stars
+ * @property {boolean} difficulty.isConvert
+ * @property {number} difficulty.aim
+ * @property {number} difficulty.speed
+ * @property {number} difficulty.flashlight
+ * @property {number} difficulty.sliderFactor
+ * @property {number} difficulty.speedNoteCount
+ * @property {number} difficulty.od
+ * @property {number} difficulty.hp
+ * @property {number} difficulty.nCircles
+ * @property {number} difficulty.nSliders
+ * @property {number} difficulty.nSpinners
+ * @property {number} difficulty.ar
+ * @property {number} difficulty.maxCombo
+ * @property {object} state
+ * @property {number} state.maxCombo
+ * @property {number} state.nGeki
+ * @property {number} state.nKatu
+ * @property {number} state.n300
+ * @property {number} state.n100
+ * @property {number} state.n50
+ * @property {number} state.misses
+ * @property {number} pp
+ * @property {number} ppAim
+ * @property {number} ppFlashlight
+ * @property {number} ppSpeed
+ * @property {number} ppAccuracy
+ * @property {number} effectiveMissCount
  */
 
 
@@ -672,7 +678,7 @@ export default WebSocketManager;
  * @property {number} play.hits.geki
  * @property {number} play.hits.katu
  * @property {number} play.hits.sliderBreaks
- * @property {} play.hitErrorArray
+ * @property {number[]} play.hitErrorArray
  * @property {object} play.combo
  * @property {number} play.combo.current
  * @property {number} play.combo.max
@@ -687,7 +693,28 @@ export default WebSocketManager;
  * @property {number} play.pp.fc
  * @property {number} play.pp.maxAchievedThisPlay
  * @property {number} play.unstableRate
- * @property {} leaderboard
+ * @property {object[]} leaderboard
+ * @property {boolean} leaderboard.isFailed
+ * @property {number} leaderboard.position
+ * @property {number} leaderboard.team
+ * @property {number} leaderboard.team
+ * @property {string} leaderboard.name
+ * @property {number} leaderboard.score
+ * @property {number} leaderboard.accuracy
+ * @property {object} leaderboard.hits
+ * @property {number} leaderboard.hits.0
+ * @property {number} leaderboard.hits.50
+ * @property {number} leaderboard.hits.100
+ * @property {number} leaderboard.hits.300
+ * @property {number} leaderboard.hits.geki
+ * @property {number} leaderboard.hits.katu
+ * @property {object} leaderboard.combo
+ * @property {number} leaderboard.combo.current
+ * @property {number} leaderboard.combo.max
+ * @property {object} leaderboard.mods
+ * @property {number} leaderboard.mods.number
+ * @property {string} leaderboard.mods.name
+ * @property {string} leaderboard.rank
  * @property {object} performance
  * @property {object} performance.accuracy
  * @property {number} performance.accuracy.95
@@ -702,11 +729,11 @@ export default WebSocketManager;
  * @property {number[]} performance.graph.series.data
  * @property {number[]} performance.graph.xaxis
  * @property {object} resultsScreen
+ * @property {string} resultsScreen.playerName
  * @property {object} resultsScreen.mode
  * @property {number} resultsScreen.mode.number
  * @property {string} resultsScreen.mode.name
  * @property {number} resultsScreen.score
- * @property {string} resultsScreen.name
  * @property {object} resultsScreen.hits
  * @property {number} resultsScreen.hits.0
  * @property {number} resultsScreen.hits.50
@@ -718,6 +745,10 @@ export default WebSocketManager;
  * @property {number} resultsScreen.mods.number
  * @property {string} resultsScreen.mods.name
  * @property {number} resultsScreen.maxCombo
+ * @property {string} resultsScreen.rank
+ * @property {object} resultsScreen.pp
+ * @property {number} resultsScreen.pp.current
+ * @property {number} resultsScreen.pp.fc
  * @property {string} resultsScreen.createdAt
  * @property {object} folders
  * @property {string} folders.game
@@ -748,11 +779,16 @@ export default WebSocketManager;
  * @property {object} tourney.points
  * @property {number} tourney.points.left
  * @property {number} tourney.points.right
- * @property {} tourney.chat
+ * @property {object[]} tourney.chat
+ * @property {string} tourney.chat.team
+ * @property {string} tourney.chat.name
+ * @property {string} tourney.chat.message
+ * @property {string} tourney.chat.timestamp
  * @property {object} tourney.totalScore
  * @property {number} tourney.totalScore.left
  * @property {number} tourney.totalScore.right
  * @property {object[]} tourney.clients
+ * @property {number} tourney.clients.ipcId
  * @property {string} tourney.clients.team
  * @property {object} tourney.clients.user
  * @property {number} tourney.clients.user.id
@@ -781,7 +817,7 @@ export default WebSocketManager;
  * @property {number} tourney.clients.play.hits.geki
  * @property {number} tourney.clients.play.hits.katu
  * @property {number} tourney.clients.play.hits.sliderBreaks
- * @property {} tourney.clients.play.hitErrorArray
+ * @property {number[]} tourney.clients.play.hitErrorArray
  * @property {object} tourney.clients.play.mods
  * @property {number} tourney.clients.play.mods.number
  * @property {string} tourney.clients.play.mods.name
@@ -815,4 +851,20 @@ export default WebSocketManager;
  * @property {boolean} keys.m2.isPressed
  * @property {number} keys.m2.count
  * @property {number[]} hitErrors
+ * @property {object[]} tourney.
+ * @property {number} tourney.ipcId
+ * @property {number[]} tourney.hitErrors
+ * @property {object} tourney.keys
+ * @property {object} tourney.keys.k1
+ * @property {boolean} tourney.keys.k1.isPressed
+ * @property {number} tourney.keys.k1.count
+ * @property {object} tourney.keys.k2
+ * @property {boolean} tourney.keys.k2.isPressed
+ * @property {number} tourney.keys.k2.count
+ * @property {object} tourney.keys.m1
+ * @property {boolean} tourney.keys.m1.isPressed
+ * @property {number} tourney.keys.m1.count
+ * @property {object} tourney.keys.m2
+ * @property {boolean} tourney.keys.m2.isPressed
+ * @property {number} tourney.keys.m2.count
  */
