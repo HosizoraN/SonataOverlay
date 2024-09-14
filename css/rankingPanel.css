@@ -1,22 +1,29 @@
-#rankedStatus {
-    position: relative;
-    display: inline-block;
-	width: 35px;
-	height: 35px;
-	/* background-color: #494966; */
-	background-size: 100%;
+@font-face {
+    font-family: 'Stanley Moon';
+    src: url('../static/StanleyMoon.otf');
+}
+#SonataTextResult {
+    position: absolute;
+    font-family: 'Stanley Moon';
+    font-size: 50px;
+    color: #a1c9ff;
+    bottom: 0;
+    right: 10px;
+    font-weight: 500;
 }
 #modContainer {
     position: absolute;
-    top: 140px;
+    bottom: 0;
     margin-right: 15px;
 	display: flex;
     justify-content: flex-end;
 	align-items: center;
+    transition: ease 500ms;
+    transition-delay: 1.2s;
 }
 .mods {
-	width: 56px;
-	height: 40px;
+	width: 66px;
+	height: 50px;
 	background-size: 100%;
     background-position: 50% 50%;
     background-repeat: no-repeat;
@@ -25,515 +32,303 @@
     object-fit: cover;
     margin-right: -15px;
 }
-#rFlag {
-    position: relative;
-    top: 5px;
-    display: inline-block;
-    width: 43px;
-    height: 31px;
+#PlayerFlag {
+    width: 60px;
+    height: 41px;
     background-size: 100%;
-    background-repeat: no-repeat;
     background-position: 50% 50%;
     border-radius: 5px;
 }
 #RankingPanel {
 	position: absolute;
+    display: flex;
 	width: 2560px;
 	height: 1440px;
-	font-family: 'Torus';
 	top: 0;
 	left: 0;
+    align-items: center;
+    justify-content: center;
 	color: white;
-    transition: ease-in-out 500ms;
+    transition: ease 500ms;
     overflow: hidden;
-    z-index: 3;
+    z-index: 2;
+    background-color: #050819e6;
+}
+#bgborder {
+    width: 97%;
+    height: 95%;
+    border: 3px solid #a1c9ff;
 }
 #ResultBottom {
     position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 500px;
+    bottom: 50px;
+    width: 97%;
     display: flex;
     justify-content: center;
-    z-index: 0;
-}
-#MapDetails {
-    position: absolute;
-    justify-content: center;
-    bottom: -5px;
-    width: 1120px;
-    height: 220px;
-    border-radius: 20px 20px 0 0;
-    display: flex;
-    z-index: 2;
-	background-position: 50% 50%;
-	background-size: 100%;
-	border: 5px solid white;
-    transition: ease 800ms;
-    transition-delay: 1s;
-}
-#rBPM {
-    position: absolute;
-    bottom: 200px;
-    border-radius: 10px 10px 0 0;
-    padding-top: 5px;
-    height: 70px;
-    width: 190px;
-    text-align: center;
-    font-size: 34px;
-    z-index: -2;
-    background-color: rgb(37, 37, 37);
-    transition: ease 800ms;
-    transition-delay: 1s;
-}
-#SongMap {
-    position: absolute;
-    right: 30px;
-    top: 20px;
-    bottom: 15px;
-    font-size: 50px;
-    text-align: right;
-    width: 830px;
-}
-#SongTitle,#rDiff,#mapandrank {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    line-height: 55px;
 }
 #SongRanking {
     position: absolute;
-    left: 50px;
+    height: 280px;
+    bottom: 0;
     display: flex;
-    margin-top: 10px;
-    margin-bottom: 10px;
     justify-content: center;
 }
 #rankingResult {
-    position: relative;
-    bottom: 20px;
-    width: 140px;
-    height: 140px;
     text-align: center;
-    font-family: Montserrat;
-    font-size: 150px;
-    font-weight: 500;
-}
-#ScoreData,
-#PPData{
-    position: absolute;
-    bottom: 10px;
-    font-size: 50px;
-    width: 720px;
-    overflow: hidden;
-}
-#PPData {
-    left: 0;
-    text-align: right;
-}
-#ScoreData {
-    right: 0;
-    text-align: left;
-}
-#ResultPPAndifFC,
-#ResultUR {
-    transition: 700ms ease;
-    transition-delay: 1.3s;
-}
-#ResultScoreCombo,
-#ResultAcc{
-    transition: 700ms ease;
-    transition-delay: 1.3s;
-}
-#ResultPPAndifFC,
-#ResultUR {
-    position: relative;
-    right: 20px;
-}
-#ResultAcc,
-#ResultScoreCombo {
-    position: relative;
-    left: 20px; 
-}
-#HitTotal,
-#HitTotalBar {
-    position: absolute;
-    display: flex;
-    top: -35px;
-    justify-content: space-between;
-    width: 90%;
-    z-index: -1;
-    text-align: center;
-}
-.rR {
-    position: relative;
-    font-size: 35px;
-    width: 70px;
-    text-align: center;
-    bottom: 30px;
-    transition: ease 800ms;
-}
-.accbar {
-    width: 68px;
-    height: 16px;
-    position: relative;
-    border-radius: 13px 13px 0 0;
-    bottom: -13px;
-    transition: ease 800ms;
-}
-#r100,
-#b100 {
-    transition-delay: 450ms;
-}
-#r50,
-#b50 {
-    right: 50px;
-    transition-delay: 150ms;
-}
-#r0,
-#b0 {
-    left: 50px;
-    transition-delay: 100ms;
-}
-#rSB,
-#bSB {
-    transition-delay: 400ms;
-}
-#b100 {
-	background-color: #1ceb82;
-	box-shadow: 0 0 10px #1ceb82;
-}
-#b50 {
-	background-color: #f9d382;
-	box-shadow: 0 0 10px #f9d382;
-}
-#b0 {
-	background-color: #de3950;
-	box-shadow: 0 0 10px #de3950;
-}
-#bSB {
-	background-color: #ffffff;
-	box-shadow: 0 0 10px #ffffff;
+    font-size: 200px;
+    font-weight: 600;
+    transition: transform cubic-bezier(.85,.09,.5,.87) 1s, opacity cubic-bezier(.85,.09,.5,.87) 1s, background 0ms;
+    transition-delay: 1.5s;
 }
 #ResultTop {
     position: absolute;
-    top: 0;
+    top: 50px;
     display: flex;
     justify-content: center;
-    width: 100%;
-    height: 500px;
+    width: 97%;
 }
-#RStats {
-    position: relative;
-    top: 20px;
-    width: 80%;
-    display: flex;
-    justify-content: space-around;
-    font-size: 40px;
-}
-.Line {
-    width: 306px;
-    height: 22px;
-    border-radius: 50px;
-    display: flex;
-    transition: 1s ease;
-}
-.Glow {
-    height: 22px;
-    border-radius: 50px;
-    transition: 1s ease;
-}
-#arGlow {
-    background-color: rgb(127, 255, 127);
-    box-shadow: 0 0 10px rgb(127, 255, 127);
-    transition-delay: 500ms;
-}
-#hpGlow {
-    background-color: rgb(127, 157, 255);
-    box-shadow: 0 0 10px rgb(127, 157, 255);
-    transition-delay: 1s;
-}
-#odGlow {
-    background-color: rgb(182, 127, 255);
-    box-shadow: 0 0 10px rgb(182, 127, 255);
-    transition-delay: 700ms;
-}
-#csGlow {
-    background-color: rgb(255, 127, 127);
-    box-shadow: 0 0 10px rgb(255, 127, 127);
-    transition-delay: 900ms;
-}
-#arLine {
-    background-color: rgb(69, 136, 114);
-}
-#hpLine {
-    background-color: rgb(73, 89, 141);
-}
-#odLine {
-    background-color: rgb(90, 64, 124);
-}
-#csLine {
-    background-color: rgb(124, 63, 63);
-}
-.rText1 {
-    color: grey;
-}
-.mText {
-    padding: 15px;
-    width: 280px;
-    display: flex;
-    justify-content: space-between;
-}
-.mStats {
-    position: relative;
-    transition: 800ms ease;
-}
-#mHP {
-    transition-delay: 450ms;
-}
-#mCS {
-    transition-delay: 400ms;
-}
-#mAR {
-    right: 50px;
-    transition-delay: 150ms;
-}
-#mOD {
-    left: 50px;
-    transition-delay: 100ms;
-}
-
-#mSR {
+#MapStats {
     position: absolute;
-    transition: 500ms ease;
-    width: 100%;
-    align-items: center;
+    left: 20px;
     display: flex;
+    flex-direction: row;
+    gap: 20px;
+    transition: ease 700ms;
 }
-#srStars {
-    position: absolute;
-	top: 0;
-    left: 0;
-    right: 0;
-    margin-left: auto;
-    margin-right: auto;
-    width: 175px;
-    height: 93px;
-	font-size: 55px;
-	text-align: center;
-    background-color: rgb(255, 222, 131);
-    box-shadow: 0 0 10px rgb(255, 222, 131);
-    border-radius: 0 0 100px 100px;
-}
-#SR {
-	position: absolute;
-    left: 0;
-    right: 0;
-	top: 110px;
-    margin-left: auto;
-    margin-right: auto;
-	text-align: center;
-	color: rgb(255, 222, 131);
-	font-size: 90px;
-	text-shadow: 0 0 10px rgb(163, 142, 84);
-}
-#PlayerData {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin-top: auto;
-    margin-bottom: auto;
-    width: 480px;
-    height: 730px;
-    border-radius: 20px 0 0 20px;
-    transition: ease 1s;
-    transition-delay: 1s;
-}
-#UserAvatar {
-    position: absolute;
-    border-radius: 10px;
+#rankStatus {
+    width: 40px;
+    height: 40px;
     background-size: 100%;
-    width: 105px;
-    height: 105px;
-    margin: 20px;
-    right: 0;
-    transition: ease 1s;
-    transition-delay: 1.3s;
 }
-#PlayerStats {
-    position: absolute;
-    right: 150px;
-    top: 35px;
-    width: 330px;
-    height: 110px;
-    transition: ease 1s;
-    transition-delay: 1.3s;
-}
-#GlobalRank {
-    color: rgb(156, 156, 156);
-}
-.pst {
-    font-size: 30px;
-    text-align: right;
-}
-#TopHeader {
-    position: absolute;
-    text-align: right;
-    width: 90%;
-    font-size: 25px;
-    border-radius: 10px;
-    top: 140px;
-}
-#UserTopPlay {
-    position: absolute;
-    bottom: 0;
-    height: 550px;
-    width: 100%;
-    font-size: 30px;
-}
-#Top1 {
-    transition-delay: 1.4s;
-}
-#Top2 {
-    transition-delay: 1.5s;    
-}
-#Top3 {
-    transition-delay: 1.6s;    
-}
-#Top4 {
-    transition-delay: 1.7s;    
-}
-#Top5 {
-    transition-delay: 1.8s;   
-}
-.TopPlay {
-    position: relative;
-    margin-bottom: 15px;
-    width: 100%;
-    height: 100px;
-    transition: ease 1s;
-}
-.topRanking {
-    font-family: Montserrat;
-    font-weight: 600;
-    font-size: 35px;
-}
-.Thumb {
-    position: absolute;
-    border-radius: 10px;
-    background-size: cover;
+#StatsBG {
+    width: 240px;
+    height: 165px;
+    border-radius: 20px;
     background-position: 50% 50%;
-    width: 108px;
-    height: 80px;
-    margin: 6px;
-    left: 12px;
-}
-.topDate {
-    position: absolute;
-    top: 5px;
-    left: 135px;
-    width: 400px;
-}
-.topStat {
-    position: absolute;
-    bottom: 15px;
-    left: 135px;
-}
-.topPP {
-    position: absolute;
-    right: 20px;
-    bottom: 15px;
-}
-
-#qcsContainer {
-    position: absolute;
+    background-size: cover;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-	width: 100%;
-	height: 100%;
-	/* background-color: #de3950; */
-    transition: ease 1s;
+    gap: 10px;
+    font-size: 25px;
 }
-
-.qcContainer {
-	width: 800px;
-	height: 500px;
-	/* background-color: white; */
-	border-radius: 20px;
-    /* box-shadow: 0 10px 20px -5px #000; */
-	background-size: 100%;
-	background-position: 50% 50%;
-    background-repeat: no-repeat;
+#StatsText {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+#StatsBPM {
+    position: absolute;
+    left: 20px;
+    top: 180px;
+    border: 3px solid #a1c9ff;
+    padding: 5px 10px 5px 10px;
+    font-size: 30px;
+    transition: ease 700ms;
+}
+#StatsBar {
+    position: absolute;
+    right: 20px;
+    font-size: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #a1c9ff;
+    font-weight: 800;
+    transition: ease 700ms;
+}
+.LineBar {
+    width: 400px;
+    height: 30px;
+    border-radius: 50px;
+    border: 3px solid #a1c9ff;
+    overflow: hidden;
+}
+.GlowBar {
+    height: 30px;
+    border-radius: 30px;
+    background-color: #a1c9ff;
+    overflow: hidden;
+    transition: ease 700ms;
+}
+.StatsBL {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 20px;
+    align-items: center;
+}
+.TextBar {
+    font-size: 25px;
+    color: white;
+    margin-left: 15px;
+}
+#ResultMiddle {
+    position: absolute;
+    display: flex;
+    font-size: 55px;
+    font-weight: 700;
+    transition: ease 700ms;
+    transition-delay: 500ms;
+}
+#MiddleBar {
+    width: 5px;
+    height: 460px;
+    background-color: #a1c9ff;
+    border-radius: 10px;
+    transition: ease 700ms;
+    transition-delay: 500ms;
+}
+#PContainer {
+    display: flex;
+    gap: 25px;
+    flex-direction: column;
+    line-height: 50px;
+}
+#TContainer {
+    text-align: right;
+    display: flex;
+    gap: 25px;
+    flex-direction: column;
+    line-height: 65px;
+}
+#NameFlag {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+}
+#ScoreResultContainer,
+#PlayerContainer {
+    margin: 30px;
+    overflow: hidden;
+}
+#TContainer,
+#PContainer {
+    transition: ease 1s;
+    transition-delay: 1s;
+}
+#PlayerData {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 20px;
+    font-size: 45px;
+}
+#PlayerAvatar {
+    width: 120px;
+    height: 120px;
+    background-size: 100%;
+    border-radius: 10px;
+}
+#JudgementTotal,
+#PlayerPPResult {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+#JudgementTotal {
+    font-size: 37px;
+    gap: 20px;
+}
+.JudgeBar {
+    width: 10px;
+    height: 50px;
+    border-radius: 10px;
+}
+#Judge100 {
+    background-color: #69f8b1;
+}
+#Judge50 {
+    background-color: #f8e95f;
+}
+#Judge0 {
+    background-color: #ff7575;
+}
+#JudgeSB {
+    background-color: white;
+}
+#ResultPerformance {
+    position: absolute;
+    right: 80px;
+}
+#UserTopPlay {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+}
+#Top1 {
+    transition-delay: 1s;
+}
+#Top2 {
+    transition-delay: 1.1s;    
+}
+#Top3 {
+    transition-delay: 1.2s;    
+}
+#Top4 {
+    transition-delay: 1.3s;    
+}
+#Top5 {
+    transition-delay: 1.4s;
+}
+#Top6 {
+    transition-delay: 1.5s;
+}
+.TopPlay {
+    border-radius: 10px;
+    width: 460px;
+    height: 100px;
+    transition-duration: 800ms;
+    transition-timing-function: cubic-bezier(.42,0,0,1);
+    font-size: 35px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    background-position: 50% 50%;
+    background-size: 100%;
+}
+.topStat {
+    position: relative;
+    width: 92%;
+    display: flex;
+    left: 20px;
+    height: 50px;
+    gap: 20px;
+}
+.topRanking {
+    position: relative;
+    bottom: 10px;
+    font-size: 50px;
+}
+.topDate {
+    position: relative;
+    width: 92%;
+    height: 50px;
+    left: 20px;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 .topMods {
-    position: absolute;
+    position: relative;
+    top: 10px;
     height: 27px;
-    top: 7px;
-    width: 150px;
-    left: 40px;
+    width: 200px;
     display: flex;
     justify-content: flex-start;
 }
-.brandsmall {
-    width: 500px;
-	height: 150px;
+.topPP {
     position: absolute;
-    top: 220px;
-}
-
-#brand{
-	background-image: url('../static/quangCao/Brand/qc1.png');
-}
-#qc {
-    display: none;
-    top: 360px;
-    position: absolute;
-    height: 800px;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    row-gap: 10px;
-}
-#qcevent {
-    width: 1200px;
-    height: 500px;
-	border-radius: 20px;
-    /* background-color: #ffffff; */
-    background-size: contain;
-	background-position: 50% 50%;
-    background-repeat: no-repeat;
-    background-image: url('../static/quangCao/qc/qcevent.png');
-}
-#qctext {
-    text-align: center;
-    font-size: 34px;
-}
-#qcicon {
-	width: 600px;
-	height: 200px;
-	border-radius: 20px;
-    /* background-color: #ffffff; */
-    background-size: 100%;
-	background-position: 50% 50%;
-    background-repeat: no-repeat;
-    background-image: url('../static/quangCao/qc/qcicon.png');
+    right: 0;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 #resultRecorder {
 	position: absolute;
-	left: 10px;
-    bottom: 10px;
-	margin-left: auto;
-	margin-right: auto;
-	font-size: 20px;
-	font-family: Torus;
-	font-weight: 900;
+    left: 10px;
+    bottom: -10px;
+	font-size: 30px;
 	color: white;
-	text-align: left;
-	transition: ease-in-out 500ms;
+    font-weight: 800;
 }
 
 /* Mods Color */

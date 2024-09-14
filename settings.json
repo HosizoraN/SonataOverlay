@@ -8,10 +8,10 @@
         "value": ""
     },
     {
-        "uniqueID": "PromotionEnabled",
+        "uniqueID": "DebugMode",
         "type": "checkbox",
-        "title": "Promotion",
-        "description": "enable this if having sponser or osu tournament live now",
+        "title": "Debug Mode",
+        "description": "just like tosu-debug but styled lol",
         "options": "",
         "value": false
     },
@@ -46,7 +46,7 @@
         "description": "",
         "options": [
             "Global",
-            "Selected Mods (Not Working Yet.)"
+            "Selected Mods"
         ],
         "value": "Global"
     },
@@ -383,6 +383,54 @@
     },
     {
         "uniqueID": "modsid4",
+        "type": "number",
+        "title": "Mods?",
+        "description": "Example: HDHR",
+        "options": "",
+        "value": ""
+    },
+    {
+        "uniqueID": "Bar9",
+        "type": "color",
+        "title": "Local Top Play Data 6",
+        "description": "======== plz fill all ========",
+        "options": "",
+        "value": ""
+    },
+    {
+        "uniqueID": "mapid5",
+        "type": "number",
+        "title": "Beatmap ID?",
+        "description": "Example: 4409628",
+        "options": "",
+        "value": ""
+    },
+    {
+        "uniqueID": "date5",
+        "type": "text",
+        "title": "Date Set?",
+        "description": "Example: 2024-07-27 07:27:27",
+        "options": "",
+        "value": ""
+    },
+    {
+        "uniqueID": "rankResult5",
+        "type": "text",
+        "title": "Rank?",
+        "description": "Example: XH, S",
+        "options": "",
+        "value": ""
+    },
+    {
+        "uniqueID": "ppResult5",
+        "type": "number",
+        "title": "PP Total?",
+        "description": "",
+        "options": "",
+        "value": ""
+    },
+    {
+        "uniqueID": "modsid5",
         "type": "number",
         "title": "Mods?",
         "description": "Example: HDHR",

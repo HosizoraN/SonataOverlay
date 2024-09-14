@@ -1,6 +1,6 @@
 class WebSocketManager {
   constructor(host) {
-    this.version = '0.1.2';
+    this.version = '0.1.27749'; //unofficial socket.js lmao
 
     if (host) {
       this.host = host;
@@ -22,6 +22,7 @@ class WebSocketManager {
 
     this.sockets[url].onopen = () => {
       console.log(`[OPEN] ${url}: Connected`);
+      CrashReportDebug.classList.add('crashpop');
 
       if (INTERVAL) clearInterval(INTERVAL);
       if (Array.isArray(filters)) {
@@ -31,6 +32,10 @@ class WebSocketManager {
 
     this.sockets[url].onclose = (event) => {
       console.log(`[CLOSED] ${url}: ${event.reason}`);
+      CrashReportDebug.classList.remove('crashpop');
+      CrashReason.innerHTML = 
+      `<div>The tosu server socket is currently closed (or the program has been crashed) please relaunch the tosu!</div>
+      <div>If this error still exist please contact to overlay developer or tosu developer owo!<div>`;
 
       delete this.sockets[url];
       INTERVAL = setTimeout(() => {
@@ -653,6 +658,7 @@ export default WebSocketManager;
  * @property {number} beatmap.stats.bpm.common
  * @property {number} beatmap.stats.bpm.min
  * @property {number} beatmap.stats.bpm.max
+ * @property {number} beatmap.stats.bpm.realtime
  * @property {object} beatmap.stats.objects
  * @property {number} beatmap.stats.objects.circles
  * @property {number} beatmap.stats.objects.sliders
@@ -691,6 +697,21 @@ export default WebSocketManager;
  * @property {object} play.pp
  * @property {number} play.pp.current
  * @property {number} play.pp.fc
+ * @property {number} play.pp.detailed
+ * @property {number} play.pp.detailed.current
+ * @property {number} play.pp.detailed.current.aim
+ * @property {number} play.pp.detailed.current.speed
+ * @property {number} play.pp.detailed.current.accuracy
+ * @property {number} play.pp.detailed.current.difficulty
+ * @property {number} play.pp.detailed.current.flashlight
+ * @property {number} play.pp.detailed.current.total
+ * @property {number} play.pp.detailed.fc
+ * @property {number} play.pp.detailed.fc.aim
+ * @property {number} play.pp.detailed.fc.speed
+ * @property {number} play.pp.detailed.fc.accuracy
+ * @property {number} play.pp.detailed.fc.difficulty
+ * @property {number} play.pp.detailed.fc.flashlight
+ * @property {number} play.pp.detailed.fc.total
  * @property {number} play.pp.maxAchievedThisPlay
  * @property {number} play.unstableRate
  * @property {object[]} leaderboard
@@ -729,6 +750,7 @@ export default WebSocketManager;
  * @property {number[]} performance.graph.series.data
  * @property {number[]} performance.graph.xaxis
  * @property {object} resultsScreen
+ * @property {number} resultsScreen.scoreId
  * @property {string} resultsScreen.playerName
  * @property {object} resultsScreen.mode
  * @property {number} resultsScreen.mode.number

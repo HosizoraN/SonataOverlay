@@ -20,8 +20,90 @@ const keys = {
     }),
   };
 
+const graph_options = {
+  colors: ["#d3d3d3", "#d3d3d3"],
+  chart: {
+    type: "area",
+
+    width: 380,
+    height: 160,
+
+    animations: {
+      enabled: true
+    },
+
+    toolbar: {
+      show: false,
+    }
+  },
+  dataLabels: {
+    enabled: false
+  },
+  legend: {
+    show: false
+  },
+  stroke: {
+    curve: "straight",
+    width: 1,
+  },
+  fill: {
+    opacity: [0.5,0.8]
+  },
+
+  yaxis: {
+    min: 0,
+    show: false,
+
+    labels: {
+      show: false,
+      position: 'left'
+    },
+    axisBorder: {
+      show: false,
+    },
+    axisTicks: {
+      show: false,
+    },
+    tooltip: {
+      enabled: false
+    }
+  },
+  grid: {
+    show: false,
+    padding: {
+      left: 0,
+      right: 0
+    },
+  },
+  series: [],
+  xaxis: {
+    type: "numeric",
+    categories: [],
+    labels: {
+      show: false,
+      position: 'left'
+    },
+    axisBorder: {
+      show: false,
+    },
+    axisTicks: {
+      show: false,
+    },
+    tooltip: {
+      enabled: false
+    }
+  },
+
+  tooltip: {
+    enabled: false
+  }
+};
+
+var chart = '';
+var chart2 = '';
+
 const score = new CountUp('score', 0, 0, 0, .5, { useEasing: true, useGrouping: true, separator: " ", decimal: "." })
-const acc = new CountUp('acc', 0, 0, 2, .5, { useEasing: true, useGrouping: true, separator: " ", decimal: ".", suffix: "%" })
+const acc = new CountUp('acc', 0, 0, 2, 1, { useEasing: true, useGrouping: true, separator: " ", decimal: ".", suffix: "%" })
 const h100 = new CountUp('h100', 0, 0, 0, .5, { useEasing: true, useGrouping: true, separator: " ", decimal: ".", suffix: "x" })
 const h50 = new CountUp('h50', 0, 0, 0, .5, { useEasing: true, useGrouping: true, separator: " ", decimal: ".", suffix: "x" })
 const h0 = new CountUp('h0', 0, 0, 0, .5, { useEasing: true, useGrouping: true, separator: " ", decimal: ".", suffix: "x" })
@@ -31,16 +113,16 @@ let progressbar;
 let rankingPanelSet;
 let fullTime;
 let seek;
-let onepart;
 let smoothOffset = 2;
 let smoothed;
+let onepart;
 let tickPos;
 let tempAvg;
 let tempSmooth;
 let currentErrorValue;
 let tempHitErrorArrayLength;
-let error_h300 = 83;
-let error_h100 = 145;
+let error_h300;
+let error_h100;
 
 let leaderboardFetch;
 let tempSlotLength;
@@ -48,6 +130,8 @@ let tempMapScores = [];
 let playerPosition;
 let LocalNameData;
 let LocalResultNameData;
+let LBUpTimer;
+let previousUpTimer;
 
 let tick = [];
 for (var t = 0; t < 200; t++) {
@@ -57,19 +141,29 @@ for (var t = 0; t < 200; t++) {
 function calculate_od(temp) {
     error_h300 = 83 - (6 * temp);
     error_h100 = 145 - (8 * temp);
+    l100.style.width = `${error_h100 * 3}px`
+    l300.style.width = `${error_h300 * 3}px`
 };
+
+const spaceit = (text) => text.toLocaleString().replace(/,/g, ' ');
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 };
 
-window.onload = function () {
+window.onload = () => {
+    chart = new ApexCharts(document.querySelector("#graph"), { ...graph_options });
+    chart.render();
+    chart2 = new ApexCharts(document.querySelector("#graph2"), { ...graph_options });
+    chart2.render();
+
     var ctx = document.getElementById("canvas").getContext("2d");
     window.myLine = new Chart(ctx, config);
 
     var ctxSecond = document.getElementById("canvasSecond").getContext("2d");
     window.myLineSecond = new Chart(ctxSecond, configSecond);
-};
+  }
+  
 
 socket.sendCommand('getSettings', encodeURI(window.COUNTER_PATH));
 socket.commands((data) => {
@@ -84,8 +178,8 @@ socket.commands((data) => {
         cache['LocalNameData'] = message['LocalNameData'];
       };
 
-      if (cache['userID'] != message['userID']) {
-        cache['userID'] = message['userID'];
+      if (cache['DebugMode'] != message['DebugMode']) {
+        cache['DebugMode'] = message['DebugMode'];
       };
 
       if (cache['GBrank'] != message['GBrank']) {
@@ -113,11 +207,14 @@ socket.commands((data) => {
       if (cache['mapid2'] != message['mapid2']) {
         cache['mapid2'] = message['mapid2'];
       };
-      if (cache['mapid3'] != message['mapid_']) {
+      if (cache['mapid3'] != message['mapid3']) {
         cache['mapid3'] = message['mapid3'];
       };
       if (cache['mapid4'] != message['mapid4']) {
         cache['mapid4'] = message['mapid4'];
+      };
+      if (cache['mapid5'] != message['mapid5']) {
+        cache['mapid5'] = message['mapid5'];
       };
 
       if (cache['ppResult0'] != message['ppResult0']) {
@@ -135,6 +232,9 @@ socket.commands((data) => {
       if (cache['ppResult4'] != message['ppResult4']) {
         cache['ppResult4'] = message['ppResult4'];
       };
+      if (cache['ppResult5'] != message['ppResult5']) {
+        cache['ppResult5'] = message['ppResult5'];
+      };
 
       if (cache['modsid0'] != message['modsid0']) {
         cache['modsid0'] = message['modsid0'];
@@ -150,6 +250,9 @@ socket.commands((data) => {
       };
       if (cache['modsid4'] != message['modsid4']) {
         cache['modsid4'] = message['modsid4'];
+      };
+      if (cache['modsid5'] != message['modsid5']) {
+        cache['modsid5'] = message['modsid5'];
       };
 
       if (cache['rankResult0'] != message['rankResult0']) {
@@ -167,6 +270,9 @@ socket.commands((data) => {
       if (cache['rankResult4'] != message['rankResult4']) {
         cache['rankResult4'] = message['rankResult4'];
       };
+      if (cache['rankResult5'] != message['rankResult5']) {
+        cache['rankResult5'] = message['rankResult5'];
+      };
 
       if (cache['date0'] != message['date0']) {
         cache['date0'] = message['date0'];
@@ -183,6 +289,9 @@ socket.commands((data) => {
       if (cache['date4'] != message['date4']) {
         cache['date4'] = message['date4'];
       };
+      if (cache['date5'] != message['date5']) {
+        cache['date5'] = message['date5'];
+      };
 
       if (cache['LBEnabled'] != message['LBEnabled']) {
         cache['LBEnabled'] = message['LBEnabled'];
@@ -196,6 +305,16 @@ socket.commands((data) => {
         document.getElementById("recorderName").innerHTML = `${message['Recorder']}`;
         document.getElementById("resultRecorder").innerHTML = `Recorder: ` + `${message['Recorder']}`;
       };
+
+      if (cache['DebugMode'] == true) {
+        DevDebugContainer.style.display = 'block';
+        main.style.display = 'none';
+      }
+      else {
+        DevDebugContainer.style.display = 'none';
+        main.style.display = 'block';
+      }
+
       if (cache['ColorSet'] != message['ColorSet']) {
         cache['ColorSet'] = message['ColorSet'];
       };
@@ -203,6 +322,8 @@ socket.commands((data) => {
       if (cache['ColorSet'] == `Manual`) {
         const ColorData1 = `${message['HueID']}, ${message['SaturationID']}%, 50%`;
         const ColorData2 = `${message['HueID2']}, ${message['SaturationID2']}%, 50%`;
+        const ColorResultLight = `${message['HueID']}, ${message['SaturationID']}%, 82%`;
+        const ColorResultDark = `${message['HueID']}, ${message['SaturationID']}%, 6%`;
 
         document.getElementById("lefthp1").style.fill = `hsl(${ColorData1})`;
         document.getElementById("lefthp2").style.fill = `hsl(${ColorData1})`;
@@ -234,6 +355,9 @@ socket.commands((data) => {
         pp_box.style.backgroundColor = `hsl(${ColorData2})`;
         pp_box.style.filter = `drop-shadow(0 0 10px hsla(${ColorData2}))`;
 
+        config.data.datasets[0].backgroundColor = `hsla(${ColorData1}, 0.2)`;
+        configSecond.data.datasets[0].backgroundColor = `hsl(${ColorData1})`;
+
         document.querySelector('.keys.k1').style.setProperty('--press', `hsl(${ColorData1})`);
         document.querySelector('.keys.k2').style.setProperty('--press', `hsl(${ColorData1})`);
         document.querySelector('.keys.m1').style.setProperty('--press', `hsl(${ColorData2})`);
@@ -244,30 +368,38 @@ socket.commands((data) => {
         keys.m1.color = `hsla(${ColorData2}, 0.8)`;
         keys.m2.color = `hsla(${ColorData2}, 0.8)`;
 
-        config.data.datasets[0].backgroundColor = `hsl(${ColorData1}, 0.2)`;
-        configSecond.data.datasets[0].backgroundColor = `hsl(${ColorData1})`;
-
-        rBPM.style.backgroundColor = `hsl(${ColorData1})`;
-        rBPM.style.boxShadow = `0 0 5px 2px hsl(${ColorData1})`;
-
         lbcpLine.style.backgroundColor = `hsl(${ColorData1})`;
         lbcpLine.style.boxShadow = `0 0 10px 2px hsla(${ColorData1}, 0.5)`;
-      };
 
-      if (message['PromotionEnabled'] == true) {
-        qc.style.display = `flex`;
-        brand.classList.add(`brandsmall`);
-      }
-      else {
-        qc.style.display = `none`;
-        brand.classList.remove(`brandsmall`);
-      }
+        RankingPanel.style.backgroundColor = `hsla(${ColorResultDark}, 0.9)`;
+
+        SonataTextResult.style.color = `hsl(${ColorResultLight})`;
+        bgborder.style.border = `3px solid hsl(${ColorResultLight})`;
+        StatsBPM.style.border = `3px solid hsl(${ColorResultLight})`;
+
+        CSLine.style.border = `3px solid hsl(${ColorResultLight})`;
+        ARLine.style.border = `3px solid hsl(${ColorResultLight})`;
+        ODLine.style.border = `3px solid hsl(${ColorResultLight})`;
+        HPLine.style.border = `3px solid hsl(${ColorResultLight})`;
+
+        PHCS.style.color = `hsl(${ColorResultLight})`;
+        PHAR.style.color = `hsl(${ColorResultLight})`;
+        PHOD.style.color = `hsl(${ColorResultLight})`;
+        PHHP.style.color = `hsl(${ColorResultLight})`;
+
+        CSGlow.style.backgroundColor = `hsl(${ColorResultLight})`;
+        ARGlow.style.backgroundColor = `hsl(${ColorResultLight})`;
+        ODGlow.style.backgroundColor = `hsl(${ColorResultLight})`;
+        HPGlow.style.backgroundColor = `hsl(${ColorResultLight})`;
+
+        MiddleBar.style.backgroundColor = `hsl(${ColorResultLight})`;
+      };
 
     } catch (error) {
       console.log(error);
     };
   });
-  
+
   socket.api_v1(({ menu }) => {
 	if (menu.pp.strains) smoothed = smooth(menu.pp.strains, smoothOffset);
     config.data.datasets[0].data = smoothed;
@@ -280,22 +412,205 @@ socket.commands((data) => {
     }
   });
   
-  socket.api_v2(({ play, beatmap, state, resultsScreen, settings, files, folders }) => {
+  socket.api_v2(({ state, settings, session, performance, resultsScreen, play, beatmap, folders, files, profile}) => {
     try {
-        
+
         if (cache['showInterface'] != settings.interfaceVisible) {
             cache['showInterface'] = settings.interfaceVisible;
         };
         if (cache['data.menu.state'] != state.number || cache['data.menu.state.name'] != state.name) {
             cache['data.menu.state'] = state.number;
             cache['data.menu.state.name'] = state.name;
+            if (cache['data.menu.state'] == 3) {
+                CrashReason.innerHTML = 
+                `The osu! client has been down (or the client has been crashed)
+                please relaunch the client owo!`;
+                CrashReportDebug.classList.remove('crashpop');
+            }
+            else {
+                CrashReportDebug.classList.add('crashpop');
+            };
+
+            State.innerHTML = cache['data.menu.state'] + ` (${cache['data.menu.state.name']})`;
+
+            if (cache['data.menu.state'] == 0) {
+                MainMenuDebug.style.opacity = 1;
+            }
+            else {
+                MainMenuDebug.style.opacity = 0;
+            };
+            if (cache['data.menu.state'] == 5) {
+                GameState5Debug.style.opacity = 1;
+            }
+            else {
+                GameState5Debug.style.opacity = 0;
+            };
+            if (cache['data.menu.state'] == 7) {
+                GameState7Debug.style.opacity = 1;
+            }
+            else {
+                GameState7Debug.style.opacity = 0;
+            };
+            if (cache['data.menu.state'] == 2) {
+                GameState2Debug.style.opacity = 1;
+            }
+            else {
+                GameState2Debug.style.opacity = 0;
+            };
         };
+        if (cache['playtime'] != session.playTime) {
+            cache['playtime'] = session.playTime;
+            Session.innerHTML = `
+            <div>Play Time: ${secondsToHumanReadable(session.playTime)} (${spaceit(session.playTime)})</div>
+            <div>Play Count: ${session.playCount}
+            `
+        };
+
+        if (cache['settings.leaderboard'] != settings.leaderboard) {
+            cache['settings.leaderboard'] = settings.leaderboard;
+            LocalLB.innerHTML = 
+            `
+            <div>Visible: ${settings.leaderboard.visible}</div>
+            <div>${settings.leaderboard.type.name} (${settings.leaderboard.type.number})</div>
+            `
+        } 
+
+        if (cache['settings'] != settings) {
+            cache['settings'] = settings;
+            ClientData.innerHTML = 
+            `
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Client Version: ${settings.client.version} (Update: ${settings.client.updateAvailable})</div>
+            <div>Branch: ${settings.client.branch}</div>
+            <div>Sonata Debug Version: 1.0</div>
+            `
+            SettingsData.innerHTML =
+            `
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div style="font-weight: 900; font-size: 32px;">Meter</div>
+            <div>Type: ${settings.scoreMeter.type.name} (${settings.scoreMeter.type.number})</div>
+            <div>Size: ${settings.scoreMeter.size}</div>
+            <div>Progress Bar Type: ${settings.progressBar.name} (${settings.progressBar.number})</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div style="font-weight: 900; font-size: 32px;">Background</div>
+            <div>Dim: ${settings.background.dim}</div>
+            <div>Video: ${settings.background.video}</div>
+            <div>Storyboard: ${settings.background.storyboard}</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div style="font-weight: 900; font-size: 32px;">Cursor</div>
+            <div>Use Beatmaps Skin Cursor: ${settings.cursor.useSkinCursor}</div>
+            <div>Size: ${settings.cursor.size} (Auto Size: ${settings.cursor.autoSize})
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div style="font-weight: 900; font-size: 32px;">Mania</div>
+            <div>Speed Scale by BPM: ${settings.mania.speedBPMScale}</div>
+            <div>Use Per Beatmaps Speed Scale: ${settings.mania.usePerBeatmapSpeedScale}</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div style="font-weight: 900; font-size: 32px;">Skin</div>
+            <div>Use Peppy Skin in Editor: ${settings.skin.useDefaultSkinInEditor}</div>
+            <div>Ignore Beatmap Skins: ${settings.skin.ignoreBeatmapSkins}</div>
+            <div>Tint Slider Ball: ${settings.skin.tintSliderBall}</div>
+            <div>Use Taiko Skin: ${settings.skin.useTaikoSkin}</div>
+            `
+            AudioNumber.innerHTML = 
+            `
+            <div style="width: 60px;">${settings.audio.volume.master}</div>
+            <div style="width: 60px;">${settings.audio.volume.music}</div>
+            <div style="width: 60px;">${settings.audio.volume.effect}</div>
+            `
+            Offset.innerHTML = `Current Offset: ${settings.audio.offset.universal}ms`
+            MasterFill.style.height = settings.audio.volume.master + '%'
+            MusicFill.style.height = settings.audio.volume.music + '%'
+            EffectFill.style.height = settings.audio.volume.effect + '%'
+            Mode.innerHTML = settings.mode.name + ` (${settings.mode.number})`
+            Bass.innerHTML = `Bass Density: ` + settings.bassDensity.toFixed(4)
+            ReplaysSettingsData.innerHTML = 
+            `
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Interface: ${settings.interfaceVisible}</div>
+            <div>ReplaysUI: ${settings.replayUIVisible}</div>
+            `
+            SortGroupData.innerHTML = 
+            `
+            <div class="DebugText">Sort</div>
+            <div>${settings.sort.name} (${settings.sort.number})</div>
+            <div class="DebugText">Group</div>
+            <div>${settings.group.name} (${settings.group.number})</div>
+            `
+            InputData.innerHTML = 
+            `
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div style="font-weight: 900; font-size: 32px;">Mouse</div>
+            <div>Raw Input: ${settings.mouse.rawInput}</div>
+            <div>Disable Mouse Click Buttons: ${settings.mouse.disableButtons}</div>
+            <div>Disable Mouse Wheel: ${settings.mouse.disableWheel}</div>
+            <div>Sensitivity: ${settings.mouse.sensitivity}</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div style="font-weight: 900; font-size: 32px;">Key Binds</div>
+            <div>K1: ${settings.keybinds.osu.k1} (Fruits: ${settings.keybinds.fruits.k1})</div>
+            <div>K2: ${settings.keybinds.osu.k2} (Fruits: ${settings.keybinds.fruits.k2})</div>
+            <div>Smoke Key: ${settings.keybinds.osu.smokeKey}</div>
+            <div>Dash Key: ${settings.keybinds.fruits.Dash}</div>
+            <div>Taiko Inner Left: ${settings.keybinds.taiko.innerLeft}</div>
+            <div>Taiko Inner Right: ${settings.keybinds.taiko.innerRight}</div>
+            <div>Taiko Outer Left: ${settings.keybinds.taiko.outerLeft}</div>
+            <div>Taiko Outer Right: ${settings.keybinds.taiko.outerRight}</div>
+            <div>Spam Retry Button: ${settings.keybinds.quickRetry}</div>
+            `
+        };
+        if (cache['profile'] != profile) {
+            cache['profile'] = profile;
+            ProfileData.innerHTML =
+            `
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Online Status: ${profile.userStatus.name} (${profile.userStatus.number})</div>
+            <div>Bancho Status: ${profile.banchoStatus.name} (${profile.banchoStatus.number})</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Username: ${profile.name} (ID: ${profile.id})</div>
+            <div>Mode: ${profile.mode.name} (${profile.mode.number})</div>
+            <div>Ranked Score: ${profile.rankedScore}</div>
+            <div>PP: ${profile.pp}</div>
+            <div>Accuracy: ${profile.accuracy}</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Total Play Count: ${profile.playCount}</div>
+            <div>Level: ${profile.level}</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Global Rank: ${profile.globalRank}</div>
+            <div>Country: ${profile.countryCode.name} (${profile.countryCode.number})</div>
+            `
+        }
         if (cache['mode'] != play.mode.name) {
             cache['mode'] = play.mode.name;
             global.style.backgroundImage = `url(./static/mode/${cache['mode']}.png)`;
         };
-        if (cache['hp.smooth'] != play.healthBar.smooth.toFixed(2)) {
-            cache['hp.smooth'] = play.healthBar.smooth.toFixed(2);
+        if (cache['play'] != play) {
+            cache['play'] = play;
+            GameplayData.innerHTML =
+            `
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Player: ${play.playerName}
+            <div>Health Percent: ${play.healthBar.normal.toFixed(0)} (Smooth: ${play.healthBar.smooth.toFixed(0)})</div>
+            <div>Current Grade: ${play.rank.current}</div>
+            <div>Highest Grade Can Archive: ${play.rank.maxThisPlay}</div>
+            <div>Maximum PP Can Archive: ${play.pp.maxAchievedThisPlay}</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Score: ${play.score}</div>
+            <div>Accuracy: ${play.accuracy.toFixed(2)}%</div>
+            <div>Combo: ${play.combo.current} (Max: ${play.combo.max})
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Geki: ${play.hits.geki}</div>
+            <div>300: ${play.hits[300]}</div>
+            <div>Katu: ${play.hits.katu}</div>
+            <div>100: ${play.hits[100]}</div>
+            <div>50: ${play.hits[50]}</div>
+            <div>0: ${play.hits[0]}</div>
+            <div>Sliderbreaks: ${play.hits.sliderBreaks}</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Unstable Rate: ${play.unstableRate.toFixed(2)}
+            <div>Mods: ${play.mods.name} (${play.mods.number})</div>
+            `
+        };
+        if (cache['hp.normal'] != play.healthBar.normal.toFixed(2)) {
+            cache['hp.normal'] = play.healthBar.normal.toFixed(2);
         };
         if (cache['play.name'] != play.playerName) {
             cache['play.name'] = play.playerName;
@@ -345,56 +660,148 @@ socket.commands((data) => {
             cache['play.pp.fc'] = play.pp.fc.toFixed(0);
             ppfc_txt.innerHTML = cache['play.pp.fc'];
         };
+        if (cache['pp.detailed'] != play.pp.detailed) {
+            cache['pp.detailed'] = play.pp.detailed;
+            PPDetailedData.innerHTML = 
+            `
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div style="font-weight: 900; font-size: 32px;">Current</div>
+            <div>Aim: ${play.pp.detailed.current.aim}</div>
+            <div>Speed: ${play.pp.detailed.current.speed}</div>
+            <div>Accuracy: ${play.pp.detailed.current.accuracy}</div>
+            <div>Difficulty: ${play.pp.detailed.current.difficulty}</div>
+            <div>Flashlight: ${play.pp.detailed.current.flashlight}</div>
+            <div>Total: ${play.pp.detailed.current.total}</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div style="font-weight: 900; font-size: 32px;">If FC</div>
+            <div>Aim: ${play.pp.detailed.fc.aim}</div>
+            <div>Speed: ${play.pp.detailed.fc.speed}</div>
+            <div>Accuracy: ${play.pp.detailed.fc.accuracy}</div>
+            <div>Difficulty: ${play.pp.detailed.fc.difficulty}</div>
+            <div>Flashlight: ${play.pp.detailed.fc.flashlight}</div>
+            <div>Total: ${play.pp.detailed.fc.total}</div>
+            `
+        };
         if (cache['unstableRate'] != play.unstableRate) {
             cache['unstableRate'] = play.unstableRate;
             URIndex.innerHTML = cache['unstableRate'].toFixed(0);
-            ResultUR.innerHTML = cache['unstableRate'].toFixed(2) + ' UR';
         };
         if (cache['beatmap_rankedStatus'] != beatmap.status.number) {
             cache['beatmap_rankedStatus'] = beatmap.status.number;
 
             switch (cache['beatmap_rankedStatus']) {
                 case 4:
-                    rankedStatus.style.backgroundImage = `url('./static/state/ranked.png')`;
+                    rankStatus.style.backgroundImage = `url('./static/state/ranked.png')`;
                     break;
                 case 7:
-                    rankedStatus.style.backgroundImage = `url('./static/state/loved.png')`;
+                    rankStatus.style.backgroundImage = `url('./static/state/loved.png')`;
                     break;
                 case 5:
                 case 6:
-                    rankedStatus.style.backgroundImage = `url('./static/state/qualified.png')`;
+                    rankStatus.style.backgroundImage = `url('./static/state/qualified.png')`;
                     break;
                 default:
-                    rankedStatus.style.backgroundImage = `url('./static/state/unranked.png')`;
+                    rankStatus.style.backgroundImage = `url('./static/state/unranked.png')`;
                     break;
             }
         };
+
+        if (JSON.stringify(cache['strains']) != JSON.stringify(performance.graph) && chart != '') {
+            cache['strains'] = performance.graph;
+        
+            graph_options.series = performance.graph.series.slice(3, 4).map(r => {
+        
+                return {
+                  name: r.name,
+                  data: r.data.map(s => s == -100 ? null : s),
+                };
+              });
+            chart.updateOptions(graph_options);
+            chart2.updateOptions(graph_options);
+          };
+
+        if (cache['beatmap'] != beatmap) {
+            cache['beatmap'] = beatmap;
+            SongSelectData.innerHTML =
+            `
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div style="font-weight: 900; font-size: 32px;">Status</div>
+            <div>${beatmap.status.name} (${beatmap.status.number})</div>
+            <div>Checksum: ${beatmap.checksum}</div>
+            <div>ID: ${beatmap.id} | Set: ${beatmap.set}</div>
+            <div>Artist: ${beatmap.artist} (${beatmap.artistUnicode})
+            <div>Title: ${beatmap.title} (${beatmap.titleUnicode})
+            <div>Mapper: ${beatmap.mapper} (Version: ${beatmap.version})
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div style="font-weight: 900; font-size: 32px;">Stars</div>
+            <div>Aim: ${beatmap.stats.stars.aim}</div>
+            <div>Speed: ${beatmap.stats.stars.speed}</div>
+            <div>Flashlight: ${beatmap.stats.stars.flashlight}</div>
+            <div>SliderFactor: ${beatmap.stats.stars.sliderFactor}</div>
+            <div>Total: ${beatmap.stats.stars.total}</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div style="font-weight: 900; font-size: 32px;">Difficulty</div>
+            <div>AR: ${beatmap.stats.ar.converted} (Memory: ${beatmap.stats.ar.original})</div>
+            <div>CS: ${beatmap.stats.cs.converted} (Memory: ${beatmap.stats.cs.original})</div>
+            <div>OD: ${beatmap.stats.od.converted} (Memory: ${beatmap.stats.od.original})</div>
+            <div>HP: ${beatmap.stats.hp.converted} (Memory: ${beatmap.stats.hp.original})</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div style="font-weight: 900; font-size: 32px;">BPM</div>
+            <div>Common: ${beatmap.stats.bpm.common}</div>
+            <div>Minimum: ${beatmap.stats.bpm.min}</div>
+            <div>Maximum: ${beatmap.stats.bpm.max}</div>
+            `
+            ObjectData.innerHTML =
+            `
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Circles: ${beatmap.stats.objects.circles}</div>
+            <div>Sliders: ${beatmap.stats.objects.sliders}</div>
+            <div>Spinners: ${beatmap.stats.objects.spinners}</div>
+            <div>Holds: ${beatmap.stats.objects.holds}</div>
+            <div>Total: ${beatmap.stats.objects.total}</div>
+            <div>Max Combo: ${beatmap.stats.maxCombo}</div>
+            `
+            TimeMapData.innerHTML =
+            `
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Stars Live: ${beatmap.stats.stars.live}</div>
+            <div>BPM Live: ${beatmap.stats.bpm.realtime}</div>
+            <div>Current Time: ${secondsToHumanReadable(beatmap.time.live)} (${spaceit(beatmap.time.live)})</div>
+            <div>First Object: ${secondsToHumanReadable(beatmap.time.firstObject)} (${spaceit(beatmap.time.firstObject)})</div>
+            <div>Last Object: ${secondsToHumanReadable(beatmap.time.lastObject)} (${spaceit(beatmap.time.lastObject)})</div>
+            <div>MP3 Length: ${secondsToHumanReadable(beatmap.time.mp3Length)} (${spaceit(beatmap.time.mp3Length)})</div>
+            `
+        }
+
         if (cache['beatmap.stats.ar.converted'] != beatmap.stats.ar.converted) {
             cache['beatmap.stats.ar.converted'] = beatmap.stats.ar.converted;
-            rAR.innerHTML = cache['beatmap.stats.ar.converted'].toFixed(2);
+            ARText.innerHTML = cache['beatmap.stats.ar.converted'].toFixed(2);
         };
         if (cache['beatmap.stats.cs.converted'] != beatmap.stats.cs.converted) {
             cache['beatmap.stats.cs.converted'] = beatmap.stats.cs.converted;
-            rCS.innerHTML = cache['beatmap.stats.cs.converted'].toFixed(2);
+            CSText.innerHTML = cache['beatmap.stats.cs.converted'].toFixed(2);
         };
         if (cache['beatmap.stats.od.converted'] != beatmap.stats.od.converted) {
             cache['beatmap.stats.od.converted'] = beatmap.stats.od.converted;
-            rOD.innerHTML = cache['beatmap.stats.od.converted'].toFixed(2);
+            ODText.innerHTML = cache['beatmap.stats.od.converted'].toFixed(2);
             calculate_od(cache['beatmap.stats.od.converted']);
         };
         if (cache['beatmap.stats.hp.converted'] != beatmap.stats.hp.converted) {
             cache['beatmap.stats.hp.converted'] = beatmap.stats.hp.converted;
-            rHP.innerHTML = cache['beatmap.stats.hp.converted'].toFixed(2);
+            HPText.innerHTML = cache['beatmap.stats.hp.converted'].toFixed(2);
         };
         if (cache['stars.live'] != beatmap.stats.stars.live || cache['stars.total'] != beatmap.stats.stars.total) {
             cache['stars.live'] = beatmap.stats.stars.live;
             cache['stars.total'] = beatmap.stats.stars.total;
             starsCurrent.innerHTML = cache['stars.live'];
-            SR.innerHTML = cache['stars.total'];
+            starRating.innerHTML = cache['stars.total'] + ` <i class="fas fa-star" style='color: #f7ff4a;'></i>`
         };
         if (cache['beatmap.stats.bpm.common'] != beatmap.stats.bpm.common) {
             cache['beatmap.stats.bpm.common'] = beatmap.stats.bpm.common;
-            rBPM.innerHTML = cache['beatmap.stats.bpm.common'] + ` BPM`;
+            StatsBPM.innerHTML = cache['beatmap.stats.bpm.common'] + 'BPM';
+        };
+        if (cache['beatmap.stats.maxCombo'] != beatmap.stats.maxCombo) {
+            cache['beatmap.stats.maxCombo'] = beatmap.stats.maxCombo;
         };
         if (cache['beatmap.artist'] != beatmap.artist) {
             cache['beatmap.artist'] = beatmap.artist;
@@ -423,6 +830,19 @@ socket.commands((data) => {
         if (cache['beatmap.id'] != beatmap.id) {
             cache['beatmap.id'] = beatmap.id;
         };
+        if (cache['performance'] != performance) {
+            cache['performance'] = performance;
+            PerformanceData.innerHTML =
+            `
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>SS: ${performance.accuracy[100]}</div>
+            <div>99%: ${performance.accuracy[99]}</div>
+            <div>98%: ${performance.accuracy[98]}</div>
+            <div>97%: ${performance.accuracy[97]}</div>
+            <div>96%: ${performance.accuracy[96]}</div>
+            <div>95%: ${performance.accuracy[95]}</div>
+            `
+        };
         if (cache['h100'] != play.hits['100']) {
             cache['h100'] = play.hits['100'];
             h100.update(cache['h100']);
@@ -430,9 +850,9 @@ socket.commands((data) => {
             let tickh100 = document.createElement("div");
             tickh100.setAttribute("class", "tickGraph tick100");
             tickh100.style.transform = `translateX(${progressbar}px)`;
+            document.getElementById("graph100").appendChild(tickh100);
             if (cache['h100'] > 0) {
                 graph100.style.height = "17px";
-                document.getElementById("graph100").appendChild(tickh100);
             }
             else {
                 graph100.style.height = "0px";
@@ -446,7 +866,7 @@ socket.commands((data) => {
                 h100Text.style.transform = `scale(100%)`;
             }, 300);
         };
-  
+
         if (cache['h50'] != play.hits['50']) {
             cache['h50'] = play.hits['50'];
             h50.update(cache['h50']);
@@ -454,9 +874,9 @@ socket.commands((data) => {
             let tickh50 = document.createElement("div");
             tickh50.setAttribute("class", "tickGraph tick50");
             tickh50.style.transform = `translateX(${progressbar}px)`;
+            document.getElementById("graph50").appendChild(tickh50);
             if (cache['h50'] > 0) {
                 graph50.style.height = "17px";
-                document.getElementById("graph50").appendChild(tickh50);
             }
             else {
                 graph50.style.height = "0px";
@@ -478,9 +898,9 @@ socket.commands((data) => {
             let tickh0 = document.createElement("div");
             tickh0.setAttribute("class", "tickGraph tick0");
             tickh0.style.transform = `translateX(${progressbar}px)`;
+            document.getElementById("graph0").appendChild(tickh0);
             if (cache['h0'] > 0) {
                 graph0.style.height = "17px";
-                document.getElementById("graph0").appendChild(tickh0);
             }
             else {
                 graph0.style.height = "0px";
@@ -503,12 +923,16 @@ socket.commands((data) => {
             let tickSB = document.createElement("div");
             tickSB.setAttribute("class", "tickGraph tickSB");
             tickSB.style.transform = `translateX(${progressbar}px)`;
+            document.getElementById("graphSB").appendChild(tickSB);
             if (cache['hSB'] > 0) {
                 graphSB.style.height = "17px";
-                document.getElementById("graphSB").appendChild(tickSB);
+                rSB.style.display = 'block';
+                JudgeSB.style.display = 'block';
             }
             else {
                 graphSB.style.height = "0px";
+                rSB.style.display = 'none';
+                JudgeSB.style.display = 'none';
             }
             hsbCont.style.backgroundColor = `white`;
             hSBText.style.transform = `scale(85%)`;
@@ -521,9 +945,34 @@ socket.commands((data) => {
             cache['play.mods.name'] = play.mods.name;
             cache['play.mods.number'] != play.mods.number;
         };
+        if (cache['resultsScreen'] != resultsScreen) {
+            cache['resultsScreen'] = resultsScreen;
+            ResultScreenData.innerHTML =
+            `
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Score ID: ${resultsScreen.scoreId}</div>
+            <div>Mode: ${resultsScreen.mode.name} (${resultsScreen.mode.number})</div>
+            <div>Player Name: ${resultsScreen.playerName}</div>
+            <div>Date Played: ${resultsScreen.createdAt}</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Score: ${resultsScreen.score}</div>
+            <div>Accuracy: ${resultsScreen.accuracy}</div>
+            <div>Max Combo: ${resultsScreen.maxCombo}</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Geki: ${resultsScreen.hits.geki}</div>
+            <div>300: ${resultsScreen.hits[300]}</div>
+            <div>Katu: ${resultsScreen.hits.katu}</div>
+            <div>100: ${resultsScreen.hits[100]}</div>
+            <div>50: ${resultsScreen.hits[50]}</div>
+            <div>0: ${resultsScreen.hits[0]}</div>
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>Rank: ${resultsScreen.rank}</div>
+            <div>PP: ${resultsScreen.pp.current.toFixed(0)} (FC: ${resultsScreen.pp.fc.toFixed(0)})</div>
+            <div>Mods: ${resultsScreen.mods.name} (${resultsScreen.mods.number})</div>
+            `
+        }
         if (cache['resultsScreen.hits[300]'] != resultsScreen.hits[300]) {
             cache['resultsScreen.hits[300]'] = resultsScreen.hits[300];
-            r100.innerHTML = cache['resultsScreen.hits[300]'];
         };
         if (cache['resultsScreen.hits[100]'] != resultsScreen.hits[100]) {
             cache['resultsScreen.hits[100]'] = resultsScreen.hits[100];
@@ -545,7 +994,7 @@ socket.commands((data) => {
             else {
                 LocalResultNameData = cache['resultsScreen.name'];
             }
-            rUsername.innerHTML = LocalResultNameData;
+            PlayerName.innerHTML = LocalResultNameData;
         };
         if (cache['resultsScreen.mods.name'] != resultsScreen.mods.name || cache['resultsScreen.mods.number'] != resultsScreen.mods.number) {
             cache['resultsScreen.mods.name'] = resultsScreen.mods.name;
@@ -553,14 +1002,15 @@ socket.commands((data) => {
         };
         if (cache['resultScreen.accuracy'] != resultsScreen.accuracy) {
             cache['resultScreen.accuracy'] = resultsScreen.accuracy;
-            ResultAcc.innerHTML = cache['resultScreen.accuracy'] + '%';
+            PlayerAcc.innerHTML = cache['resultScreen.accuracy'] + '%';
         };
         if (cache['resultsScreen.maxCombo'] != resultsScreen.maxCombo) {
             cache['resultsScreen.maxCombo'] = resultsScreen.maxCombo;
+            PlayerMaxCombo.innerHTML = cache['resultsScreen.maxCombo'] + ` / ` + cache['beatmap.stats.maxCombo'] + `x`;
         };
         if (cache['resultsScreen.score'] != resultsScreen.score) {
             cache['resultsScreen.score'] = resultsScreen.score;
-            ResultScoreCombo.innerHTML = numberWithCommas(cache['resultsScreen.score']) + ` (${cache['resultsScreen.maxCombo']}x)`;
+            PlayerScore.innerHTML = numberWithCommas(cache['resultsScreen.score']);
         };
         if (cache['resultsScreen.rank'] != resultsScreen.rank) {
             cache['resultsScreen.rank'] = resultsScreen.rank;
@@ -569,9 +1019,17 @@ socket.commands((data) => {
         };
         if (cache['resultsScreen.pp.fc'] != resultsScreen.pp.fc) {
             cache['resultsScreen.pp.fc'] = resultsScreen.pp.fc.toFixed(0);
+            PPResultIfFC.innerHTML = `| FC: ` + cache['resultsScreen.pp.fc'] + 'pp';
+            if (cache['resultsScreen.hits[0]'] == 0 && cache['hSB'] == 0) {
+                PPResultIfFC.style.display = `none`;
+            }
+            else {
+                PPResultIfFC.style.display = `block`;
+            }
         };
         if (cache['resultsScreen.pp.current'] != resultsScreen.pp.current) {
             cache['resultsScreen.pp.current'] = resultsScreen.pp.current.toFixed(0);
+            PPResult.innerHTML = cache['resultsScreen.pp.current'] + 'pp';
         };
         if (cache['folders.beatmap'] != folders.beatmap) {
             cache['folders.beatmap'] = folders.beatmap;
@@ -583,51 +1041,13 @@ socket.commands((data) => {
             cache['files.background'] = files.background;
         };
 
-        const cache_beatmap = ' ';
-
-        if (cache_beatmap !== beatmap.checksum) {
-            cache_beatmap == beatmap.checksum;
-    
-            MapReader(
-                `http://127.0.0.1:24050/files/beatmap/${cache['folders.beatmap']}/${cache['files.beatmap']}`,
-                beatmap.time.live
-            );
-            async function MapReader(path, currentTime) {
-                const reader = await fetch(path, { cache: "no-store" });
-                const text = await reader.text();
-                const matchTimingPoints = text
-                    .match(/\[TimingPoints\](\r?)\n(-?[0-9]+,-?[0-9]+(\.[0-9]+)?,[0-9]+,[0-9]+,[0-9]+,[0-9]+,(0|1),[0-9]+(\r)?\n)*/gm)
-                    .shift();
-    
-                const timingPointsList = matchTimingPoints.match(/(-?[0-9]+,-?[0-9]+(\.[0-9]+)?,[0-9]+,[0-9]+,[0-9]+,[0-9]+,1,[0-9]+)/g).map((point) => {
-                    const params = point.split(",");
-                    return {
-                        time: parseInt(params[0]),
-                        BPM: 60000 / parseFloat(params[1]),
-                    };
-                });
-                
-                let BPMLive;
-                
-                if (cache['play.mods.name'].search("DT") !== -1 || cache['play.mods.name'].search("NC") !== -1) {
-                    BPMLive = timingPointsList.findLast((point) => point.time <= currentTime)?.BPM.toFixed(0) * 1.5;
-                }
-                else if (cache['play.mods.name'].search("HT") !== -1) {
-                    BPMLive = timingPointsList.findLast((point) => point.time <= currentTime)?.BPM.toFixed(0) * 0.75;
-                }
-                else {
-                    BPMLive = timingPointsList.findLast((point) => point.time <= currentTime)?.BPM.toFixed(0);
-                };
-                
-                if (cache['BPMLive'] != BPMLive) {
-                    cache['BPMLive'] = BPMLive;
-                    BPMlive.innerHTML = cache['BPMLive'];
-                    bpmflash.style.opacity = 0;
-                    setTimeout(function() {
-                        bpmflash.style.opacity = 1;
-                    }, 200);
-                };
-            };
+        if (cache['BPMLive'] != beatmap.stats.bpm.realtime) {
+            cache['BPMLive'] = beatmap.stats.bpm.realtime;
+            BPMlive.innerHTML = cache['BPMLive'];
+            bpmflash.style.opacity = 0;
+            setTimeout(function() {
+                bpmflash.style.opacity = 1;
+            }, 200);
         };
 
         const cachedim = settings.background.dim / 100;
@@ -635,18 +1055,16 @@ socket.commands((data) => {
         const Img = cache['files.background'];
 
         mapBG.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, ${cachedim}), rgba(0, 0, 0, ${cachedim})), url('http://127.0.0.1:24050/files/beatmap/${Folder}/${Img}')`;
-        rankingPanelBG.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, ${cachedim}), rgba(0, 0, 0, ${cachedim})), url('http://127.0.0.1:24050/files/beatmap/${Folder}/${Img}')`;
-        MapDetails.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('http://127.0.0.1:24050/files/beatmap/${Folder}/${Img}')`;
+        rankingPanelBG.style.backgroundImage = `url('http://127.0.0.1:24050/files/beatmap/${Folder}/${Img}')`;
+        StatsBG.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('http://127.0.0.1:24050/files/beatmap/${Folder}/${Img}')`;
 
-        SongTitle.innerHTML = cache['beatmap.artist'] + ' - ' + cache['beatmap.title'];
-        rDiff.innerHTML = `[${cache['beatmap.version']}]`;
-        rMapper.innerHTML = `Mapped by ${cache['beatmap.mapper']}`;
+        Song.innerHTML = cache['beatmap.title'];
+        Artist.innerHTML = `by ` + cache['beatmap.artist'];
+        Mapper.innerHTML = `Mapped by ` + cache['beatmap.mapper'];
 
         combo_wrapper.style.transform = `translateX(${cache['beatmap.stats.od.converted'] * 13}px)`;
         pp_wrapper.style.transform = `translateX(-${cache['beatmap.stats.od.converted'] * 13}px)`;
         l50.style.width = `${600 - (26.2 * cache['beatmap.stats.od.converted'])}px`;
-        l100.style.width = `${420 - (21 * cache['beatmap.stats.od.converted'])}px`;
-        l300.style.width = `${240 - (16.2 * cache['beatmap.stats.od.converted'])}px`;
 
         if (cache['data.menu.state'] !== 2) {
             if (cache['data.menu.state'] !== 7) { deRankingPanel() };
@@ -657,8 +1075,6 @@ socket.commands((data) => {
             avgHitError.style.transform = "translateX(0)";
     
             gpbottom.style.opacity = 0;
-    
-            URIndex.innerHTML = "";
         } else {
             deRankingPanel();
 
@@ -717,12 +1133,12 @@ socket.commands((data) => {
                 gptop.style.opacity = 1;
             };
 
-            if (cache['LBEnabled'] == true) {
+            if (cache['beatmap_rankedStatus'] == 4 && cache['LBEnabled'] == true || cache['beatmap_rankedStatus'] == 7 && cache['LBEnabled'] == true || cache['beatmap_rankedStatus'] == 6 && cache['LBEnabled'] == true || cache['beatmap_rankedStatus'] == 5 && cache['LBEnabled'] == true ) {
 
             setupMapScores(cache['beatmap.id']);
 
             if (document.getElementById("currentplayerCont"))
-                lbcpPosition.setAttribute('class', `N${playerPosition}`);
+                lbcpPosition.setAttribute('class', `positions N${playerPosition}`);
 
                 if (playerPosition > 9) {
                     lbopCont.style.transform = `translateY(${-(playerPosition - 50) * 65}px)`;
@@ -732,6 +1148,9 @@ socket.commands((data) => {
                     lbopCont.style.transform = "translateY(2600px)";
                     document.getElementById("currentplayerCont").style.transform = `translateY(${(playerPosition - 10) * 65}px)`;
                     document.getElementById("lbcpLine").style.transform = `translateY(${(playerPosition - 10) * 65}px)`;
+                    document.getElementById("lbcpLine").style.height = `${(playerPosition - 10) * 35 + 1}px`;
+                    LBUpTimer = new Date().getTime();
+                    previousUpTimer = LBUpTimer
                 };
             if (tempSlotLength > 0)
                 for (var i = 10; i <= tempSlotLength; i++) {
@@ -746,7 +1165,11 @@ socket.commands((data) => {
                         document.getElementById(`lb_Positions_slot${i}`).innerHTML = `${i + 1}`;
                         document.getElementById(`lb_Positions_slot${i}`).setAttribute('class', `N${i + 1}`);
                     }
+                    if (new Date().getTime() - previousUpTimer > previousUpTimer - 1000) {
+                        document.getElementById("lbcpLine").style.height = `35px`;
+                    }
                 };
+                console.log(previousUpTimer)
             }
             else {
                 lbopCont.innerHTML = " ";
@@ -782,13 +1205,6 @@ socket.commands((data) => {
             };
         };
 
-        if (cache['resultsScreen.mods.number'] == '0') {
-            rankingResult.style.transform = `translateY(35px)`;
-        }
-        else {
-            rankingResult.style.transform = `translateY(0)`;
-        };
-
         if (cache['h100'] > 0 || cache['h50'] > 0 || cache['h0'] > 0) {
             strainGraph.style.transform = `translateY(-10px)`;
         }
@@ -821,6 +1237,7 @@ socket.commands((data) => {
             recorder.style.transform = "none";
             recorderName.style.transform = "none";
         };
+        
 
         let isBreak = cache['play.combo.current'] < cache['play.combo.max'];
 
@@ -846,10 +1263,10 @@ socket.commands((data) => {
           combo_box.style.width = `${124 + (isBreak ? getMaxPxValue(cache['play.combo.max']) : 0)}px`;
         };
         if (cache['play.combo.current'] >= 1000 && cache['play.combo.current'] < 10000) {
-          combo_box.style.width = `${154 + (isBreak ? getMaxPxValue(cache['play.combo.max']) : 0)}px`;
+          combo_box.style.width = `${159 + (isBreak ? getMaxPxValue(cache['play.combo.max']) : 0)}px`;
         };
         if (cache['play.combo.current'] >= 10000 && cache['play.combo.current'] < 1000) {
-          combo_box.style.width = `${174 + (isBreak ? getMaxPxValue(cache['play.combo.max']) : 0)}px`;
+          combo_box.style.width = `${179 + (isBreak ? getMaxPxValue(cache['play.combo.max']) : 0)}px`;
         };
   
         function getMaxPxValue(x) {
@@ -860,50 +1277,50 @@ socket.commands((data) => {
         };
   
         function getTranslateValue(x) {
-          if (x < 10) return 17;
-          if (x >= 10 && x < 100) return 37;
-          if (x >= 100 && x < 1000) return 57;
-          if (x >= 1000 && x < 10000) return 87;
+          if (x < 10) return 20;
+          if (x >= 10 && x < 100) return 40;
+          if (x >= 100 && x < 1000) return 60;
+          if (x >= 1000 && x < 10000) return 95;
         };
 
         let pp_tx = cache['play.pp.current'] + " / " + cache['play.pp.fc'] + "pp";
 
         if (pp_tx.length == 7) { 
-          pp_box.style.width = '150px';
+          pp_box.style.width = '155px';
         };
         if (pp_tx.length == 8) { 
-          pp_box.style.width = '160px';
+          pp_box.style.width = '165px';
         };
         if (pp_tx.length == 9) {
-          pp_box.style.width = '190px';
+          pp_box.style.width = '195px';
         };
         if (pp_tx.length == 10) {
-          pp_box.style.width = '210px';
+          pp_box.style.width = '215px';
         };
         if (pp_tx.length == 11) {
-          pp_box.style.width = '230px';
+          pp_box.style.width = '235px';
         };
         if (pp_tx.length == 12) {
-          pp_box.style.width = '250px';
+          pp_box.style.width = '265px';
         };
         if (pp_tx.length == 13) {
-          pp_box.style.width = '280px';
+          pp_box.style.width = '295px';
         };
 
         if (cache['play.pp.current'] < 10) {
-            pp_txt.style.width = "22px";
+            pp_txt.style.width = "25px";
         };
         if (cache['play.pp.current'] >= 10 && cache['play.pp.current'] < 100) {
-            pp_txt.style.width = "40px";
+            pp_txt.style.width = "48px";
         };
         if (cache['play.pp.current'] >= 100 && cache['play.pp.current'] < 1000) {
-            pp_txt.style.width = "61px";
+            pp_txt.style.width = "70px";
         };
         if (cache['play.pp.current'] >= 1000 && cache['play.pp.current'] < 10000) {
-            pp_txt.style.width = "92px";
+            pp_txt.style.width = "105px";
         };
         if (cache['play.pp.current'] >= 10000 && cache['play.pp.current'] < 1000) {
-            pp_txt.style.width = "110px";
+            pp_txt.style.width = "125px";
         };
 
         if (cache['beatmap.time.live'] > beatmap.time.live) {
@@ -935,26 +1352,19 @@ socket.commands((data) => {
           keys['m2'].bpmArray.length = 0;
         };
 
-        if (play.healthBar.smooth > 0) {
-            hp.style.clipPath = `polygon(${(1 - play.healthBar.smooth / 100) * 50}% 0%, ${(play.healthBar.smooth / 100) * 50 + 50}% 0%, ${(play.healthBar.smooth / 100) * 50 + 50}% 100%, ${(1 - play.healthBar.smooth / 100) * 50}% 100%)`;
+        if (cache['hp.normal'] > 0) {
+            hp.style.clipPath = `polygon(${(1 - cache['hp.normal'] / 100) * 50}% 0%, ${(cache['hp.normal'] / 100) * 50 + 50}% 0%, ${(cache['hp.normal'] / 100) * 50 + 50}% 100%, ${(1 - cache['hp.normal'] / 100) * 50}% 100%)`;
         } else {
             hp.style.clipPath = `polygon(0 0, 93.7% 0, 93.7% 100%, 0 100%)`;
         };
 
         if (tempMapScores.length > 0) if (cache['play.score'] >= tempMapScores[playerPosition - 2]) playerPosition--;
 
-        if (cache['beatmap.time.live'] >= cache['beatmap.time.lastObject'] + 1000 && cache['data.menu.state'] == 2) { rankingPanelBG.style.opacity = 1; }
+        if (cache['beatmap.time.live'] >= cache['beatmap.time.lastObject'] + 1000 && cache['data.menu.state'] == 2 || cache['data.menu.state'] == 7) { rankingPanelBG.style.opacity = 1; }
     
         if (rankingPanelBG.style.opacity !== 1 && cache['data.menu.state'] == 2 && cache['beatmap.time.live'] >= cache['beatmap.time.lastObject'] + 1000 || cache['data.menu.state'] == 7) {
             if (!rankingPanelSet) setupRankingPanel();
         } else if (!(cache['beatmap.time.live'] >= cache['beatmap.time.lastObject'] - 500 && cache['data.menu.state'] == 2)) rankingPanelBG.style.opacity = 0 && deRankingPanel();
-
-        if (cache['resultsScreen.hits[0]'] > 0 || cache['play.hits.sliderBreaks'] > 0) {
-            ResultPPAndifFC.innerHTML = `FC: ${cache['resultsScreen.pp.fc']} | ${cache['resultsScreen.pp.current']}pp`;
-        }
-        else {
-            ResultPPAndifFC.innerHTML = `${cache['resultsScreen.pp.current']}pp`;
-        };
 
         async function setupRankingPanel() {
             rankingPanelSet = true;
@@ -962,144 +1372,87 @@ socket.commands((data) => {
             rankingPanelBG.style.opacity = 1;
             RankingPanel.style.opacity = 1;
         
-            arGlow.style.width = ((cache['beatmap.stats.ar.converted'].toFixed(2) * 10) - 10) + '%';
-            odGlow.style.width = ((cache['beatmap.stats.od.converted'].toFixed(2) * 10) - 10) + '%';
-            csGlow.style.width = ((cache['beatmap.stats.cs.converted'].toFixed(2) * 10) - 10) + '%';
-            hpGlow.style.width = ((cache['beatmap.stats.hp.converted'].toFixed(2) * 10) - 10) + '%';
-        
-            mSR.style.transform = `scale(100%)`;
-        
-            mAR.style.transform = `translateY(0)`;
-            mAR.style.opacity = 1
-        
-            mOD.style.transform = `translateY(0)`;
-            mOD.style.opacity = 1
-        
-            mCS.style.transform = `translateY(0)`;
-            mCS.style.opacity = 1
-        
-            mHP.style.transform = `translateY(0)`;
-            mHP.style.opacity = 1
-        
-            rSB.style.transform = `translateY(0px)`;
-            bSB.style.transform = `translateY(0px)`;
-        
-            r50.style.transform = `translateY(0px)`;
-            b50.style.transform = `translateY(0px)`;
-        
-            r100.style.transform = `translateY(0px)`;
-            b100.style.transform = `translateY(0px)`;
-        
-            r0.style.transform = `translateY(0px)`;
-            b0.style.transform = `translateY(0px)`;
-        
-            ResultPPAndifFC.style.transform = `translateX(0)`;
-            ResultScoreCombo.style.transform = `translateX(0)`;
-            ResultAcc.style.transform = `translateX(0)`;
-            ResultUR.style.transform = `translateX(0)`;
-        
-            MapDetails.style.transform = `translateY(0)`;
-        
-            ResultPPAndifFC.style.opacity = 1;
-            ResultScoreCombo.style.opacity = 1;
-            ResultAcc.style.opacity = 1;
-            ResultUR.style.opacity = 1;
-        
-            UserAvatar.style.opacity = 1;
-            PlayerStats.style.opacity = 1;
-            UserAvatar.style.transform = `translateX(0)`;
-            PlayerStats.style.transform = `translateX(0)`;
-            PlayerData.style.transform = `translateX(0)`;
-        
-        
-            Top1.style.transform = `translateX(0)`;
-            Top2.style.transform = `translateX(0)`;
-            Top3.style.transform = `translateX(0)`;
-            Top4.style.transform = `translateX(0)`;
-            Top5.style.transform = `translateX(0)`;
-        
+            ResultMiddle.style.transform = `translateY(0)`;
+            MiddleBar.style.height = `460px`;
+
+            rankingResult.style.opacity = 1;
+            rankingResult.style.transform = 'scale(100%)';
+
+            TContainer.style.transform = `translateX(0)`;
+            PContainer.style.transform = `translateX(0)`;
+
+            modContainer.style.transform = `translateY(0)`;
+
+            MapStats.style.opacity = 1;
+            StatsBPM.style.opacity = 1;
+            StatsBar.style.opacity = 1;
+
+            MapStats.style.transform = `translateX(0)`;
+            StatsBPM.style.transform = `translateX(0)`;
+            StatsBar.style.transform = `translateX(0)`;
+
+            CSGlow.style.width = ((cache['beatmap.stats.cs.converted'].toFixed(2) * 10) - 10) + '%';
+            ARGlow.style.width = ((cache['beatmap.stats.ar.converted'].toFixed(2) * 10) - 10) + '%';
+            ODGlow.style.width = ((cache['beatmap.stats.od.converted'].toFixed(2) * 10) - 10) + '%';
+            HPGlow.style.width = ((cache['beatmap.stats.hp.converted'].toFixed(2) * 10) - 10) + '%';
+
             Top1.style.opacity = 1;
             Top2.style.opacity = 1;
             Top3.style.opacity = 1;
             Top4.style.opacity = 1;
             Top5.style.opacity = 1;
-        
-            qcsContainer.style.transform = `translateY(0)`;
-            qcsContainer.style.opacity = 1;
-        
-            rBPM.style.transform = `translateY(0)`;
-        
-            resultRecorder.style.transform = 'none';
+            Top6.style.opacity = 1;
+
+            Top1.style.transform = `translateY(0)`;
+            Top2.style.transform = `translateY(0)`;
+            Top3.style.transform = `translateY(0)`;
+            Top4.style.transform = `translateY(0)`;
+            Top5.style.transform = `translateY(0)`;
+            Top6.style.transform = `translateY(0)`;
         };
         async function deRankingPanel() {
             rankingPanelSet = false;
         
+            rankingPanelBG.style.opacity = 0;
             RankingPanel.style.opacity = 0;
         
-            mCS.style.opacity = 0;
-            mAR.style.opacity = 0;
-            mOD.style.opacity = 0;
-            mHP.style.opacity = 0;
-        
-            ResultPPAndifFC.style.opacity = 0;
-            ResultScoreCombo.style.opacity = 0;
-            ResultAcc.style.opacity = 0;
-            ResultUR.style.opacity = 0;
-        
-            UserAvatar.style.opacity = 0;
-            PlayerStats.style.opacity = 0;
-        
+            ResultMiddle.style.transform = `translateY(400px)`;
+            MiddleBar.style.height = `0px`;
+
+            rankingResult.style.opacity = 0;
+            rankingResult.style.transform = 'scale(150%)';
+
+            TContainer.style.transform = `translateX(500px)`;
+            PContainer.style.transform = `translateX(-500px)`;
+
+            modContainer.style.transform = `translateY(100px)`;
+
+            MapStats.style.opacity = 0;
+            StatsBPM.style.opacity = 0;
+            StatsBar.style.opacity = 0;
+
+            MapStats.style.transform = `translateX(-100px)`;
+            StatsBPM.style.transform = `translateX(-100px)`;
+            StatsBar.style.transform = `translateX(100px)`;
+
+            CSGlow.style.width = `0%`;
+            ARGlow.style.width = `0%`;
+            ODGlow.style.width = `0%`;
+            HPGlow.style.width = `0%`;
+
             Top1.style.opacity = 0;
             Top2.style.opacity = 0;
             Top3.style.opacity = 0;
             Top4.style.opacity = 0;
             Top5.style.opacity = 0;
-        
-            qcsContainer.style.opacity = 0;
-        
-            mSR.style.transform = `scale(50%)`
-        
-            arGlow.style.width = '0%';
-            csGlow.style.width = '0%';
-            odGlow.style.width = '0%';
-            hpGlow.style.width = '0%';
-        
-            mCS.style.transform = `translateY(-150px)`;
-            mAR.style.transform = `translateY(-150px)`;
-            mOD.style.transform = `translateY(-150px)`;
-            mHP.style.transform = `translateY(-150px)`;
-        
-            rSB.style.transform = `translateY(120px)`;
-            bSB.style.transform = `translateY(120px)`;
-        
-            r50.style.transform = `translateY(120px)`;
-            b50.style.transform = `translateY(120px)`;
-        
-            r100.style.transform = `translateY(120px)`;
-            b100.style.transform = `translateY(120px)`;
-        
-            r0.style.transform = `translateY(120px)`;
-            b0.style.transform = `translateY(120px)`;
-        
-            MapDetails.style.transform = `translateY(240px)`;
-            ResultPPAndifFC.style.transform = `translateX(440px)`;
-            ResultScoreCombo.style.transform = `translateX(-440px)`;
-            ResultAcc.style.transform = `translateX(-220px)`;
-            ResultUR.style.transform = `translateX(220px)`;
-        
-            UserAvatar.style.transform = `translateX(50px)`;
-            PlayerStats.style.transform = `translateX(50px)`;
-            PlayerData.style.transform = `translateX(600px)`;
-        
-            Top1.style.transform = `translateX(600px)`;
-            Top2.style.transform = `translateX(600px)`;
-            Top3.style.transform = `translateX(600px)`;
-            Top4.style.transform = `translateX(600px)`;
-            Top5.style.transform = `translateX(600px)`;
-        
-            qcsContainer.style.transform = `translateY(150px)`;
-        
-            rBPM.style.transform = `translateY(220px)`;
+            Top6.style.opacity = 0;
+
+            Top1.style.transform = `translateY(-100px)`;
+            Top2.style.transform = `translateY(-100px)`;
+            Top3.style.transform = `translateY(-100px)`;
+            Top4.style.transform = `translateY(-100px)`;
+            Top5.style.transform = `translateY(-100px)`;
+            Top6.style.transform = `translateY(-100px)`;
         };
         
     } catch (error) {
@@ -1109,6 +1462,17 @@ socket.commands((data) => {
 
   socket.api_v2_precise((data) => {
     try {
+        if (cache['keys'] != data.keys) {
+            cache['keys'] = data.keys;
+            KeysData.innerHTML = 
+            `
+            <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+            <div>K1: ${data.keys.k1.isPressed} (${data.keys.k1.count})</div>
+            <div>K2: ${data.keys.k2.isPressed} (${data.keys.k2.count})</div>
+            <div>M1: ${data.keys.m1.isPressed} (${data.keys.m1.count})</div>
+            <div>M2: ${data.keys.m2.isPressed} (${data.keys.m2.count})</div>
+            `
+        }
       if (cache['data.menu.state'] != 2) return;
   
       const keysArray = Object.keys(data.keys);
@@ -1190,14 +1554,16 @@ socket.commands((data) => {
       console.log(err);
     };
   });
+
 let config = {
     type: "line",
     data: {
         labels: [],
         datasets: [
             {
-                borderColor: "rgba(255, 255, 255, 0)",
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                borderColor: "rgba(0, 0, 0, 1)",
+                borderWidth: "1",
+                backgroundColor: "rgba(0, 0, 0, 1)",
                 data: [],
                 fill: true,
             },
@@ -1210,7 +1576,7 @@ let config = {
         },
         elements: {
             line: {
-                tension: 0.4,
+                tension: 0,
                 cubicInterpolationMode: "monotone",
             },
             point: {
@@ -1235,9 +1601,9 @@ let configSecond = {
         labels: [],
         datasets: [
             {
-                borderColor: "rgba(0, 0, 0, 0)",
-                borderWidth: "2",
-                backgroundColor: "rgba(255, 255, 255, 0.6)",
+                borderColor: "rgba(0, 0, 0, 1)",
+                borderWidth: "1",
+                backgroundColor: "rgba(0, 0, 0, 1)",
                 data: [],
                 fill: true,
             },
@@ -1250,7 +1616,7 @@ let configSecond = {
         },
         elements: {
             line: {
-                tension: 0.4,
+                tension: 0,
                 cubicInterpolationMode: "monotone",
             },
             point: {
@@ -1268,26 +1634,83 @@ let configSecond = {
         },
     },
 };
+
 async function setupUser(name) {
     let userData = await getUserDataSet(name);
     let playerBest;
 
-    if (userData.error === null || LocalNameData == 'Kiana') {
-        userData = {
-            "id": `${cache['userID'] || 'Kiana'}`,
-            "statistics": {
-                "global_rank": `${cache['GBrank'] || "0"}`,
-                "pp": `${cache['ppGB'] || "0"}`,
-                "country_rank": `${cache['CTrank'] || "0"}`,
-            },
-            "country_code": `${cache['CTcode'] || "__"}`,
+    if (userData.error === null || LocalNameData == cache['LocalNameData']) {
+        if (LocalNameData == `dngcheng`) {
+            userData = {
+                "id": `dngcheng`,
+                "statistics": {
+                    "global_rank": "17301",
+                    "pp": "7146",
+                    "country_rank": "156",
+                },
+                "country_code": "VN",
+            }
+            playerBest = {
+                "0": {
+                    "beatmap_id": `2659724`,
+                    "pp": `400`,
+                    "mods_id": `HD`,
+                    "rank": `SH`,
+                    "ended_at": `2023-04-05 21:42:34`,
+                },
+                "1": {
+                    "beatmap_id": `1228616`,
+                    "pp": `388`,
+                    "mods_id": `HD`,
+                    "rank": `SH`,
+                    "ended_at": `2023-03-10 21:23:45`,
+                },
+                "2": {
+                    "beatmap_id": `307618`,
+                    "pp": `384`,
+                    "mods_id": `HDDT`,
+                    "rank": `SH`,
+                    "ended_at": `2022-11-13 15:29:31`,
+                },
+                "3": {
+                    "beatmap_id": `3928577`,
+                    "pp": `375`,
+                    "mods_id": `HD`,
+                    "rank": `SH`,
+                    "ended_at": `2023-04-03 19:42:34`,
+                },
+                "4": {
+                    "beatmap_id": `2485186`,
+                    "pp": `373`,
+                    "mods_id": `HD`,
+                    "rank": `A`,
+                    "ended_at": `2023-04-11 20:36:14`,
+                },
+                "5": {
+                    "beatmap_id": `550235`,
+                    "pp": `369`,
+                    "mods_id": `HD`,
+                    "rank": `A`,
+                    "ended_at": `2023-04-08 20:26:21`,
+                }
+            };
         }
+        else {
+            userData = {
+                "id": `Kiana`,
+                "statistics": {
+                    "global_rank": `${cache['GBrank'] || "0"}`,
+                    "pp": `${cache['ppGB'] || "0"}`,
+                    "country_rank": `${cache['CTrank'] || "0"}`,
+                },
+                "country_code": `${cache['CTcode'] || "__"}`,
+            }
         playerBest = {
             "0": {
                 "beatmap_id": `${cache['mapid0'] || ""}`,
                 "pp": `${cache['ppResult0'] || ""}`,
                 "mods_id": `${cache['modsid0'] || ""}`,
-                "rank": `${cache['rankResult0'] || ""}`,
+                "rank": `${cache['rankResult0'] |""}`,
                 "ended_at": `${cache['date0'] || ""}`,
             },
             "1": {
@@ -1317,15 +1740,23 @@ async function setupUser(name) {
                 "mods_id": `${cache['mods_id4'] || ""}`,
                 "rank": `${cache['rankResult4'] || ""}`,
                 "ended_at": `${cache['date4'] || ""}`,
+            },
+            "5": {
+                "beatmap_id": `${cache['mapid5'] || ""}`,
+                "pp": `${cache['ppResult5'] || ""}`,
+                "mods_id": `${cache['mods_id5'] || ""}`,
+                "rank": `${cache['rankResult5'] || ""}`,
+                "ended_at": `${cache['date5'] || ""}`,
             }
         };
-        for (var i = 0; i < 5; i++) {
+    }
+        for (var i = 0; i < 6; i++) {
             if (playerBest[i]["pp"] == "" ||
                 playerBest[i]["beatmap_id"] == "" ||
                 playerBest[i]["ended_at"] == "" ||
                 playerBest[i]["rank"] == "" ||
                 playerBest[i]["mods_id"] == "") {
-                document.getElementById(`bg${i + 1}`).style.backgroundImage = ``;
+                document.getElementById(`Top${i + 1}`).style.backgroundImage = ``;
                 document.getElementById(`TopDate${i + 1}`).innerHTML = ``;
                 document.getElementById(`TopRanking${i + 1}`).innerHTML = ``;
                 document.getElementById(`topPP${i + 1}`).innerHTML = ``;
@@ -1333,7 +1764,7 @@ async function setupUser(name) {
             }
             else {
             let mapData = await getMapDataSet(playerBest[i]["beatmap_id"]);
-            document.getElementById(`bg${i + 1}`).style.backgroundImage = `url('https://assets.ppy.sh/beatmaps/${mapData.beatmapset_id}/covers/cover.jpg')`;
+            document.getElementById(`Top${i + 1}`).style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://assets.ppy.sh/beatmaps/${mapData.beatmapset_id}/covers/cover.jpg')`;
             document.getElementById(`TopDate${i + 1}`).innerHTML = playerBest[i]["ended_at"].replace("T", " ").replace("Z", " ");
             document.getElementById(`TopRanking${i + 1}`).innerHTML = playerBest[i]["rank"].replace("H", "");
             document.getElementById(`TopRanking${i + 1}`).setAttribute("class", `topRanking ${playerBest[i]["rank"]}`);
@@ -1354,9 +1785,9 @@ async function setupUser(name) {
     }
     else {
         playerBest = await getUserTop(userData.id);
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 6; i++) {
             let mapData = await getMapDataSet(playerBest[i]["beatmap_id"]);
-            document.getElementById(`bg${i + 1}`).style.backgroundImage = `url('https://assets.ppy.sh/beatmaps/${mapData.beatmapset_id}/covers/cover.jpg')`;
+            document.getElementById(`Top${i + 1}`).style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://assets.ppy.sh/beatmaps/${mapData.beatmapset_id}/covers/cover.jpg')`;
             document.getElementById(`TopDate${i + 1}`).innerHTML = playerBest[i]["ended_at"].replace("T", " ").replace("Z", " ");
             document.getElementById(`TopRanking${i + 1}`).innerHTML = playerBest[i]["rank"].replace("H", "");
             document.getElementById(`TopRanking${i + 1}`).setAttribute("class", `topRanking ${playerBest[i]["rank"]}`);
@@ -1434,14 +1865,20 @@ async function setupUser(name) {
         };
     };
 
-    if (userData.id !== LocalNameData) {
-        ava.style.backgroundImage = `url('https://a.ppy.sh/${userData.id}')`;
-        UserAvatar.style.backgroundImage = `url('https://a.ppy.sh/${userData.id}')`;
-        lbcpAvatar.style.backgroundImage = `url('https://a.ppy.sh/${userData.id}')`;
-    } else {
+    if (userData.id == `Kiana`) {
         ava.style.backgroundImage = "url('./static/gamer.png')";
-        UserAvatar.style.backgroundImage = "url('./static/gamer.png')";
+        PlayerAvatar.style.backgroundImage = "url('./static/gamer.png')";
         lbcpAvatar.style.backgroundImage = "url('./static/gamer.png')";
+    }
+    else if (userData.id == `dngcheng`) {
+        ava.style.backgroundImage = "url('./static/dngcheng.png')";
+        PlayerAvatar.style.backgroundImage = "url('./static/dngcheng.png')";
+        lbcpAvatar.style.backgroundImage = "url('./static/dngcheng.png')";
+    } 
+    else {
+        ava.style.backgroundImage = `url('https://a.ppy.sh/${userData.id}')`;
+        PlayerAvatar.style.backgroundImage = `url('https://a.ppy.sh/${userData.id}')`;
+        lbcpAvatar.style.backgroundImage = `url('https://a.ppy.sh/${userData.id}')`;
     };
 
     const tempCountry = `${userData.country_code
@@ -1453,22 +1890,53 @@ async function setupUser(name) {
         .toString(16)}`;
 
     country.style.backgroundImage = `url('https://osu.ppy.sh/assets/images/flags/${tempCountry}.svg')`;
-    rFlag.style.backgroundImage = `url('https://osu.ppy.sh/assets/images/flags/${tempCountry}.svg')`;
+    PlayerFlag.style.backgroundImage = `url('https://osu.ppy.sh/assets/images/flags/${tempCountry}.svg')`;
 
     ranks.innerHTML = "#" + userData.statistics.global_rank;
-    GlobalRank.innerHTML = `#` + userData.statistics.global_rank;
+    PlayerGR.innerHTML = `#` + userData.statistics.global_rank;
 
     countryRank.innerHTML = "#" + userData.statistics.country_rank;
-    CountryRank.innerHTML = `#${userData.statistics.country_rank} ${userData.country_code}`;
+    PlayerCR.innerHTML = `#${userData.statistics.country_rank} ${userData.country_code}`;
 
     playerPP.innerHTML = Math.round(userData.statistics.pp) + "pp";
+    PlayerTotalPP.innerHTML = Math.round(userData.statistics.pp) + "pp";
 
     if (cache['ColorSet'] == `API`) {
-    const avatarColor = await postUserID(userData.id);
+        let avatarColor
+            if (userData.error === null || userData.id == `Kiana`) {
+                avatarColor = {
+                    "hsl1": [
+                        0.5277777777777778,
+                        0
+                    ],
+                    "hsl2": [
+                        0.5277777777777778,
+                        0
+                    ]
+                }
+            }
+            else if (userData.id == `dngcheng`) {
+                avatarColor = {
+                    "hsl1": [
+                        0.5916666666666667,
+                        0.5
+                    ],
+                    "hsl2": [
+                        0.5861111111111111,
+                        0.5
+                    ]
+                }
+            }
+            else {
+                avatarColor = await postUserID(userData.id);
+            }
 
+    
     if (avatarColor) {
         const ColorData1 = `${avatarColor.hsl1[0] * 360}, ${avatarColor.hsl1[1] * 100}%, 50%`;
-        const ColorData2 = `${avatarColor.hsl2[0] * 360}, ${avatarColor.hsl2[1] * 100}%, 70%`;
+        const ColorData2 = `${avatarColor.hsl2[0] * 360}, ${avatarColor.hsl2[1] * 100}%, 75%`;
+        const ColorResultLight = `${avatarColor.hsl1[0] * 360}, ${avatarColor.hsl1[1] * 100}%, 82%`;
+        const ColorResultDark = `${avatarColor.hsl1[0] * 360}, ${avatarColor.hsl1[1] * 100}%, 6%`;
 
         document.getElementById("lefthp1").style.fill = `hsl(${ColorData1})`;
         document.getElementById("lefthp2").style.fill = `hsl(${ColorData1})`;
@@ -1500,6 +1968,9 @@ async function setupUser(name) {
         pp_box.style.backgroundColor = `hsl(${ColorData2})`;
         pp_box.style.filter = `drop-shadow(0 0 10px hsla(${ColorData2}))`;
 
+        config.data.datasets[0].backgroundColor = `hsl(${ColorData1})`;
+        configSecond.data.datasets[0].backgroundColor = `hsl(${ColorData1})`;
+
         document.querySelector('.keys.k1').style.setProperty('--press', `hsl(${ColorData1})`);
         document.querySelector('.keys.k2').style.setProperty('--press', `hsl(${ColorData1})`);
         document.querySelector('.keys.m1').style.setProperty('--press', `hsl(${ColorData2})`);
@@ -1510,14 +1981,31 @@ async function setupUser(name) {
         keys.m1.color = `hsla(${ColorData2}, 0.8)`;
         keys.m2.color = `hsla(${ColorData2}, 0.8)`;
 
-        config.data.datasets[0].backgroundColor = `hsla(${ColorData1}, 0.2)`;
-        configSecond.data.datasets[0].backgroundColor = `hsl(${ColorData1})`;
-
-        rBPM.style.backgroundColor = `hsl(${ColorData1})`;
-        rBPM.style.boxShadow = `0 0 5px 2px hsl(${ColorData1})`;
-
         lbcpLine.style.backgroundColor = `hsl(${ColorData1})`;
         lbcpLine.style.boxShadow = `0 0 10px 2px hsla(${ColorData1}, 0.5)`;
+
+        RankingPanel.style.backgroundColor = `hsla(${ColorResultDark}, 0.9)`;
+
+        SonataTextResult.style.color = `hsl(${ColorResultLight})`;
+        bgborder.style.border = `3px solid hsl(${ColorResultLight})`;
+        StatsBPM.style.border = `3px solid hsl(${ColorResultLight})`;
+
+        CSLine.style.border = `3px solid hsl(${ColorResultLight})`;
+        ARLine.style.border = `3px solid hsl(${ColorResultLight})`;
+        ODLine.style.border = `3px solid hsl(${ColorResultLight})`;
+        HPLine.style.border = `3px solid hsl(${ColorResultLight})`;
+
+        PHCS.style.color = `hsl(${ColorResultLight})`;
+        PHAR.style.color = `hsl(${ColorResultLight})`;
+        PHOD.style.color = `hsl(${ColorResultLight})`;
+        PHHP.style.color = `hsl(${ColorResultLight})`;
+
+        CSGlow.style.backgroundColor = `hsl(${ColorResultLight})`;
+        ARGlow.style.backgroundColor = `hsl(${ColorResultLight})`;
+        ODGlow.style.backgroundColor = `hsl(${ColorResultLight})`;
+        HPGlow.style.backgroundColor = `hsl(${ColorResultLight})`;
+
+        MiddleBar.style.backgroundColor = `hsl(${ColorResultLight})`;
         };
     };
 };
@@ -1525,8 +2013,22 @@ async function setupUser(name) {
 async function setupMapScores(beatmapID) {
     if (leaderboardFetch == false) {
         leaderboardFetch = true;
+        let data;
 
-        let data = await getMapScores(beatmapID);
+        if (cache['LBOptions'] == 'Selected Mods') {
+            data = await getModsScores(beatmapID);
+            LBTypeAPI.innerHTML = `
+            <div style="font-weight: 900; font-size: 25px;">API</div>
+            <div>Selected Mods (Mods: ${cache['play.mods.name']})</div>
+            `;
+        }
+        else {
+            data = await getMapScores(beatmapID);
+            LBTypeAPI.innerHTML = `
+            <div style="font-weight: 900; font-size: 25px;">API</div>
+            <div>Global</div>
+            `
+        };
 
         if (data) {
             tempSlotLength = data.length;
@@ -1547,7 +2049,7 @@ async function setupMapScores(beatmapID) {
             let playerNumber = `
                         <div id="lb_Number_slot${i}" class="lb_Number">
                             <div id="lb_Ranking_slot${i}" class="${data[i - 1].rank}">${data[i - 1].rank.replace("H", "")}</div>
-                            <div id="lb_Positions_slot${i}" class="N${i}">${i}</div>
+                            <div id="lb_Positions_slot${i}" class="positions N${i}">${i}</div>
                         </div>
             `;
 
@@ -1564,7 +2066,7 @@ async function setupMapScores(beatmapID) {
                             <div id="lb_Combo_slot${i}" class="lb_Combo">${data[i - 1].combo}x</div>
                             <div id="lb_StatsRight_slot${i}" class="lb_StatsRight">
                                 <div id="lb_PP_slot${i}" class="lb_PP">${Math.round(data[i - 1].pp)}pp</div>
-                                <div id="lb_Acc_slot${i}">${data[i - 1].acc}%</div>
+                                <div id="lb_Acc_slot${i}" class="lb_Acc">${data[i - 1].acc}%</div>
                             </div>
                         </div>
             `;
@@ -1654,3 +2156,36 @@ async function getMapScores(beatmapID) {
         console.error(error);
     };
 };
+async function getModsScores(beatmapID) {
+    try {
+        const data = (
+            await axios.get(`/${beatmapID}/mods/${cache['play.mods.name']}`, {
+                baseURL: "https://phubahosi.vercel.app/api/beatmap",
+            })
+        )["data"];
+        return data.length !== 0 ? data : null;
+    } catch (error) {
+        console.error(error);
+    };
+};
+
+function secondsToHumanReadable(seconds) {
+  const hours = Math.floor(seconds / 3600000);
+  seconds -= hours * 3600000;
+
+  const minutes = Math.floor(seconds / 60000);
+  seconds -= minutes * 60000;
+
+  const remainingSeconds = Math.floor(seconds / 1000);
+
+  let result = "";
+  if (hours > 0) {
+    result += hours + "h";
+  }
+  if (minutes > 0 || hours > 0) {
+    result += minutes + "m";
+  }
+  result += remainingSeconds + "s";
+
+  return result;
+}

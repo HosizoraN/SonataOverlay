@@ -5,21 +5,173 @@
 		<meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/gameplay.css" />
 		<link rel="stylesheet" href="css/rankingPanel.css" />
 		<link rel="stylesheet" href="css/odometr.css" />
 		<link rel="stylesheet" href="css/all.min.css" />
         <link rel="stylesheet" href="css/keys.css" />
         <link rel="stylesheet" href="css/leaderboard.css" />
+        <link rel="stylesheet" href="css/debug.css" />
 		<script src="https://unpkg.com/axios@1.6.7/dist/axios.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 		<script src="js/countUp.js"></script>
-		<script src="js/reconnecting-websocket.min.js"></script>
 		<script src="js/odometr.js"></script>
-		<script src="js/Chart.min.js"></script>
 		<script src="js/smooth.js"></script>
+        <script src="js/Chart.min.js"></script>
+        <script src="js/apexcharts.js"></script>
     </head>
-    <body>
+    <body class="nunito-600">
+        <div id="ReportHandlerContainer">
+            <div id="CrashReportDebug" class="DebugBox crashpop">
+                <div id="CrashBorder" class="DebugBorder">
+                    <div id="SadFace"></div>
+                    <div id="CrashText" class="DebugText">Oh no...</div>
+                    <div id="CrashReason"></div>
+                </div>
+            </div>
+        </div>
+        <div id="DevDebugContainer">
+            <div id="StateDebug" class="DebugBox">
+                <div class="DebugBorder">
+                    <div class="DebugText">Current State</div>
+                    <div id="State"></div>
+                    <div class="DebugText">Current Session</div>
+                    <div id="Session"></div>
+                    <div class="DebugText">Current Mode</div>
+                    <div id="Mode"></div>
+                </div>
+            </div>
+            <div id="LBData" class="DebugBox">
+                <div class="DebugBorder">
+                    <div class="DebugText">Leaderboard</div>
+                    <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+                    <div style="font-weight: 900; font-size: 25px;">Local</div>
+                    <div id="LocalLB"></div>
+                    <div id="LBTypeAPI"></div>
+                </div>
+            </div>
+            <div id="TimeMapDebug" class="DebugBox">
+                <div class="DebugBorder">
+                    <div class="DebugText">Length</div>
+                    <div id="TimeMapData"></div>
+                </div>
+            </div>
+            <div id="MainMenuDebug">
+                <div id="bassBoom" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div id="Bass"></div>
+                    </div>
+                </div>
+                <div id="SettingsDebug" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div class="DebugText">Main Menu Settings</div>
+                        <div id="SettingsData"></div>
+                    </div>
+                </div>
+                <div id="InputDebug" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div class="DebugText">Input</div>
+                        <div id="InputData"></div>
+                    </div>
+                </div>
+                <div id="ClientVersion" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div class="DebugText">Client</div>
+                        <div id="ClientData"></div>
+                    </div>
+                </div>
+                <div id="Profile" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div class="DebugText">Profile</div>
+                        <div id="ProfileData"></div>
+                    </div>
+                </div>
+                <div id="AudioDebug" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div style="text-align: center;" class="DebugText">Audio</div>
+                        <div style="width: 97%; height: 3px; background-color: #a1c9ff; margin-top: 10px; margin-bottom: 10px;"></div>
+                        <div id="AudioText">
+                            <div>Master</div>
+                            <div>Music</div>
+                            <div>Effect</div>
+                        </div>
+                        <div id="AudioBar">
+                            <div id="MasterBar" class="Volume">
+                                <div id="MasterFill" class="VolumeFill"></div>
+                            </div>
+                            <div id="MusicBar" class="Volume">
+                                <div id="MusicFill" class="VolumeFill"></div>
+                            </div>
+                            <div id="EffectBar" class="Volume">
+                                <div id="EffectFill" class="VolumeFill"></div>
+                            </div>
+                        </div>
+                        <div id="AudioNumber"></div>
+                        <div id="Offset"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="GameState5Debug">
+                <div id="BMStats" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div class="DebugText">Current Beatmap Stats</div>
+                        <div id="SongSelectData"></div>
+                    </div>
+                </div>
+                <div id="ObjectStats" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div class="DebugText">Object</div>
+                        <div id="ObjectData"></div>
+                    </div>
+                </div>
+                <div id="PerformanceStats" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div class="DebugText">Performance Stats</div>
+                        <div id="PerformanceData"></div>
+                    </div>
+                </div>
+                <div id="SortGroup" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div id="SortGroupData"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="GameState2Debug">
+                <div id="GameplayDebug" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div class="DebugText">Current Play</div>
+                        <div id="GameplayData"></div>
+                    </div>
+                </div>
+                <div id="ReplaysSettings" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div class="DebugText">Gameplay Settings</div>
+                        <div id="ReplaysSettingsData"></div>
+                    </div>
+                </div>
+                <div id="KeysDebug" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div class="DebugText">Keys</div>
+                        <div id="KeysData"></div>
+                    </div>
+                </div>
+                <div id="PPDebugStats" class="DebugBox">
+                    <div class="DebugBorder">
+                        <div class="DebugText">Detailed PP Stats</div>
+                        <div id="PPDetailedData"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="GameState7Debug" class="DebugBox">
+                <div class="DebugBorder">
+                    <div class="DebugText">Result</div>
+                    <div id="ResultScreenData"></div>
+                </div>
+            </div>
+        </div>
         <div id="main">
             <div id="rankingPanelBG"></div>
 			<div id="mapBG"></div>
@@ -31,7 +183,7 @@
                 <div id="currentplayerCont" class="lbBox">
                     <div class="lb_Number">
                         <div id="lbcpRanking"></div>
-                        <div id="lbcpPosition"></div>
+                        <div id="lbcpPosition" class="positions"></div>
                     </div>
                     <div id="lbcpAvatar" class="lb_Avatar"></div>
                     <div class="lb_Stats">
@@ -42,7 +194,7 @@
                         <div id="lbcpCombo" class="lb_Combo"></div>
                         <div class="lb_StatsRight">
                             <div id="lbcpPP" class="lb_PP"></div>
-                            <div id="lbcpAcc"></div>
+                            <div id="lbcpAcc" class="lb_Acc"></div>
                         </div>
                     </div>
                     <div id="lbcpMods" class="lb_Mods"></div>
@@ -52,9 +204,11 @@
                 <div id="graphCont">
                     <div id="strainGraph">
                         <div id="basegraph">
+                            <div class="graph" id="graph"></div>
                             <canvas id="canvas" width="380" height="160"></canvas>
                         </div>
                         <div id="progress">
+                            <div class="graph" id="graph2"></div>
                             <canvas id="canvasSecond" width="380" height="160"></canvas>
                         </div>
                     </div>
@@ -140,7 +294,7 @@
                     </div>
                     <div id="username" class="otherContainer"></div>
                     <div id="playerPP" class="otherContainer"></div>
-                    <div id="SonataText">Sonata Overlay!</div>
+                    <div id="SonataText">Sonata Dev</div>
                     <div id="BrandLogo"></div>
                 </div>
                 <div id="gpbottom">
@@ -171,7 +325,7 @@
                         <div id="recorderName"></div>
                     </div>
                     <div id="URIndex" class="odometer unstableRate"><b></b></div>
-					<div id="URText">Unstable Rate</div>
+					<div id="URText"><span style="font-weight: 800;">U</span>nstable <span style="font-weight: 800;">R</span>ate</div>
 					<div id="URCont">
 						<div id="URbar">
 							<div id="avgHitError"></div>
@@ -458,158 +612,154 @@
                 </div>
             </div>
             <div id="RankingPanel">
-                <div id="qcsContainer">
-                    <div id="brand" class="qcContainer"></div>
-                    <div id="qc">
-                        <div id="qcevent"></div>
-                        <div id="qctext">Presented by</div>
-                        <div id="qcicon"></div>
+                <div id="bgborder"></div>
+                <div id="ResultTop">
+                    <div id="MapStats">
+                        <div id="StatsBG">
+                            <div id="rankStatus"></div>
+                            <div id="starRating"></div>
+                        </div>
+                        <div id="StatsText">
+                            <div id="Song" style="font-size: 50px; font-weight: 800; height: 55px;"></div>
+                            <div id="Artist" style="font-size: 30px; height: 35px;"></div>
+                            <div id="Mapper" style="font-size: 25px; font-weight: 200; height: 35px;"></div>
+                        </div>
+                    </div>
+                    <div id="StatsBPM"></div>
+                    <div id="StatsBar">
+                        <div id="CS" class="StatsBL">
+                            <div id="PHCS" style="width: 70px;">CS</div>
+                            <div id="CSLine" class="LineBar">
+                                <div id="CSGlow" class="GlowBar">
+                                    <div id="CSText" class="TextBar"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="AR" class="StatsBL">
+                            <div id="PHAR" style="width: 70px;">AR</div>
+                            <div id="ARLine" class="LineBar">
+                                <div id="ARGlow" class="GlowBar">
+                                    <div id="ARText" class="TextBar"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="OD" class="StatsBL">
+                            <div id="PHOD" style="width: 70px;">OD</div>
+                            <div id="ODLine" class="LineBar">
+                                <div id="ODGlow" class="GlowBar">
+                                    <div id="ODText" class="TextBar"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="HP" class="StatsBL">
+                            <div id="PHHP" style="width: 70px;">HP</div>
+                            <div id="HPLine" class="LineBar">
+                                <div id="HPGlow" class="GlowBar">
+                                    <div id="HPText" class="TextBar"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div id="resultRecorder"></div>
-                <div id="ResultTop">
-                    <div id="mSR">
-                        <div id="srStars">
-                            <i class="fas fa-star"></i>
+                <div id="ResultMiddle">
+                    <div id="PlayerContainer" style="width: 700px;">
+                        <div id="TContainer">
+                            <div id="PlayerData">
+                                <div id="PlayerAvatar"></div>
+                                <div id="NameFlag">
+                                    <div id="PlayerName"></div>
+                                    <div id="PlayerFlag"></div>
+                                </div>
+                            </div>
+                            <div id="PlayerGR"></div>
+                            <div id="PlayerCR"></div>
+                            <div id="PlayerTotalPP"></div>
                         </div>
-                        <div id="SR"></div>
                     </div>
-                    <div id="RStats">
-                        <div id="mCS" class="mStats">
-                            <div id="csLine" class="Line">
-                                <div id="csGlow" class="Glow"></div>
+                    <div id="MiddleBar"></div>
+                    <div id="ScoreResultContainer" style="width: 700px;">
+                        <div id="PContainer">
+                            <div style="font-size: 25px; height: 20px;">Score</div>
+                            <div id="PlayerScore"></div>
+                            <div id="JudgementTotal">
+                                <div id="Judge100" class="JudgeBar"></div>
+                                <div id="r100"></div>
+                                <div id="Judge50" class="JudgeBar"></div>
+                                <div id="r50"></div>
+                                <div id="Judge0" class="JudgeBar"></div>
+                                <div id="r0"></div>
+                                <div id="JudgeSB" class="JudgeBar"></div>
+                                <div id="rSB"></div>
                             </div>
-                            <div class="mText">
-                                <div id="csText" class="rText1">CS:</div>
-                                <div id="rCS" class="rText2"></div>
-                            </div>
-                        </div>
-                        <div id="mAR" class="mStats">
-                            <div id="arLine" class="Line">
-                                <div id="arGlow" class="Glow"></div>
-                            </div>
-                            <div class="mText">
-                                <div id="arText" class="rText1">AR:</div>
-                                <div id="rAR" class="rText2"></div>
-                            </div>
-                        </div>
-                        <div id="mOD" class="mStats">
-                            <div id="odLine" class="Line">
-                                <div id="odGlow" class="Glow"></div>
-                            </div>
-                            <div class="mText">
-                                <div id="odText" class="rText1">OD:</div>
-                                <div id="rOD" class="rText2"></div>
-                            </div>
-                        </div>
-                        <div id="mHP" class="mStats">
-                            <div id="hpLine" class="Line">
-                                <div id="hpGlow" class="Glow"></div>
-                            </div>
-                            <div class="mText">
-                                <div id="hpText" class="rText1">HP:</div>
-                                <div id="rHP" class="rText2"></div>
+                            <div id="PlayerAcc"></div>
+                            <div id="PlayerMaxCombo"></div>
+                            <div id="PlayerPPResult">
+                                <div id="PPResult"></div>
+                                <div id="PPResultIfFC"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div id="ResultBottom">
-                    <div id="rBPM"></div>
-                    <div id="MapDetails">
-                        <div id="SongMap">
-                            <div id="SongTitle"></div>
-                            <div id="rDiff"></div>
-                            <div id="mapandrank">
-                                <span id="rMapper"></span> <span id="rankedStatus"></span>
-                            </div>
-                        </div>
-                        <div id="SongRanking">
-                            <div id="rankingResult"></div>
-                            <div id="modContainer"></div>
-                        </div>
-                        <div id="HitTotal">
-                            <div id="r100" class="rR"></div>
-                            <div id="r50" class="rR"></div>
-                            <div id="r0" class="rR"></div>
-                            <div id="rSB" class="rR"></div>
-                        </div>
-                        <div id="HitTotalBar">
-                            <div id="b100" class="accbar"></div>
-                            <div id="b50" class="accbar"></div>
-                            <div id="b0" class="accbar"></div>
-                            <div id="bSB" class="accbar"></div>
-                        </div>
-                    </div>
-                    <div id="ScoreData">
-                        <div id="ResultAcc"></div>
-                        <div id="ResultScoreCombo"></div>
-                    </div>
-                    <div id="PPData">
-                        <div id="ResultUR"></div>
-                        <div id="ResultPPAndifFC"></div>
+                    <div id="resultRecorder"></div>
+                    <div id="SonataTextResult">Sonata The Moon...</div>
+                    <div id="SongRanking">
+                        <div id="rankingResult"></div>
+                        <div id="modContainer"></div>
                     </div>
                 </div>
-                    <div id="PlayerData">
-                        <div id="UserAvatar"></div>
-                        <div id="PlayerStats">
-                            <div class="pst">
-                                <span id="rUsername"></span>&#160;<span id="GlobalRank"></span>
-                            </div>
-                            <div class="pst">
-                                <span id="CountryRank"></span>&#160;<span id="rFlag"></span>
-                            </div>
-                        </div>
-                        <div id="TopHeader">Top Plays</div>
-                        <div id="UserTopPlay">
-                            <div id="Top1" class="TopPlay">
-                                <div id="bg1" class="Thumb"></div>
-                                <div id="TopDate1" class="topDate"></div>
-                                <div id="topStat1" class="topStat">
-                                    <span id="TopRanking1" class="topRanking"></span>
-                                    <span id="TopMods1" class="topMods"></span>
-                                </div>
+                <div id="ResultPerformance">
+                    <div id="UserTopPlay">
+                        <div id="Top1" class="TopPlay">
+                            <div id="TopDate1" class="topDate"></div>
+                            <div class="topStat">
+                                <div id="TopRanking1" class="topRanking"></div>
+                                <div id="TopMods1" class="topMods"></div>
                                 <div id="topPP1" class="topPP"></div>
                             </div>
-                            <div id="Top2" class="TopPlay">
-                                <div id="bg2" class="Thumb"></div>
-                                <div id="TopDate2" class="topDate"></div>
-                                <div id="topStat2" class="topStat">
-                                    <span id="TopRanking2" class="topRanking"></span>
-                                    <span id="TopMods2" class="topMods"></span>
-                                </div>
-                                    <div id="topPP2" class="topPP"></div>
+                        </div>
+                        <div id="Top2" class="TopPlay">
+                            <div id="TopDate2" class="topDate"></div>
+                            <div class="topStat">
+                                <div id="TopRanking2" class="topRanking"></div>
+                                <div id="TopMods2" class="topMods"></div>
+                                <div id="topPP2" class="topPP"></div>
                             </div>
-                            <div id="Top3" class="TopPlay">
-                                <div id="bg3" class="Thumb"></div>
-                                <div id="TopDate3" class="topDate"></div>
-                                <div id="topStat3" class="topStat">
-                                    <span id="TopRanking3" class="topRanking"></span>
-                                    <span id="TopMods3" class="topMods"></span>
-                                </div>
-                                    <div id="topPP3" class="topPP"></div>
+                        </div>
+                        <div id="Top3" class="TopPlay">
+                            <div id="TopDate3" class="topDate"></div>
+                            <div class="topStat">
+                                <div id="TopRanking3" class="topRanking"></div>
+                                <div id="TopMods3" class="topMods"></div>
+                                <div id="topPP3" class="topPP"></div>
                             </div>
-                            <div id="Top4" class="TopPlay">
-                                <div id="bg4" class="Thumb"></div>
-                                <div id="TopDate4" class="topDate"></div>
-                                <div id="topStat4" class="topStat">
-                                    <span id="TopRanking4" class="topRanking"></span>
-                                    <span id="TopMods4" class="topMods"></span>
-                                </div>
-                                    <div id="topPP4" class="topPP"></div>
+                        </div>
+                        <div id="Top4" class="TopPlay">
+                            <div id="TopDate4" class="topDate"></div>
+                            <div class="topStat">
+                                <div id="TopRanking4" class="topRanking"></div>
+                                <div id="TopMods4" class="topMods"></div>
+                                <div id="topPP4" class="topPP"></div>
                             </div>
-                            <div id="Top5" class="TopPlay">
-                                <div id="bg5" class="Thumb"></div>
-                                <div id="TopDate5" class="topDate"></div>
-                                <div id="topStat5" class="topStat">
-                                    <span id="TopRanking5" class="topRanking"></span>
-                                    <span id="TopMods5" class="topMods"></span>
-                                </div>
-                                    <div id="topPP5" class="topPP"></div>
+                        </div>
+                        <div id="Top5" class="TopPlay">
+                            <div id="TopDate5" class="topDate"></div>
+                            <div class="topStat">
+                                <div id="TopRanking5" class="topRanking"></div>
+                                <div id="TopMods5" class="topMods"></div>
+                                <div id="topPP5" class="topPP"></div>
+                            </div>
+                        </div>
+                        <div id="Top6" class="TopPlay">
+                            <div id="TopDate6" class="topDate"></div>
+                            <div class="topStat">
+                                <div id="TopRanking6" class="topRanking"></div>
+                                <div id="TopMods6" class="topMods"></div>
+                                <div id="topPP6" class="topPP"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
         <svg width="0" height="0">
 			<defs>
 			  <clipPath id="myClip">

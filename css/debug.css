@@ -1,0 +1,186 @@
+#DevDebugContainer,
+#ReportHandlerContainer {
+    position: absolute;
+    width: 2560px;
+    height: 1440px;
+    left: 0;
+    top: 0;
+    color: #a1c9ff;
+    font-size: 20px;
+    overflow: hidden;
+}
+.DebugBox {
+    margin: 15px;
+    padding: 15px 35px 15px 20px;
+    width: fit-content;
+    height: fit-content;
+    background-color: #050819;
+}
+.DebugBorder {
+    width: 97%;
+    height: 95%;
+    border: 3px solid #a1c9ff;
+    padding: 10px;
+    line-height: 30px;
+}
+.DebugText {
+    font-family: 'Stanley Moon';
+    font-size: 25px;
+    font-weight: 200;
+}
+#SettingsDebug {
+    position: absolute;
+    top: 300px;
+}
+#AudioDebug {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+#GameplayDebug {
+    position: absolute;
+    top: 430px;
+    left: 0;
+}
+#PPDebugStats {
+    position: absolute;
+    text-align: right;
+    right: 0;
+    bottom: 0;
+}
+#PerformanceStats {
+    position: absolute;
+    right: 1180px;
+    bottom: 630px;
+}
+#ObjectStats {
+    position: absolute;
+    right: 1150px;
+    bottom: 300px;
+}
+#BMStats {
+    position: absolute;
+    left: 0;
+    bottom: 295px;
+}
+#KeysDebug {
+    position: absolute;
+    top: 600px;
+    text-align: right;
+    right: 0;
+}
+#TimeMapDebug {
+    position: absolute;
+    bottom: 0;
+}
+#bassBoom {
+    position: absolute;
+    right: 0;
+    left: 0;
+    margin-left: auto;
+    margin-right: auto;
+    top: 30px;
+}
+#LBData {
+    position: absolute;
+    right: 0;
+    top: 0;
+    text-align: right;
+}
+#ReplaysSettings {
+    text-align: right;
+    position: absolute;
+    right: 280px;
+    bottom: 0px;
+}
+#GameState7Debug {
+    position: absolute;
+    left: 1200px;
+    top: 400px;
+}
+#SortGroup {
+    position: absolute;
+    bottom: 0;
+    left: 400px;
+}
+#ClientVersion {
+    position: absolute;
+    right: 280px;
+    bottom: 0px;
+    text-align: right;
+}
+#InputDebug {
+    position: absolute;
+    right: 0;
+    top: 300px;
+    text-align: right;
+}
+#Profile {
+    position: absolute;
+    left: 450px;
+    bottom: 0;
+}
+
+#AudioText,
+#AudioBar,
+#AudioNumber {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+#Offset {
+    text-align: center;
+}
+.VolumeFill {
+    width: 100%;
+    background-color: #a1c9ff;
+    transition: ease 500ms;
+}
+.Volume {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 200px;
+    width: 20px;
+    border: 3px solid #a1c9ff;
+}
+#CrashReportDebug {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    bottom: 100px;
+    background-color: #190505;
+    color: #ffa1a1;
+    padding: 15px 35px 15px 20px;
+    font-size: 30px;
+    z-index: 3;
+    transition: ease 1s 1s;
+}
+#SadFace {
+    width: 200px;
+    height: 200px;
+    background-size: 100%;
+    background-image: url('../static/hosisad.png');
+}
+#CrashText {
+    font-size: 45px;
+}
+#CrashBorder {
+    border: 3px solid #ffa1a1;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.crashpop {
+    transform: translateY(700px); opacity: 0;
+}
+#CrashReason {
+    width: 1000px;
+}

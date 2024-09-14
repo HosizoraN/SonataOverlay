@@ -1,21 +1,8 @@
-@font-face {
-	font-family: "GothicRD";
-	src: url("../fonts/GothicRD.ttf");
-}
-
-@font-face {
-	font-family: "LinotteL";
-	src: url("../fonts/LinotteL.ttf");
-}
-
-@font-face {
-	font-family: "Torus";
-	src: url("../fonts/Torus-Regular.otf");
-}
-@font-face {
-	font-family: "Montserrat";
-	src: url("../fonts/Montserrat.ttf");
-}
+.nunito-600 {
+	font-family: "Nunito", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 600;
+  }
 
 #main {
     position: absolute;
@@ -29,7 +16,6 @@
     /* background-image: url('../static/Background.jpg');
     background-size: 100%; */
     z-index: -1;
-	font-family: "GothicRD", Helvetica, sans-serif;
 }
 
 #gameplay {
@@ -37,10 +23,6 @@
     height: 1440px;
     color: white;
     z-index: 0;
-}
-.odometer.odometer-auto-theme {
-	font-family: "GothicRD", Helvetica, sans-serif;
-	font-weight: 900;
 }
 /* -- BG -- */
 #mapBG {
@@ -51,7 +33,7 @@
 	background-size: cover;
 	background-position: 50% 50%;
 	z-index: -2;
-	transition: ease-in-out 500ms;
+    transition: ease 500ms;
 	clip-path: url('#myClip');
 }
 
@@ -62,7 +44,7 @@
 	background-size: cover;
 	background-position: 50% 50%;
 	background-color: black;
-	transition: ease 500ms;
+    transition: ease 500ms;
 	opacity: 0;
 	z-index: 2;
 }
@@ -73,7 +55,8 @@
 	top: 10px;
 	height: 125px;
 	transition: ease 500ms;
-    font-family: Montserrat;
+	font-size: 34px;
+	text-shadow: 0 0 5px #161616;
 }
 
 #hp {
@@ -84,7 +67,8 @@
 	right: 0;
 	margin-left: auto;
 	margin-right: auto;
-	transition: linear 100ms;
+	overflow: hidden;
+	transition: ease 300ms;
 }
 
 #hpBG {
@@ -95,7 +79,6 @@
 	right: 0;
 	margin-left: auto;
 	margin-right: auto;
-	transition: linear 100ms;
 	z-index: -1;
 	opacity: 50%;
 }
@@ -120,7 +103,6 @@
 	position: absolute;
 	width: 400px;
 	top: 120px;
-	font-size: 30px;
 	transition: ease-in-out 500ms;
 }
 
@@ -152,11 +134,11 @@
 
 .rankContainer {
 	position: absolute;
-	top: 3px;
 	width: 120px;
+	top: -4px;
 	height: 30px;
+	font-size: 30px;
 	color: white;
-	font-size: 25px;
 	transition: ease-in-out 500ms;
 	align-items: center;
 }
@@ -183,15 +165,13 @@
 	color: white;
 	border-radius: 5px;
 	transition: ease-in-out 500ms;
-}
-#country {
 	width: 55px;
 	height: 35px;
 }
 #global {
-	top: -6px;
-	width: 50px;
-	height: 50px;
+	overflow: visible;
+	height: 55px;
+	top: -10px;
 }
 
 .statContainer {
@@ -201,23 +181,21 @@
 	top: 120px;
 	width: 220px;
 	/* box-shadow: 0 5px 9px black; */
-	font-family: Montserrat;
-	font-size: 30px;
 	transition: ease-in-out 500ms;
 	/* background-color: #161616; */
 	color: white;
 }
 
 #SonataText {
-	display: none;
 	position: absolute;
-	top: 130px;
+	top: 160px;
 	left: 0;
 	right: 0;
 	text-align: center;
 	margin-left: auto;
 	margin-right: auto;
 	font-size: 24px;
+	font-weight: 600;
 	overflow: hidden;
 }
 
@@ -241,11 +219,11 @@
     width: 380px;
     height: 55px;
     background-color: #161616;
-    border-radius: 12px;
+    border-radius: 8px;
     left: 15px;
     top: 577px;
     font-size: 28px;
-	z-index: 2;
+	z-index: 1;
 	transition: ease 500ms;
 }
 #stars1 {
@@ -277,10 +255,14 @@
 	height: 10px;
 	justify-content: space-between;
 	border-radius: 10px;
-	font-size: 30px;
+	font-size: 38px;
 	transition: ease-in-out 500ms;
-	z-index: 2;
+	z-index: 1;
 	font-weight: 600;
+}
+.graph {
+	position: absolute;
+	bottom: -30px;
 }
 .accCont {
     position: relative;
@@ -312,13 +294,13 @@
 	top: 30px;
 	width: 100%;
 	transition: ease 200ms;
-	font-family: Montserrat;
 }
 #graphCont {
 	position: absolute;
 	bottom: 70px;
 	z-index: 2;
 }
+
 #graph100,
 #graph50,
 #graph0,
@@ -372,20 +354,24 @@
 }
 #strainGraph {
 	position: relative;
-	height: 160px;
+	height: 250px;
 	z-index: -1;
+	transition: ease 300ms;
+}
+#basegraph {
+	opacity: 50%;
 }
 #progress {
 	bottom: 0;
 	position: absolute;
 	width: 380px;
-	height: 160px;
+	height: 250px;
 	overflow: hidden;
+	opacity: 80%;
 }
 #canvas,
 #canvasSecond {
 	position: absolute;
-	height: 160px;
 	bottom: 0;
 }
 /* -- BOTTOM -- */
@@ -473,10 +459,10 @@
 
 #URIndex {
 	position: absolute;
-	bottom: 80px;
+	bottom: 75px;
 	left: 0;
 	right: 0;
-	font-size: 48px;
+	font-size: 40px;
 	display: block;
 	text-align: center;
 	padding: 5px 0px 5px 0px;
@@ -488,12 +474,13 @@
 	bottom: 50px;
 	left: 0;
 	right: 0;
-	font-size: 28px;
+	font-size: 24px;
 	display: block;
 	font-weight: lighter;
 	text-align: center;
 	padding: 5px 0px 5px 0px;
 	transition: ease-in-out 500ms;
+	color: #9c9c9c;
 }
 .wrapper_1 {
     display: flex;
@@ -519,7 +506,7 @@
   
   .pp .text_1 {
 	position: relative;
-	top: 8px;
+	top: 6px;
     display: inline-block;
     
     font-size: 39px;
@@ -557,7 +544,7 @@
   
     transition-duration: 300ms;
   
-    top: 8px;
+    top: 5px;
 	left: 152px;
   }
   #combo_text2 {
@@ -588,8 +575,7 @@
 	color: white;
 	font-size: 40px;
 	line-height: 50px;
-	font-family: Torus;
-	font-weight: 900;
+	font-weight: 800;
 	transition: ease 600ms;
 }
 
@@ -599,7 +585,6 @@
 	color: white;
 	font-size: 48px;
 	line-height: 50px;
-	font-family: Torus;
-	font-weight: 900;
+	font-weight: 800;
 	transition: ease 600ms;
 }
