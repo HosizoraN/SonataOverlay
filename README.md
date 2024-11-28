@@ -1,23 +1,13 @@
-[Original Source Code Here!](https://github.com/FukutoTojido/ResolvedOverlay) (now only me currently maintaining it)
-
-[Preview](https://youtu.be/Z5os_e0nvHw)
-
 Settings for replays (ingame):
 - Go to skin file make sure empty the keyoverlay ingame like this:
 
 ![image](https://github.com/HosizoraN/SonataOverlay/assets/81794354/75be2f24-e41d-4393-8535-8e2a5fea4c64)
 
-![image](https://github.com/HosizoraN/SonataOverlay/assets/81794354/de19caa4-64d0-4404-a8a9-d7cf065272e2)
+- ingame settings:
 
-Recommended tosu settings:
+![{030E31E1-F10F-440F-8A60-ED36D18953A1}](https://github.com/user-attachments/assets/41810590-f46c-4f4a-a6f2-348392db0b40)
 
-![image](https://github.com/HosizoraN/SonataOverlay/assets/81794354/1205cbdc-22a0-43e1-ac89-d477fdabb0c7)
+![{B73124DB-8295-44E4-821B-CF4684BC5A98}](https://github.com/user-attachments/assets/5c95e9f3-999e-45af-b1bf-86200a6e011d)
 
-Gameplay:
-
-![Screenshot 2024-06-27 12-41-40](https://github.com/HosizoraN/SonataOverlay/assets/81794354/68003612-b97a-43a2-bb3b-0fa704cb1a1b)
-
-ResultScreen: (need more idea for design :sob:)
-
-![Screenshot 2024-06-27 12-46-12](https://github.com/HosizoraN/SonataOverlay/assets/81794354/8d4bb471-00aa-4117-97b9-879396917aad)
+No new preview for now :v
 
