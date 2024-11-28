@@ -1,41 +1,45 @@
 #leaderboard {
-    position: absolute;
-    left: 15px;
-    bottom: 150px;
+    position: relative;
+    bottom: 350px;
     z-index: 1;
+    transition: ease 500ms;
 }
 #otherplayerCont {
     position: absolute;
-    bottom: 0;
+    bottom: -65px;
     opacity: 50%;
-    z-index: -1;
-    clip-path: polygon(0 80.1%, 200% 80.1%, 150% 100%, 0% 100%);
+    height: 3315px;
+    width: 600px;
+    clip-path: polygon(0 84.35%, 200% 84.35%, 150% 100%, 0% 100%);
 }
 #lbopCont {
+    position: absolute;
+    top: 3315px;
     display: flex;
     flex-direction: column-reverse;
     gap: 5px;
     transition: ease 500ms;
 }
 .lbBox {
-    width: 380px;
-    height: 60px;
+    position: absolute;
+    width: 358px;
+    height: 68px;
     background-color: black;
-    border-radius: 5px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     overflow: visible;
     transition: ease 500ms;
 }
 .lb_Number {
-    margin-top: 13px;
     width: 40px;
     height: 60px;
-    font-size: 20px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .positions {
-    font-size: 16px;
+    font-size: 20px;
 }
 .lb_Avatar {
     width: 50px;
@@ -44,6 +48,12 @@
     background-size: 100%;
     background-repeat: no-repeat;
     background-position: 50% 50%;
+}
+.lb_Rank {
+    position: relative;
+    font-size: 20px;
+    text-align: right;
+    top: 30px;
 }
 .lb_Stats {
     position: relative;
@@ -59,7 +69,7 @@
 }
 .lb_PP {
     font-size: 22px;
-    font-weight: 500;
+    font-weight: 600;
 }
 .lb_StatsRight {
     text-align: right;
@@ -67,26 +77,33 @@
 .lb_Combo {
     position: absolute;
     bottom: 0;
-    right: 90px;
+    right: 115px;
     text-align: right;
 }
 .lb_StatsLeft,
 .lb_StatsRight {
     position: absolute;
     bottom: 0;
-    width: 270px;
+    width: 250px;
 }
 .lb_Name {
     color: white;
     font-size: 22px;
+    width: 150px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.bluelight {
+    color: #71cdff;
 }
 #lbcpLine {
     position: absolute;
-    top: 15px;
-    left: -15px;
-    width: 5px;
+    top: 20px;
+    left: -12px;
+    width: 7px;
     height: 35px;
-	border-radius: 0 5px 5px 0;
+	border-radius: 10px;
     background-color: #363636;
     transition: ease 500ms;
     flex-basis: auto;
@@ -102,12 +119,11 @@
     justify-content: flex-start;
 }
 .modslb {
-	width: 45px;
-	height: 30px;
+	width: 40px;
+	height: 27px;
     border-radius: 6px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     object-fit: cover;
-	background-size: 100%;
+	background-size: 105%;
     background-position: 50% 50%;
     background-repeat: no-repeat;
     margin-right: -15px;

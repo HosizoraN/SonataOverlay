@@ -3,6 +3,9 @@
 	font-optical-sizing: auto;
 	font-weight: 600;
   }
+.Sriracha {
+	font-family: "Sriracha", sans-serif;
+}
 
 #main {
     position: absolute;
@@ -39,13 +42,11 @@
 
 #rankingPanelBG {
 	position: absolute;
-	width: 100%;
-	height: 100%;
-	background-size: cover;
-	background-position: 50% 50%;
+	width: 2560px;
+	height: 1440px;
+	object-fit: cover;
 	background-color: black;
     transition: ease 500ms;
-	opacity: 0;
 	z-index: 2;
 }
 /* -- TOP -- */
@@ -57,12 +58,13 @@
 	transition: ease 500ms;
 	font-size: 34px;
 	text-shadow: 0 0 5px #161616;
+	font-weight: 300;
 }
 
-#hp {
+#hpBar {
 	position: absolute;
-	width: 2560px;
-	height: 167px;
+	width: 1491px;
+	height: 140px;
 	left: 0;
 	right: 0;
 	margin-left: auto;
@@ -73,8 +75,8 @@
 
 #hpBG {
 	position: absolute;
-	width: 2560px;
-	height: 167px;
+	width: 1491px;
+	height: 140px;
 	left: 0;
 	right: 0;
 	margin-left: auto;
@@ -221,7 +223,7 @@
     background-color: #161616;
     border-radius: 8px;
     left: 15px;
-    top: 577px;
+	bottom: 155px;
     font-size: 28px;
 	z-index: 1;
 	transition: ease 500ms;
@@ -259,10 +261,7 @@
 	transition: ease-in-out 500ms;
 	z-index: 1;
 	font-weight: 600;
-}
-.graph {
-	position: absolute;
-	bottom: -30px;
+	text-shadow: 0 0 5px #161616;
 }
 .accCont {
     position: relative;
@@ -297,7 +296,7 @@
 }
 #graphCont {
 	position: absolute;
-	bottom: 70px;
+	bottom: 65px;
 	z-index: 2;
 }
 
@@ -307,7 +306,7 @@
 #graphSB {
 	position: relative;
 	width: 380px;
-	height: 17px;
+	height: 8px;
 	transition: ease 300ms;
 	overflow: hidden;
 }
@@ -326,35 +325,35 @@
 .tickGraph {
 	position: absolute;
 	width: 1px;
-	height: 17px;
+	height: 8px;
 }
 .tick100 {
-	background-color: #57e313;
+	background-color: #aaff81;
 }
 .tick50 {
-	background-color: #e3bd13;
+	background-color: #ffe97f;
 }
 .tick0 {
-	background-color: #e31313;
+	background-color: #fd7e7e;
 }
 .tickSB {
 	background-color: #fff;
 }
 .tick100p {
-	background-color: #57e313;
+	background-color: #aaff81;
 }
 .tick50p {
-	background-color: #e3bd13;
+	background-color: #ffe97f;
 }
 .tick0p {
-	background-color: #e31313;
+	background-color: #fd7e7e;
 }
 .tickSBp {
 	background-color: #fff;
 }
 #strainGraph {
 	position: relative;
-	height: 250px;
+	bottom: 0;
 	z-index: -1;
 	transition: ease 300ms;
 }
@@ -362,24 +361,25 @@
 	opacity: 50%;
 }
 #progress {
-	bottom: 0;
 	position: absolute;
-	width: 380px;
-	height: 250px;
+	bottom: 0;
 	overflow: hidden;
 	opacity: 80%;
+	width: 380px;
+	height: 250px;
+	transition: ease 300ms;
 }
-#canvas,
-#canvasSecond {
+.chart, .chart2 {
 	position: absolute;
 	bottom: 0;
 }
+
 /* -- BOTTOM -- */
 #gpbottom {
 	position: absolute;
 	width: 2560px;
 	height: 300px;
-	bottom: 0px;
+	bottom: 0;
 	transition: ease-in-out 500ms;
     display: flex;
     justify-content: center;
@@ -402,7 +402,7 @@
 	height: 15px;
 	background-image: url("../static/arrowtick.png");
 	background-size: 100%;
-	transition: ease-out 100ms;
+	transition: ease 200ms;
 	transform-origin: 50% 50%;
 }
 #URCont{
@@ -414,7 +414,6 @@
 	display: flex;
 	width: 100%;
 	bottom: 0;
-	width: auto;
 	transition: ease-in-out 300ms;
 	z-index: -1;
 	justify-content: center;
@@ -465,8 +464,8 @@
 	font-size: 40px;
 	display: block;
 	text-align: center;
-	padding: 5px 0px 5px 0px;
-	color: #fff;
+	padding: 5px 0 5px 0;
+	text-shadow: 0 0 5px #161616;
 	transition: ease-in-out 500ms;
 }
 #URText{
@@ -478,7 +477,7 @@
 	display: block;
 	font-weight: lighter;
 	text-align: center;
-	padding: 5px 0px 5px 0px;
+	padding: 5px 0 5px 0;
 	transition: ease-in-out 500ms;
 	color: #9c9c9c;
 }
@@ -560,31 +559,18 @@
   }
 #recorderContainer {
 	position: absolute;
-	right: -600px;
-	bottom: 5px;
-	flex-wrap: wrap;
+	right: 15px;
+	bottom: 15px;
 	text-align: right;
-	width: 600px;
-	height: 100px;
-	margin: 20px;
-}
-
-#recorder {
-	width: 100%;
-	height: 50px;
-	color: white;
-	font-size: 40px;
-	line-height: 50px;
-	font-weight: 800;
-	transition: ease 600ms;
+	width: fit-content;
+	font-size: 30px;
+	line-height: 35px;
+	color: #a1c9ff;
+	padding: 15px 35px 15px 20px;
+    background-color: #050819;
+	transition: 500ms ease;
 }
 
 #recorderName {
-	width: 100%;
-	height: 50px;
-	color: white;
-	font-size: 48px;
-	line-height: 50px;
-	font-weight: 800;
-	transition: ease 600ms;
+	font-size: 35px;
 }

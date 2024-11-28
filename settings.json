@@ -8,20 +8,44 @@
         "value": ""
     },
     {
-        "uniqueID": "DebugMode",
-        "type": "checkbox",
-        "title": "Debug Mode",
-        "description": "just like tosu-debug but styled lol",
-        "options": "",
-        "value": false
-    },
-    {
         "uniqueID": "Recorder",
         "type": "text",
         "title": "Recorder Name!",
         "description": "",
         "options": "",
         "value": "Đỗ Nguyễn Thu Trang ❤"
+    },
+    {
+        "uniqueID": "HidePanel",
+        "type": "checkbox",
+        "title": "Hide Ranking Panel?",
+        "description": "",
+        "options": "",
+        "value": false
+    },
+    {
+        "uniqueID": "HideKeys",
+        "type": "checkbox",
+        "title": "Hide KeysOverlay?",
+        "description": "",
+        "options": "",
+        "value": false
+    },
+    {
+        "uniqueID": "HideGraphStats",
+        "type": "checkbox",
+        "title": "Hide GraphStats?",
+        "description": "",
+        "options": "",
+        "value": false
+    },
+    {
+        "uniqueID": "HideBottom",
+        "type": "checkbox",
+        "title": "Hide Bottom?",
+        "description": "",
+        "options": "",
+        "value": false
     },
     {
         "uniqueID": "Bar1",
